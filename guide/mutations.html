@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Changing data with mutations </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Changing data with mutations ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="changing-data-with-mutations">Changing data with mutations</h1>
+
+<p>i2 Notebook Web API provides the ability to write data to the chart, either by adding new records or by editing or deleting existing records.</p>
+<p>In addition, the API allows modification of the selection state and the view state of the chart.
+Writing data is asynchronous, so all changes are made using &quot;mutation&quot; transactions.</p>
+<p>Mutations are transactions that are run as a single atomic action, containing one or more mutation operations that make changes to chart data or application state.
+This ensures that your changes cannot conflict with changes made by other plugins or the user of the application.</p>
+<p>The application will call your mutation code handler when specifically asked to start a mutation transaction.</p>
+<p>The handler will receive the following parameters:</p>
+<ul>
+<li>A parameter of type <a href="../api/notebook-sdk.app.iapplicationcontents.html"><code>IApplicationContents</code> interface</a>, providing read access to the schema, visual and record data for the chart, and also a payload implementing the IMutationsAPI</li>
+<li>A parameter implementing one of the mutation interfaces, providing access to the available mutation operations that allow changes to be made to record and application state.</li>
+</ul>
+<h2 id="commit-and-rollback">Commit and rollback</h2>
+<p>As with transactions in databases, once your mutation handler has finished, it must indicate whether the mutation operations created within it should be &quot;committed&quot; and applied to the chart and application, or to be &quot;rolled back&quot; and not applied.</p>
+<p>Committing a mutation will cause the mutation operations called in the handler to be applied to the chart. Some operations, such as selection and view changes, are applied immediately, while others, such as the writing of record data, are sent through the server before control is returned to the application.</p>
+<h3 id="mutation-reports">Mutation reports</h3>
+<p>When committing or rolling back a mutation you can also provide information that is displayed to the user as a notification pop-up. See the <a href="../api/notebook-sdk.app.isuccessreport.html"><code>ISuccessReport</code> interface</a> and <a href="../api/notebook-sdk.app.idetailedreport.html">&#39;IDetailedReport` interfaces</a> that can be optionally supplied in the returned value from the tracked or untracked mutations handlers.</p>
+<p>Note that the fate of the transaction (i.e. commit or rollback) and the type of report presented to the user (success, failure, or nothing) are completely independent of each other. Reporting an error to the user is <em>often</em> associated with rolling back the mutation transaction, but you <em>can</em> combine a transaction commit with an error report, or a rollback with a success report.</p>
+<p>There are two standard design behaviors that i2 Notebook adheres to - demonstrated most obviously in the built-in Expand functionality - that are worth following in your own plug-ins to provide a helpful and unobtrusive user experience:</p>
+<ol>
+<li>It&#39;s not always necessary to provide an <em>explicit</em> success report to the user. When implementing a command that adds data to the chart, the success of the operation is often obvious from the fact that data has been added to the chart. Only provide an explicit &#39;success&#39; report if there is something <em>else</em> of value to report to the user.</li>
+<li><p>If a command is supposed to add data to the chart but half-way through the mutation you discover that there isn&#39;t any (new) data to add, you should roll back the mutation and provide an explicit report to the user to indicate that there was nothing to add.</p>
+<p>If <em>nothing</em> were reported to the user at all in response to invoking the command, they might be unsure whether the command even ran, decreasing their confidence in the application and plug-in.</p>
+<p>The decision as to whether such a &quot;nothing was added&quot; report should be a &#39;success&#39; or a &#39;failure&#39; report will depend on factors such as whether the lack of new data is a normal situation or caused by an error.</p>
+</li>
+</ol>
+<h2 id="tracked-and-untracked-mutations">Tracked and untracked mutations</h2>
+<p>i2 Notebook supports two different types of mutation:</p>
+<ul>
+<li><p>&quot;Tracked&quot; mutations, created via the <a href="../api/notebook-sdk.app.iapplication.runtrackedmutations.html"><code>IApplication.runTrackedMutations</code> method</a>.</p>
+<p>Tracked mutations supply an <a href="../api/notebook-sdk.app.itrackedmutations.html"><code>ITrackedMutations</code></a> object which provides a full set of chart mutation operations.</p>
+<p>A committed tracked mutation collects all of its mutation operations into a single entry in the application undo stack.
+The user can undo all of the chart changes from a tracked mutation with a single undo action.</p>
+</li>
+<li><p>&quot;Untracked&quot; mutations, created via the <a href="../api/notebook-sdk.app.iapplication.rununtrackedmutations.html"><code>IApplication.runUntrackedMutations</code> method</a></p>
+<p>Untracked mutations supply an <a href="../api/notebook-sdk.app.iuntrackedmutations.html"><code>IUntrackedMutations</code></a> object which provides a more restricted set of chart mutation operations (typically chart record selection and chart view position and zoom level).
+These operations take place without creating an entry in the application undo stack.</p>
+</li>
+</ul>
+<p>Commands which <em>only</em> affect selection or the view of the chart usually do not need to become user-undoable actions, so they are often implemented as untracked mutations. Other commands should be tracked so that the user can undo them.</p>
+<h2 id="cancellation-and-status-messages">Cancellation and status messages</h2>
+<p>If mutation handler is an asynchronous function, it may be canceled by use of a payload implementing the <a href="../api/notebook-sdk.app.icancelation.html"><code>ICancelation interface</code></a>. Triggering the cancelation will automatically roll back the mutation.</p>
+<p>While an asynchronous mutation handler is being run, the application may also show status messages provided by the mutations handler by calling the status object provided on either of the <code>ITrackedMutations</code> or <code>IUntrackedMutations</code> interfaces. See the <a href="../api/notebook-sdk.app.istatus.html"><code>IStatus</code> interface</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation (2022)
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

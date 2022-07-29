@@ -1,0 +1,483 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating a plugin to write changes to the i2 Notebook web client chart </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating a plugin to write changes to the i2 Notebook web client chart ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-a-plugin-to-write-changes-to-the-i2-notebook-web-client-chart">Creating a plugin to write changes to the i2 Notebook web client chart</h1>
+
+<p>This tutorial takes you through writing a plug-in for the i2 Notebook web client that can write new records to the chart, arranging them and update the view.</p>
+<p>You can find a full version of the source code for this tutorial in the <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/mutation-plugin"><code>samples/mutation-plugin</code></a> folder.</p>
+<h2 id="prerequisities">Prerequisities</h2>
+<p>This tutorial requires a running instance of i2 Analyze on which you have permission to use the i2 Notebook web client.</p>
+<p>To follow the tutorial, you must install at least version 12 of Node.js on your development machine.
+For downloads and more information about Node.js, visit the project website at <a href="https://nodejs.org">https://nodejs.org</a>.</p>
+<p>The tutorial also requires you to create GUIDs for a number of its elements. The project files use some sample fixed GUIDs (<code>00000000-0000-0000-0000-000000000001</code>, <code>00000000-0000-0000-0000-000000000002</code>, and so on), but you should always create real GUIDs for real projects.</p>
+<h2 id="create-a-basic-plug-in">Create a basic plug-in</h2>
+<p>To start with we&#39;ll ask you to follow the <a href="basic-plugin.html">basic plug-in tutorial</a>, up to but not including the step where we add the first Ribbon command. Make sure you have a working plugin before continuing.</p>
+<h2 id="add-a-ribbon-command">Add a ribbon command</h2>
+<p>Now we have an empty plugin, we&#39;ll start by adding a command to the ribbon that will add some Person records to the chart.</p>
+<ol>
+<li><p>In <code>entrypoint.js</code>, just before the call to <code>initializationComplete()</code>, create a command and surface the command on the ribbon.</p>
+<pre><code class="lang-javascript">const addItems = api.commands.createCommand({
+  id: &#39;00000000-0000-0000-0000-000000000002&#39;,
+  name: &#39;Add items&#39;,
+  type: &#39;unscoped&#39;,
+  icon: {
+    type: &#39;inlineSvg&#39;,
+    svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;rect width=&quot;8&quot; height=&quot;8&quot; x=&quot;4&quot; y=&quot;4&quot;/&gt;&lt;/svg&gt;&#39;,
+  },
+  onExecute() {},
+});
+
+api.commands.applicationRibbon.homeTab
+  .after(api.commands.applicationRibbon.homeTab.systemGroups.searchInfoStore)
+  .surfaceCommands(addItems);
+</code></pre></li>
+<li><p>Reload i2 Notebook and check that the action is visible in the application ribbon.</p>
+</li>
+</ol>
+<h2 id="add-entity-records">Add entity records</h2>
+<ol>
+<li><p>At the top of the file, add some dummy data that will serve as the source of the items that we&#39;ll add to the chart.</p>
+<pre><code class="lang-javascript">const personData = [
+  {
+    firstName: &#39;Lou&#39;,
+    familyName: &#39;Tuft&#39;,
+  },
+  {
+    firstName: &#39;Jessy&#39;,
+    familyName: &#39;House&#39;,
+  },
+  {
+    firstName: &#39;Jayme&#39;,
+    familyName: &#39;Tiffy&#39;,
+  },
+  {
+    firstName: &#39;Lauren&#39;,
+    familyName: &#39;Timberlake&#39;,
+  },
+  {
+    firstName: &#39;Romilly&#39;,
+    familyName: &#39;Chaplin&#39;,
+  },
+];
+</code></pre></li>
+<li><p>Also define the entity type and property types from the schema that will be use to create the entities and links, place this at the top of the file next to the dummy data.</p>
+<pre><code class="lang-javascript">const personEntityTypeId = &#39;ET5&#39;;
+const firstNamePropertyTypeId = &#39;PER4&#39;;
+const familyNamePropertyTypeId = &#39;PER6&#39;;
+</code></pre></li>
+<li><p>Next to this add the following helper functions that allows us to look up an item types and property types by an analyze id.</p>
+<pre><code class="lang-javascript">/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).schema.IChartSchema} schema
+ * @param {string} analyzeId
+ * @returns {import(&quot;@i2analyze/notebook-sdk&quot;).schema.IChartItemType}
+ */
+function getItemType(schema, analyzeId) {
+  const itemType = schema.itemTypes.find((v) =&gt; v.analyzeId === analyzeId);
+  if (!itemType) {
+    throw new Error(`Schema is not as expected: ${analyzeId} is missing`);
+  }
+  return itemType;
+}
+
+/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).schema.IChartItemType} itemType
+ * @param {string} analyzeId
+ * @returns {import(&quot;@i2analyze/notebook-sdk&quot;).schema.IChartPropertyType}
+ */
+function getPropertyType(itemType, analyzeId) {
+  const propertyType = itemType.propertyTypes.find((v) =&gt; v.analyzeId === analyzeId);
+  if (!propertyType) {
+    throw new Error(`Schema is not as expected: ${analyzeId} is missing`);
+  }
+  return propertyType;
+}
+</code></pre><blockquote><p><strong>Note:</strong> The <code>/** @type {import...} */</code> and <code>/** @param {import...} */</code> code helps the JavaScript type system to understand what we&#39;re working with, which enables auto-completion in the rest of the code.
+If we used TypeScript to create our <code>entrypoint.js</code> file, we&#39;d use <code>import type</code> statements instead.</p>
+</blockquote>
+</li>
+<li><p>Inside the implementation of onExecute add the following code to get the entity and property types that are needed:</p>
+<pre><code class="lang-javascript">const personEntityType = getItemType(application.chart, personEntityTypeId);
+const firstNamePropertyType = getPropertyType(personEntityType, firstNamePropertyTypeId);
+const familyNamePropertyType = getPropertyType(personEntityType, familyNamePropertyTypeId);
+</code></pre></li>
+<li><p>Immediately after add a call to <code>runTrackedMutation</code> to start queuing up mutation commands that will add some items to the chart.</p>
+<pre><code class="lang-javascript">api.runTrackedMutations((_application, mutations) =&gt; {
+  // Mutations go here
+});
+</code></pre></li>
+<li><p>Now we want to start adding mutation commands inside the <code>runTrackedMutations</code> call, so let&#39;s loop over the items in our data object, adding them as entities on the chart by using our entity type and property types we defined earlier. Add this code inside the function we pass to <code>runTrackedMutations</code>.</p>
+<pre><code class="lang-javascript">for (const person of personData) {
+  mutations.addEntityRecord({
+    itemType: personEntityType,
+    properties: {
+      [firstNamePropertyType]: person.firstName,
+      [familyNamePropertyType]: person.familyName,
+    },
+  });
+}
+</code></pre><blockquote><p>Alternatively we could add the entity record first, and then &quot;edit&quot; the new record:</p>
+<pre><code class="lang-javascript">for (const person of personData) {
+  const newPerson = mutations.addEntityRecord({
+    itemType: personEntityType,
+  });
+
+  newPerson.setProperties({
+    [firstNamePropertyType]: person.firstName,
+    [familyNamePropertyType]: person.familyName,
+  });
+}
+</code></pre></blockquote>
+</li>
+<li><p>To complete the <code>runTrackedMutation</code> call we must return an object that tells the application whether to commit the mutation commands. Since this is a tracked mutation we must also supply the name of the undo entry that will be added to the undo stack. Add this just after the <code>for</code> loop.</p>
+<pre><code class="lang-javascript">return {
+  type: &#39;commit&#39;,
+  actionDisplayName: &#39;Add items&#39;,
+};
+</code></pre><blockquote><p>A tracked mutation will add a entry to the undo stack.
+If that Undo action is executed, all the mutations commands that were added will be reversed, leaving the chart back in the state before the <code>runTrackedMutations</code> call.</p>
+<p>An untracked mutation will not add an entry to the undo stack, but the mutation commands that can be added are limited to selection and viewport mutation.
+Those changes will become part of the next tracked mutation and will be undone as part of that mutation.</p>
+</blockquote>
+</li>
+<li><p>Reload i2 Notebook and try running the command. You should see a number of Person records be added to the chart, which are contained within node elements on the visible chart surface. Next we&#39;ll add some more records that we&#39;ll link to the these Person records.</p>
+</li>
+</ol>
+<h2 id="add-linked-records">Add linked records</h2>
+<ol>
+<li><p>Add another set of data we&#39;ll use to define some events, with a &quot;wasSeen&quot; property that determines which person record the event should be linked to.</p>
+<pre><code class="lang-javascript">const eventEntityTypeId = &#39;ET2&#39;;
+const eventTypePropertyTypeId = &#39;EVE3&#39;;
+const reportedDateTimePropertyTypeId = &#39;EVE34&#39;;
+const observedLinkTypeId = &#39;LOB1&#39;;
+
+const eventData = [
+  {
+    date: &#39;2022-03-01&#39;,
+    wasSeen: &#39;Tuft&#39;,
+  },
+  {
+    firstName: &#39;2021-11-23&#39;,
+    wasSeen: &#39;House&#39;,
+  },
+  {
+    firstName: &#39;2022-05-07&#39;,
+    wasSeen: &#39;Tiffy&#39;,
+  },
+];
+</code></pre></li>
+<li><p>Add some more entity, link and property types, placing these just after the existing type objects we defined previously:</p>
+<pre><code class="lang-javascript">const eventEntityType = getItemType(application.chart, eventEntityTypeId);
+const eventTypePropertyType = getPropertyType(eventEntityType, eventTypePropertyTypeId);
+const startDateTimePropertyType = getPropertyType(eventEntityType, startDateTimePropertyTypeId);
+const observedLinkType = getItemType(application.chart, observedLinkTypeId);
+</code></pre></li>
+<li><p>For the event timezones, we&#39;ll add another helper function to look up the timezones by their id.
+Add this after our other helper functions at the top of the file:</p>
+<pre><code>```javascript
+/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).data.IKeyedReadOnlyCollection&lt;string,import(&quot;@i2analyze/notebook-sdk&quot;).data.ITimeZone&gt;} timeZones
+ * @param {string} timeZoneId
+ */
+function getTimeZone(timeZones, timeZoneId) {
+  const timeZone = timeZones.get(timeZoneId);
+  if (timeZone === undefined) {
+    throw new Error(&#39;Unknown time zone matching ${timeZoneId}&#39;);
+  }
+  return timeZone;
+}
+```
+</code></pre></li>
+<li><p>To help find the person record to which we want to link the event records, we&#39;ll add a <code>Map</code> object into which we&#39;ll add our person record, keyed by their family name value.</p>
+<blockquote><p><strong>Note:</strong> Since the records aren&#39;t added to the chart until the mutation is actually committed and run, we can&#39;t simply look them up on the chart yet.</p>
+</blockquote>
+</li>
+<li><p>Replace the <code>for</code> loop where we add the person records with this code, which adds the new records to the look-up <code>Map</code>.</p>
+<pre><code class="lang-javascript">/**
+ * @type {Map&lt;string,import(&quot;@i2analyze/notebook-sdk&quot;).app.IPendingRecord&gt;}
+ */
+const personLookup = new Map();
+
+for (const person of personData) {
+  const personRecord = mutations.addEntityRecord({
+    itemType: personEntityType,
+    properties: {
+      [firstNamePropertyType.id]: person.firstName,
+      [familyNamePropertyType.id]: person.familyName,
+    },
+  });
+
+  personLookup.set(person.familyName, personRecord);
+}
+</code></pre></li>
+<li><p>Now we&#39;ll use our new data to create more records.
+Firstly we&#39;ll add some events, in the <code>runTrackedMutation</code> call, just before we return from the mutation:</p>
+<pre><code class="lang-javascript">for (const event of eventData) {
+  const startDateTime = mutations.valueFactory.createZonedDateTime(
+    event.dateTime,
+    getTimeZone(event.timeZone),
+    false
+  );
+
+  const eventRecord = mutations.addEntityRecord({
+    itemType: eventEntityType,
+    properties: {
+      [eventTypePropertyType.id]: event.type,
+      [startDateTimePropertyType]: startDateTime,
+    },
+  });
+}
+</code></pre><blockquote><p><strong>Note:</strong> The mutations object provides a number of value factory methods that we can use to create validated values to use when setting properties. We will use the <code>createZonedDateTime</code> method to set the event reported date-time property:</p>
+</blockquote>
+</li>
+<li><p>Next we&#39;ll add a link after adding each Event entity, using the lookup map to find the Person record on the other end. Add this inside the loop, just after creating the event record.</p>
+<pre><code class="lang-javascript">const personSeenRecord = personLookup.get(event.wasSeen);
+
+if (personSeenRecord === undefined) {
+  throw new Error(`Person matching ${event.wasSeen} is missing`);
+}
+
+mutations.addLinkRecord({
+  itemType: observedLinkType,
+  fromEnd: eventRecord,
+  toEnd: personSeenRecord,
+  linkDirection: &#39;with&#39;,
+});
+</code></pre></li>
+<li><p>Reload i2 Notebook delete everything from the chart and run the command. You should see the Person records being added, each one linked to an Event record.</p>
+</li>
+</ol>
+<h2 id="mutating-selection">Mutating Selection</h2>
+<p>Now have the events added to the chart, let&#39;s also add them to the selection.</p>
+<ol>
+<li><p>Add this just after adding the link record:</p>
+<pre><code class="lang-javascript">mutations.selection.add(eventRecord);
+</code></pre></li>
+<li><p>Reload i2 Notebook again, this time when you run the command you should see that all the Event records are now selected.</p>
+</li>
+</ol>
+<h2 id="mutating-elements-and-mutation-roll-back">Mutating Elements and Mutation Roll-back</h2>
+<p>As well as adding records, we can mutate the visual elements that have been created, let&#39;s try arranging our selected events in a left-to-right time sequence:</p>
+<ol>
+<li><p>Create a new command and surface it in the ribbon:</p>
+<pre><code class="lang-javascript">const arrangeEvents = api.commands.createCommand({
+  id: &#39;00000000-0000-0000-0000-000000000003&#39;,
+  name: &#39;Arrange events&#39;,
+  type: &#39;unscoped&#39;,
+  icon: {
+    type: &#39;inlineSvg&#39;,
+    svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;rect width=&quot;8&quot; height=&quot;8&quot; x=&quot;4&quot; y=&quot;4&quot;/&gt;&lt;/svg&gt;&#39;,
+  },
+  onExecute(application) {
+    // Execute code goes here
+  },
+});
+
+api.commands.applicationRibbon.homeTab.after(addItems).surfaceCommands(arrangeEvents);
+</code></pre></li>
+<li><p>Before we arrange the Event elements, let&#39;s first validate that the current selection only contains event type records, if not we&#39;ll &quot;rollback&quot; the mutation and show a notification of the problem:</p>
+<pre><code class="lang-javascript">api.runTrackedMutations((application, mutations) =&gt; {
+  const selection = application.chart.selection;
+
+  if (
+    !selection.entityRecords.every((record) =&gt; record.itemType.analyzeId === eventEntityTypeId)
+  ) {
+    return {
+      type: &#39;rollback&#39;,
+      report: {
+        details: &#39;Selection must contain only Event record types&#39;,
+        title: &#39;Cannot arrange items&#39;,
+        type: &#39;error&#39;,
+      },
+    };
+  }
+
+  return {
+    type: &#39;commit&#39;,
+    actionDisplayName: &#39;Arrange events&#39;,
+  };
+});
+</code></pre><p>If you now select all of the items that have been previously selected and try using the Arrange Items command, an error notification will appear, since the selection contains more than just events.</p>
+<blockquote><p>We&#39;ve just rolled back a mutation that actually contains no mutation commands, that&#39;s a valid operation can be used to display a notification. However if you try to &quot;commit&quot; a mutation that has no mutation commands a error will be shown, since it&#39;s not valid to try and commit an empty mutation You&#39;ll see this happen right if you have a &quot;valid&quot; selection, since we&#39;re not yet running any mutation commands after we&#39;ve checked the selection.</p>
+</blockquote>
+</li>
+</ol>
+<p>Now we can start a new mutation and use the current selection to find events and arrange them in a sorted-by-date-time order.</p>
+<ol>
+<li><p>Add the following code after our selection check, this sorts the selected events and uses <code>setNodeCenter</code> to move them into their new positions.</p>
+<pre><code class="lang-javascript">const eventEntityType = getItemType(application.chart, eventEntityTypeId);
+const reportedDateTimePropertyType = getPropertyType(
+  eventEntityType,
+  reportedDateTimePropertyTypeId
+);
+
+/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).visual.INode} node
+ */
+function getEventDate(node) {
+  const eventRecord = node.records.firstOrDefault(undefined);
+
+  if (eventRecord === undefined) {
+    throw new Error(&#39;Unexpected missing record&#39;);
+  }
+
+  const eventDateTime = eventRecord.getProperty(reportedDateTimePropertyType);
+
+  if (eventDateTime !== undefined &amp;&amp; !eventRecord.isValueUnfetched(eventDateTime)) {
+    return /** @type {import(&quot;@i2analyze/notebook-sdk&quot;).data.IZonedDateTime} */ (eventDateTime);
+  }
+}
+
+/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).visual.INode} nodeA
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).visual.INode} nodeB
+ */
+function compareEvents(nodeA, nodeB) {
+  const eventADate = getEventDate(nodeA);
+  const eventBDate = getEventDate(nodeB);
+
+  if (eventADate !== undefined &amp;&amp; eventBDate !== undefined) {
+    const dateA = eventADate.dateTime.toJSDate().getTime();
+    const dateB = eventBDate.dateTime.toJSDate().getTime();
+    return dateA - dateB;
+  } else {
+    return 0;
+  }
+}
+
+const firstEvent = selection.affectedNodes.firstOrDefault(undefined);
+if (!firstEvent) {
+  return {
+    type: &#39;rollback&#39;,
+    report: {
+      title: &#39;Nothing selected&#39;,
+      details: &#39;Nothing was selected, so no events were arranged.&#39;,
+      type: &#39;information&#39;,
+    },
+  };
+}
+
+const sortedEvents = Array.from(selection.affectedNodes).sort(compareEvents);
+
+const targetLocation = firstEvent.center;
+let targetX = targetLocation.x;
+
+for (const event of sortedEvents) {
+  mutations.setNodeCenter(event, { x: targetX, y: targetLocation.y });
+  targetX += 200;
+}
+</code></pre></li>
+<li><p>Lastly we can mutate the view to fit the selected events, add this just before we return from the mutation call:</p>
+<pre><code class="lang-javascript">mutations.view.fitToSelection();
+</code></pre></li>
+<li><p>Reload i2 Notebook and run the command, you should see that the selected elements have been moved into a left-to-right temporal layout.</p>
+</li>
+</ol>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation (2022)
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

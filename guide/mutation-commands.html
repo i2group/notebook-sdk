@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Writing records, changing selection and view </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Writing records, changing selection and view ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="writing-records-changing-selection-and-view">Writing records, changing selection and view</h1>
+
+<p>As described in the <a href="mutations.html">Changing data with mutations</a> guide i2 Notebook Web API provides the ability to write data to the chart and change application state.</p>
+<p>The types of changes that can be made are:</p>
+<ul>
+<li>Record creation</li>
+<li>Record editing</li>
+<li>Record removal</li>
+<li>Selection changes</li>
+<li>View changes</li>
+<li>Visual node element position</li>
+</ul>
+<p>A single mutation action can contain any number and combination of those changes. The changes are typically applied as a single set of changes once the mutation itself is committed.</p>
+<p>Some of these commands are demonstrated in the <a href="tutorials/mutation-plugin.html">Mutations Plug-in tutorial</a>.</p>
+<h2 id="record-creation-and-editing">Record creation and editing</h2>
+<p>The a mutation handler supplied to a (&#39;ITrackedMutations.runTrackedMutation&#39;)(../api/notebook-sdk.app.iapplication.runtrackedmutations.md) allows the creation of new entity or link records, via the <a href="../api/notebook-sdk.app.itrackedmutations.addentityrecord.html"><code>ITrackedMutations.addEntityRecord</code></a> and <a href="../api/notebook-sdk.app.itrackedmutations.addlinkrecord.html"><code>ITrackedMutations.addLinkRecord</code></a> methods.
+Each call allows the features of the new record to be supplied, including the item type, notes, security settings and values for properties.</p>
+<p>Both methods return a &quot;pending&quot; record object that represent the new record before it has been added to the chart data, this object implements the <a href="../api/notebook-sdk.app.irecordeditor.html"><code>IRecordEditor</code> interface</a> that allow further edits to be made.</p>
+<p>It is also possible to make changes to existing records on the chart by using the <a href="../api/notebook-sdk.app.itrackedmutations.editrecord.html"><code>ITrackedMutations.editRecord</code></a> method, that will return a <code>IRecordEditor</code> interface for that record.</p>
+<blockquote><p><strong>Note:</strong> New records will not exist on the chart, and therefore will not be seen in <code>IChart</code> collections, until the mutation is committed.
+Pending records and record editors are only valid within the mutation handler where they were created.</p>
+</blockquote>
+<h2 id="value-factories">Value factories</h2>
+<p>When creating or editing record you are able to supply a set of property values to apply to the new record. To assist with creating valid value object, the <code>ITrackedMutations.valueFactory</code> property supplies a <a href="../api/notebook-sdk.app.ivaluefactory.html"><code>IValueFactory</code> interface</a> that contains a number of helper methods.</p>
+<p>These methods will assist you in creating valid object that implement the following interfaces:</p>
+<ul>
+<li><code>IGeopoint</code></li>
+<li><code>IDecimal</code></li>
+<li><code>ILocalDate</code></li>
+<li><code>ILocalDateTime</code></li>
+<li><code>ILocalTime</code></li>
+<li><code>ISecuritySettings</code></li>
+<li><code>IZonedDateTime</code></li>
+</ul>
+<h2 id="record-and-element-removal">Record and element removal</h2>
+<p>As well as creating new records, it is also possible to remove them via the <a href="../api/notebook-sdk.app.itrackedmutations.removerecords.html"><code>ITrackedMutations.removeRecords</code> method</a>.</p>
+<p>You may also remove the visual nodes and edge elements from the chart by calling the <a href="../api/notebook-sdk.app.itrackedmutations.removeelements.html"><code>ITrackedMutations.removeElements</code> method</a>.</p>
+<p>Any records held by a visual element will also be removed, together with any connected records and elements.</p>
+<h2 id="changing-selection">Changing selection</h2>
+<p>Mutations may change the selection state of the chart via the <a href="../api/notebook-sdk.app.iselectioneditor.html"><code>ISelectionEditor</code> interface</a>. Both tracked and untracked mutations allow the changing of selection, via <a href="../api/notebook-sdk.app.imutationsbase.selection.html"><code>IMutationsBase.selection</code></a>.</p>
+<blockquote><p><strong>Note:</strong> While selection changes made in untracked actions are not explicitly added to the undo stack, the selection state can be captured by the next tracked mutation as part of it&#39;s undo-able state.</p>
+</blockquote>
+<h2 id="moving-visual-node-elements">Moving visual node elements</h2>
+<p>It is possible to arrange visual node elements on the chart by changing their position:</p>
+<ul>
+<li>By setting a single node position directly using the <a href="../api/notebook-sdk.app.itrackedmutations.setnodecenter.html"><code>ITrackedMutations.setNodeCenter</code> method</a> method.</li>
+<li>By moving a selection that includes node elements by an offset using the <a href="../api/notebook-sdk.app.itrackedmutations.moveselectednodesrelative.html"><code>ITrackedMutations.moveSelectedNodesRelative</code> method</a></li>
+</ul>
+<h2 id="changing-the-view">Changing the view</h2>
+<p>Finally it&#39;s possible to change the current view of the chart, moving the where the view is centered and the zoom level.</p>
+<p>These changes are made by calling methods on the <a href="../api/notebook-sdk.app.ivieweditor.html"><code>IViewEditor</code> interface</a>, accessed by the <a href="../api/notebook-sdk.app.imutationsbase.view.html"><code>IMutationsBase.view</code></a> property.</p>
+<h2 id="validation">Validation</h2>
+<p>All the mutation command will validate their parameters to ensure the correct value types are passed and that when record and type ids are given they are associated with existing objects.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation (2022)
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
