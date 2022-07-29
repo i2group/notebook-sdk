@@ -1,0 +1,10 @@
+{
+  "$schema": "https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json",
+  "name": "My i2 Notebook plug-in",
+  "pluginId": "00000000-0000-0000-0000-000000000001",
+  "pluginVersion": "1.0.0",
+  "entryPointUrl": "./entrypoint.js",
+  "toolViewCsp": {
+    "style-src": "'unsafe-inline'"
+  }
+}

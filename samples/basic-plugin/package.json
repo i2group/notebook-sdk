@@ -1,0 +1,13 @@
+{
+  "name": "plugin",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "serve -l 5000"
+  },
+  "dependencies": {
+    "@i2analyze/notebook-sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "serve": "^12.0.0"
+  }
+}
