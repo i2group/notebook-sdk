@@ -1,0 +1,47 @@
+<div>
+  <div class="record-navigation">
+    <div>{{ navigationTitle }}</div>
+    <div class="navigation-buttons" *ngIf="totalRecords">
+      <button
+        class="navigation-button"
+        (click)="onPreviousButtonClick()"
+        title="Previous record"
+        [disabled]="disablePreviousButton"
+      >
+        &lt;
+      </button>
+      <button
+        class="navigation-button"
+        (click)="onNextButtonClick()"
+        title="Next record"
+        [disabled]="disableNextButton"
+      >
+        &gt;
+      </button>
+    </div>
+  </div>
+  <h1 class="record-header">
+    <img
+      *ngIf="image"
+      [src]="image.href"
+      [alt]="image.description"
+      class="record-image"
+    />
+    <span class="record-label">
+      <a
+        *ngIf="threeSixtyUrl; else elseblock"
+        [href]="threeSixtyUrl"
+        target="_blank"
+      >
+        {{ recordLabel }}
+      </a>
+      <ng-template #elseblock>{{ recordLabel }}</ng-template>
+    </span>
+  </h1>
+  <div class="record-properties">
+    <div *ngFor="let property of properties" class="property">
+      <div class="property-label">{{ property.label }}</div>
+      <div class="property-value">{{ property.value }}</div>
+    </div>
+  </div>
+</div>
