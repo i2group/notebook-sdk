@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>What's new in version 1.4 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="What's new in version 1.4 ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="whats-new-in-version-14">What&#39;s new in version 1.4</h1>
+
+<p>Version 1.4 of the i2 Notebook API contains new functionality that allows a plug-in to display a modal dialog, so that it can block interactions with the rest of the application while it presents information or questions to a user.
+The new version also contains updates that cover functional changes to the i2 Notebook application, including clipboard operations and new chart popup menus.</p>
+<p>The following sections list all the new and modified elements in the API, organized by namespace.</p>
+<h2 id="root-namespace">Root namespace</h2>
+<p><a href="../api/notebook-sdk.getdialogapi.html"><code>getDialogApi</code></a></p>
+<p><code>IEntryPointApi</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.ientrypointapi.showdialog.html"><code>showDialog</code></a></li>
+</ul>
+<h2 id="dialog-namespace">dialog namespace</h2>
+<p><code>DialogEventMap</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.dialogeventmap.action.html"><code>action</code></a></li>
+</ul>
+<p><code>DialogEventOptionsMap</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.dialogeventoptionsmap.action.html"><code>action</code></a></li>
+</ul>
+<p><code>IDialogAction</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.idialogaction.id.html"><code>id</code></a></li>
+</ul>
+<p><code>IDialogActionConfig</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.idialogactionconfig.enabled.html"><code>enabled</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogactionconfig.label.html"><code>label</code></a></li>
+</ul>
+<p><a href="../api/notebook-sdk.dialog.dialogactionlistener.html"><code>DialogActionListener</code></a></p>
+<p><code>IDialogApi</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.idialogapi.updateaction.html"><code>updateAction</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogapi.submitandclose.html"><code>submitAndClose</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogapi.close.html"><code>close</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogapi.getinitialvalue.html"><code>getInitialValue</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogapi.addeventlistener.html"><code>addEventListener</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogapi.removeeventlistener.html"><code>removeEventListener</code></a></li>
+</ul>
+<p><code>IDialogConfig</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.idialogconfig.name.html"><code>name</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogconfig.path.html"><code>path</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogconfig.size.html"><code>size</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogconfig.initialvalue.html"><code>initialValue</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.idialogconfig.actions.html"><code>actions</code></a></li>
+</ul>
+<p><code>ISystemDialogActions</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.dialog.isystemdialogactions.submit.html"><code>submit</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.isystemdialogactions.cancel.html"><code>cancel</code></a></li>
+<li><a href="../api/notebook-sdk.dialog.isystemdialogactions.close.html"><code>close</code></a></li>
+</ul>
+<h2 id="commands-namespace">commands namespace</h2>
+<p><code>IChartItemPopupMenuSystemGroups</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.ichartitempopupmenusystemgroups.select.html"><code>select</code></a></li>
+<li><a href="../api/notebook-sdk.commands.ichartitempopupmenusystemgroups.discover.html"><code>discover</code></a></li>
+<li><a href="../api/notebook-sdk.commands.ichartitempopupmenusystemgroups.clipboard.html"><code>clipboard</code></a></li>
+</ul>
+<p><code>IChartSurfacePopupMenuSystemGroups</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.ichartsurfacepopupmenusystemgroups.select.html"><code>select</code></a></li>
+<li><a href="../api/notebook-sdk.commands.ichartsurfacepopupmenusystemgroups.clipboard.html"><code>clipboard</code></a></li>
+</ul>
+<p><code>ICommandApi</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.icommandapi.chartitempopupmenu.html"><code>chartItemPopupMenu</code></a></li>
+<li><a href="../api/notebook-sdk.commands.icommandapi.chartsurfacepopupmenu.html"><code>chartSurfacePopupMenu</code></a></li>
+</ul>
+<p><code>IHomeTabSystemGroups</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.ihometabsystemgroups.clipboard.html"><code>clipboard</code></a></li>
+</ul>
+<p><code>ISystemCommands</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.copy.html"><code>copy</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.cut.html"><code>cut</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.paste.html"><code>paste</code></a></li>
+</ul>
+<h2 id="toolview-namespace">toolview namespace</h2>
+<p><code>IToolViewApi</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.toolview.itoolviewapi.showdialog.html"><code>showDialog</code></a></li>
+</ul>
+<h1 id="deprecated-in-version-14">Deprecated in version 1.4</h1>
+<p>The following elements in the API are deprecated in version 1.4, and might be removed in a future release.</p>
+<h2 id="commands-namespace-1">commands namespace</h2>
+<p><code>ICommandApi</code></p>
+<ul>
+<li><p><a href="../api/notebook-sdk.commands.icommandapi.chartpopupmenu.html"><code>chartPopupMenu</code></a></p>
+<p>This property is replaced by <a href="../api/notebook-sdk.commands.icommandapi.chartitempopupmenu.html"><code>commands.ICommandApi.chartItemPopupMenu</code></a></p>
+</li>
+</ul>
+<p><a href="../api/notebook-sdk.commands.ichartpopupmenusystemgroups.html"><code>IChartPopupMenuSystemGroups</code></a></p>
+<p>This interface is replaced by <a href="../api/notebook-sdk.commands.ichartitempopupmenusystemgroups.html"><code>commands.IChartItemPopupMenuSystemGroups</code></a></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

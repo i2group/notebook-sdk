@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>app.IValueFactory interface </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="app.IValueFactory interface ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="notebook-sdk.html">@i2analyze/notebook-sdk</a> &gt; <a href="notebook-sdk.app.html">app</a> &gt; <a href="notebook-sdk.app.ivaluefactory.html">IValueFactory</a></p>
+<h2 id="appivaluefactory-interface">app.IValueFactory interface</h2>
+<p>A set of utility functions for creating property and other values that can be reused across records.</p>
+<p><b>Signature:</b></p>
+<pre><code class="lang-typescript">interface IValueFactory 
+</code></pre><p><b>Introduced:</b>
+version 1.1</p>
+<h2 id="methods">Methods</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createdecimal.html">createDecimal(value)</a></td>
+<td>Creates a decimal value from a number or a string.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.creategeopoint.html">createGeoPoint(latitude, longitude)</a></td>
+<td>Creates a <a href="notebook-sdk.data.igeopoint.html">data.IGeoPoint</a> object from a pair of latitude and longitude values.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.creategeopoint_1.html">createGeoPoint(data)</a></td>
+<td>Creates a <a href="notebook-sdk.data.igeopoint.html">data.IGeoPoint</a> object from a <a href="notebook-sdk.data.igeopointdata.html">data.IGeoPointData</a> object.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldate.html">createLocalDate(year, month, day)</a></td>
+<td>Creates a local date object (that does not have a time or a time zone) from year/month/day information.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldate_1.html">createLocalDate(jsDate)</a></td>
+<td>Creates a local date object (that does not have a time or a time zone) from a JavaScript <code>Date</code> object.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldate_2.html">createLocalDate(iso8601)</a></td>
+<td>Creates a local date object (that does not have a time or a time zone) from an ISO 8601 string (&#39;yyyy-mm-dd&#39;).</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldatetime.html">createLocalDateTime(year, month, day, hour, minute, second, milli)</a></td>
+<td>Creates a local date-time object (that does not have a time zone) from year/month/day/hour/minute/second information.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldatetime_1.html">createLocalDateTime(jsDate)</a></td>
+<td>Creates a local date-time object (that does not have a time zone) from a JavaScript <code>Date</code> object.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldatetime_2.html">createLocalDateTime(date, time)</a></td>
+<td>Creates a local date-time object (that does not have a time zone) from a local date and a local time object.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaldatetime_3.html">createLocalDateTime(iso8601)</a></td>
+<td>Creates a local date-time object (that does not have a time zone) from an ISO 8601 string (&#39;yyyy-mm-ddThh:mm:ss&#39; or &#39;yyyy-mm-ddThh:mm:ss.sss&#39;).</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaltime.html">createLocalTime(hour, minute, second, milli)</a></td>
+<td>Creates a local time object (that does not have a date or a time zone) from hour/minute/second information.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaltime_1.html">createLocalTime(jsDate)</a></td>
+<td>Creates a local time object (that does not have a date or a time zone) from a JavaScript <code>Date</code> object.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createlocaltime_2.html">createLocalTime(iso8601)</a></td>
+<td>Creates a local time object (that does not have a date or a time zone) from an ISO 8601 string (&#39;hh:mm:ss&#39; or &#39;hh:mm:ss.sss&#39;).</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createsecuritysetting.html">createSecuritySetting(data)</a></td>
+<td>Creates a security setting that you can use to configure record security.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createzoneddatetime.html">createZonedDateTime(date, time, timeZone, isDst)</a></td>
+<td>Creates a date-time object that has a time zone from a local date, a local time, and a time zone.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createzoneddatetime_1.html">createZonedDateTime(dateTime, timeZone, isDst)</a></td>
+<td>Creates a date-time object that has a time zone from a local date-time (or a JavaScript <code>Date</code> object) and a time zone.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.app.ivaluefactory.createzoneddatetime_2.html">createZonedDateTime(iso8601, timeZone, isDst)</a></td>
+<td>Creates a date-time object that has a time zone from an ISO 8601 string (&#39;yyyy-mm-ddThh:mm:ss&#39; or &#39;yyyy-mm-ddThh:mm:ss.sss&#39;) and a time zone.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

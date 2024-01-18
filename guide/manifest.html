@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>The plug-in manifest </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="The plug-in manifest ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="the-plug-in-manifest">The plug-in manifest</h1>
+
+<p>Every i2 Notebook plug-in requires a <em>manifest</em>, which is a JSON file that provides configuration settings for the plug-in. The file must appear at the root of the plug-in directory, and it must be named <code>plugin.json</code>.</p>
+<p>Most of the settings that the manifest can provide are mandatory. The file must contain the following information:</p>
+<ul>
+<li>A unique identifier for the i2 Notebook plug-in</li>
+<li>The version of the plug-in</li>
+<li>A name for the plug-in, to appear in diagnostic messages for plug-in lifecycle events</li>
+<li>The path to the entry point JavaScript file to load, relative to the manifest</li>
+</ul>
+<p>Optionally, the manifest can also specify changes to i2 Notebook&#39;s content security policy, so that the plug-in can access content on servers that the policy would otherwise block.</p>
+<h2 id="creating-a-manifest">Creating a manifest</h2>
+<p>The i2 Notebook SDK includes a JSON schema that enforces the structure and content of plug-in manifests. The Liberty server validates your manifests when it reads them, but you can also use the schema to assist during manifest creation from a compatible editor (such as Microsoft Visual Studio Code).</p>
+<p>The file name of the schema is <code>plugin-manifest.json</code>. To reference it from your <code>plugin.json</code> file, include the <code>$schema</code> field as the first entry in the manifest, like this:</p>
+<pre><code class="lang-json">{
+    &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json&quot;,
+    ...
+}
+</code></pre><p>After you set this field, editors that support JSON schemas provide inline help to ensure that mandatory fields in the manifest are present and populated with valid values.</p>
+<h2 id="plug-in-manifest-syntax">Plug-in manifest syntax</h2>
+<p>The following fields are valid in an i2 Notebook plug-in manifest:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Mandatory?</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>entryPointCsp</code></td>
+<td>No</td>
+<td>Directives to add to the HTTP Content-Security-Policy response header for the entry point JavaScript file.</td>
+</tr>
+<tr>
+<td><code>entryPointUrl</code></td>
+<td>Yes</td>
+<td>The URL of the entry point JavaScript file, relative to the manifest file.</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Yes</td>
+<td>The name of the plug-in, which might appear in status messages.</td>
+</tr>
+<tr>
+<td><code>pluginId</code></td>
+<td>Yes</td>
+<td>The identifier of the plug-in, as a lower-case <a href="https://www.guidgenerator.com">GUID</a>.</td>
+</tr>
+<tr>
+<td><code>pluginVersion</code></td>
+<td>Yes</td>
+<td>The version of the plug-in, typically in x[.y[.z]] format.</td>
+</tr>
+<tr>
+<td><code>toolViewCsp</code></td>
+<td>No</td>
+<td>Directives to add to the HTTP Content-Security-Policy response header for tool view files.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<pre><code class="lang-json">{
+    &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json&quot;,
+    &quot;pluginId&quot;: &quot;01234567-89ab-cdef-0123-456789abcdef&quot;,
+    &quot;pluginVersion&quot;: &quot;1.0&quot;,
+    &quot;name&quot;: &quot;My i2 Notebook plug-in&quot;,
+    &quot;entryPointUrl&quot;: &quot;./entrypoint.js&quot;,
+    &quot;toolViewCsp&quot;: {
+        ...
+    }
+}
+</code></pre><h2 id="content-security-policy-directives">Content security policy directives</h2>
+<p>By default, i2 Notebook&#39;s content security policy (CSP) prevents plug-ins from accessing some kinds of information on servers that are not the i2 Analyze server. However, and especially if your plug-in uses tool views, you might need to use code, fonts, or other data that are located on another server. In such cases, you can use the <code>toolViewCsp</code> field to allow access to that server from tool views.</p>
+<p>In rarer cases (but for the same reasons), you might need to change the CSP that applies to the entry point JavaScript file. For example, if you want to connect to a remote service on the execution of a command, you can use the <code>entryPointCsp</code> field to allow access to the service for that purpose.</p>
+<p>For more information about CSP directives and how to choose which ones you need, see the documentation at <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy">MDN Web Docs</a>. In the manifest, you populate <code>entryPointCsp</code> and <code>toolViewCsp</code> with fields whose names match CSP directive names, and whose values are the URLs of servers that your plug-in will access, or are drawn from a small group of keywords:</p>
+<pre><code class="lang-json">{
+    ...
+    &quot;entryPointCsp&quot;: {
+        &quot;connect-src&quot;: &quot;http://external-server-to-access-from-entry-point&quot;,
+    },
+    &quot;toolViewCsp&quot;: {
+        &quot;connect-src&quot;: &quot;http://external-server-to-access-from-tool-view&quot;,
+        &quot;img-src&quot;: &quot;http://external-server-that-provides-images&quot;
+    }
+}
+</code></pre><blockquote><p><strong>Note:</strong> To specify more than one value in a <code>&quot;connect-src&quot;</code> or <code>&quot;img-src&quot;</code> field, you can add space-separated values between the double-quote characters.</p>
+<p>For example: <code>&quot;http://external.com http://example.com&quot;</code></p>
+</blockquote>
+<p>The set of available CSP directives can and does change over time. Especially if your plug-ins make regular use of CSP directives, ensure that you stay abreast of updates to the MDN documentation.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

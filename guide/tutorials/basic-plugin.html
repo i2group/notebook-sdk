@@ -1,0 +1,340 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating a basic plug-in for the i2 Notebook web client </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating a basic plug-in for the i2 Notebook web client ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-a-basic-plug-in-for-the-i2-notebook-web-client">Creating a basic plug-in for the i2 Notebook web client</h1>
+
+<p>This tutorial takes you through creating a basic plug-in for the i2 Notebook web client that can take geospatial data from records on a chart and visualize it on a map outside of the application.</p>
+<p><strong>Note:</strong> The external mapping functionality that the plug-in provides is completely separate from the i2 Notebook web client&#39;s built-in Maps feature.</p>
+<p>The plug-in adds commands to the user interface for users to interact with, but unlike the more complex plug-ins that you might create later, it does not display a user interface of its own. Other tutorials in the SDK describe how to create a plug-in with a user interface, using a number of popular frameworks:</p>
+<ul>
+<li><a href="angular-plugin.html">Angular</a></li>
+<li><a href="react-plugin.html">React</a></li>
+<li><a href="vue-plugin.html">Vue</a></li>
+</ul>
+<p>This tutorial is <em>not</em> a prerequisite for any of the three that are listed above.
+You can find a full version of the source code for this tutorial in the <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/basic-plugin"><code>samples/basic-plugin</code></a> folder.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>This tutorial requires a running instance of i2 Analyze on which you have permission to use the i2 Notebook web client.</p>
+<p>To follow the tutorial, you must install at least version 12 of Node.js on your development machine. For downloads and more information about Node.js, visit the project website at <a href="https://nodejs.org">https://nodejs.org</a>.</p>
+<p>The tutorial also requires you to create GUIDs for a number of its elements. The project files use some sample fixed GUIDs (<code>00000000-0000-0000-0000-000000000001</code>, <code>00000000-0000-0000-0000-000000000002</code>, and so on), but you should always create real GUIDs for real projects.</p>
+<p><strong>Note:</strong> A suitable GUID generator is available online at <a href="https://www.guidgenerator.com">https://www.guidgenerator.com</a>.</p>
+<h2 id="create-a-basic-plug-in">Create a basic plug-in</h2>
+<p>A basic i2 Notebook plug-in has the same requirements as a more complex one: in the plug-in directory, you must create the manifest and the entry point that enable the i2 Notebook web client to load and integrate your plug-in.</p>
+<p>The first part of this tutorial covers those requirements, and also explains how to set up both your development environment and a local Node.js server.</p>
+<ol>
+<li><p>Create a directory for your plug-in. For example, <code>plugin</code>.</p>
+</li>
+<li><p>In the new directory, use an IDE such as VSCode to create a <code>package.json</code> file that describes the plug-in project:</p>
+<pre><code class="lang-json">{
+  &quot;name&quot;: &quot;plugin&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;scripts&quot;: {}
+}
+</code></pre></li>
+<li><p>On the command line, navigate to the project directory and add the i2 Notebook SDK package to the project:</p>
+<p><code>npm install @i2analyze/notebook-sdk</code></p>
+<p>The package contains a type library that enables inline assistance in your IDE.</p>
+</li>
+<li><p>To set up auto-completion and other assistance, create and populate a file named <code>jsconfig.json</code> in the same directory:</p>
+<pre><code class="lang-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;checkJs&quot;: true,
+    &quot;lib&quot;: [&quot;es2020&quot;, &quot;dom&quot;],
+    &quot;target&quot;: &quot;es2018&quot;,
+    &quot;types&quot;: [&quot;@i2analyze/notebook-sdk&quot;],
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;strict&quot;: true
+  },
+  &quot;exclude&quot;: [&quot;node_modules&quot;, &quot;**/node_modules&quot;]
+}
+</code></pre><p><strong>Note:</strong> For more information about the <code>jsconfig.json</code> file, see the <a href="https://code.visualstudio.com/docs/languages/jsconfig">Microsoft Visual Studio Code documentation</a>.</p>
+</li>
+<li><p>Now you&#39;re in position to write the plug-in itself, starting with the manifest. Create a file named <code>plugin.json</code>, with the following contents:</p>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json&quot;
+}
+</code></pre><p>The schema enforces the structure and content of the file. For more information, see the <a href="../manifest.html">plug-in manifest</a> documentation.</p>
+</li>
+<li><p>Continue to populate the manifest with values for <code>&quot;name&quot;</code>, <code>&quot;pluginId&quot;</code>, and <code>&quot;pluginVersion&quot;</code>; and set <code>&quot;entryPointUrl&quot;</code> to <code>&quot;./entrypoint.js&quot;</code>. For example:</p>
+<pre><code class="lang-json">  &quot;name&quot;: &quot;My plug-in&quot;,
+  &quot;pluginId&quot;: &quot;00000000-0000-0000-0000-000000000001&quot;,
+  &quot;pluginVersion&quot;: &quot;1.0.0&quot;,
+  &quot;entryPointUrl&quot;: &quot;./entrypoint.js&quot;
+</code></pre></li>
+<li><p>Next, we can create the entry point. Add a file named <code>entrypoint.js</code> to the plug-in directory, and populate it:</p>
+<pre><code class="lang-javascript">async function main() {
+  const api = await notebook.getEntryPointApi(&#39;00000000-0000-0000-0000-000000000001&#39;, &#39;1.1&#39;);
+  api.logger.info(&#39;Plug-in running&#39;);
+  api.initializationComplete();
+}
+
+void main();
+</code></pre><p>Through this code, the plug-in retrieves the version of the entry point API that it wants to use, and uses it to declare that it has finished initializing. The GUID here must match the one in the plug-in manifest.</p>
+<p>If you enter the code by hand, you&#39;ll see how the type library provides auto-completion as you go.</p>
+</li>
+<li><p>Back on the command line, add the <code>serve</code> package as a development dependency:</p>
+<p><code>npm install -D serve</code></p>
+</li>
+<li><p>Add a script to the <code>package.json</code> file to serve the project. For example:</p>
+<pre><code class="lang-json">  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;serve -l 5001&quot;
+  }
+</code></pre></li>
+<li><p>Start the project by running <code>npm start</code>.</p>
+</li>
+<li><p>Finally, navigate to the URL where the project is being hosted (<a href="http://localhost:5001/">http://localhost:5001/</a>, if you used the example) and confirm that <code>plugin.json</code> and <code>entrypoint.js</code> are served correctly.</p>
+</li>
+</ol>
+<h2 id="test-the-plug-in-in-the-i2-notebook-web-client">Test the plug-in in the i2 Notebook web client</h2>
+<p>As we&#39;re developing and testing a plug-in, we won&#39;t deploy the plug-in directly to the i2 Analyze server. Instead, we&#39;ll use the i2 Notebook SDK plug-in development proxy to add our plug-in to an existing i2 Notebook deployment without needing to modify it.</p>
+<ol>
+<li><p>Anywhere on your workstation, create and populate a file named <code>devproxy.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/devproxy.json&quot;
+}
+</code></pre><p>This forms the basis of the configuration file for the development proxy.</p>
+</li>
+<li><p>Add a value for <code>&quot;server&quot;</code> that is the URL of an existing i2 Analyze deployment. For example, <code>&quot;http://localhost:9082/opal/&quot;</code>.</p>
+</li>
+<li><p>Add a value for <code>&quot;port&quot;</code> to specify the port that the development proxy should listen on. For example, <code>4000</code>.</p>
+</li>
+<li><p>Add a value for <code>&quot;plugins&quot;</code> that contains the root URL of your plug-in. For example, <code>[&quot;http://localhost:5001/&quot;]</code> for the server that we configured above.</p>
+</li>
+<li><p>On the command line, navigate to the folder that contains the configuration file, and run the i2 Notebook plug-in development proxy (no installation is required):</p>
+<p><code>npx @i2analyze/notebook-sdk-plugin-proxy --config devproxy.json</code></p>
+</li>
+<li><p>Open the proxy URL in a browser and log in to the i2 Notebook web client. For example, <code>http://localhost:4000/opal/</code>.</p>
+</li>
+<li><p>Open the browser&#39;s developer console and check for our plug-in&#39;s message being logged:</p>
+<p><code>My plug-in Plug-in running</code></p>
+<p>If you see this message, then the plug-in is working correctly.</p>
+</li>
+</ol>
+<h2 id="add-a-ribbon-command-to-the-plug-in">Add a ribbon command to the plug-in</h2>
+<p>So far, you have a plug-in that&#39;s being loaded into the i2 Notebook web client - but it doesn&#39;t do anything. Next, we&#39;ll make the plug-in add a command to the application ribbon that opens geospatial locations in Google Maps.</p>
+<ol>
+<li><p>In <code>entrypoint.js</code>, just before the call to <code>initializationComplete()</code>, create a command:</p>
+<pre><code class="lang-javascript">const viewOnMap = api.commands.createCommand({
+  id: &#39;00000000-0000-0000-0000-000000000002&#39;,
+  name: &#39;View on map&#39;,
+  type: &#39;records&#39;,
+  icon: {
+    type: &#39;inlineSvg&#39;,
+    svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;rect width=&quot;8&quot; height=&quot;8&quot; x=&quot;4&quot; y=&quot;4&quot;/&gt;&lt;/svg&gt;&#39;,
+  },
+  onExecute(payload) {},
+});
+</code></pre></li>
+<li><p>Straight afterward, surface the command on the ribbon&#39;s Home tab, just after the Information Store group:</p>
+<pre><code class="lang-javascript">api.commands.applicationRibbon.homeTab
+  .after(api.commands.applicationRibbon.homeTab.systemGroups.searchInfoStore)
+  .surfaceCommands(viewOnMap);
+</code></pre></li>
+<li><p>Reload i2 Notebook and check that the action is visible in the application ribbon.</p>
+<p>Clicking the button won&#39;t do anything yet because we haven&#39;t implemented <code>onExecute()</code>, so let&#39;s do that now.</p>
+</li>
+<li><p>Create this helper function at the top level of the <code>entrypoint.js</code> file:</p>
+<pre><code class="lang-javascript">/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).data.IReadOnlyCollection&lt;import(&quot;@i2analyze/notebook-sdk&quot;).records.IChartRecord&gt;} records
+ */
+function findGeospatialValue(records) {
+  for (const record of records) {
+    for (const propertyType of record.itemType.propertyTypes) {
+      if (propertyType.logicalType === &#39;geospatial&#39;) {
+        const property = record.getProperty(propertyType);
+        if (property !== undefined &amp;&amp; !record.isValueUnfetched(property)) {
+          return /** @type {import(&quot;@i2analyze/notebook-sdk&quot;).data.IGeoPoint} */ (property);
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+</code></pre><p>This function performs a simple scan of the records it receives, looking for a non-empty geospatial property that it returns if it finds one.</p>
+<blockquote><p><strong>Note:</strong> The <code>/** @type {import...} */</code> and <code>/** @param {import...} */</code> code helps the JavaScript type system to understand what we&#39;re working with, which enables auto-completion in the rest of the code. If we used TypeScript to create our <code>entrypoint.js</code> file, we&#39;d use <code>import type</code> statements instead.</p>
+</blockquote>
+</li>
+<li><p>We can now use the helper function in the implementation of <code>onExecute()</code> that we left empty in the call to <code>CreateCommand()</code>. We&#39;ll take the latitude and longitude to a new Google Maps window:</p>
+<pre><code class="lang-javascript">  onExecute(payload) {
+    const property = findGeospatialValue(payload.records);
+
+    if (!property) {
+      return;
+    }
+
+    window.open(
+      `https://www.google.com/maps/@${property.latitude},${property.longitude},18z`,
+      &quot;_blank&quot;
+    );
+  },
+</code></pre></li>
+<li><p>Reload i2 Notebook again, select an element with a geospatial property, and try the command. Google Maps should open at the relevant location.</p>
+</li>
+</ol>
+<h2 id="make-the-command-sensitive-to-selection">Make the command sensitive to selection</h2>
+<p>There&#39;s a problem with our command: the button is enabled even if the selection doesn&#39;t actually contain a geospatial property. That would be misleading for a user, but we can fix it by taking control of the <em>surfacing</em> of the command in the user interface.</p>
+<ol>
+<li><p>After the <code>onExecute()</code> parameter to <code>createCommand()</code>, add an <code>onSurface()</code> function definition:</p>
+<pre><code class="lang-javascript">onSurface(action, eventApi, signal) {
+  eventApi.addEventListener(
+    &quot;recordscontextchange&quot;,
+      (context) =&gt; {
+        action.setEnabled(!!findGeospatialValue(context.records));
+      },
+      { dispatchNow: true, signal }
+  );
+},
+</code></pre><p>There are a few things to notice here:</p>
+<ul>
+<li>i2 Notebook calls our <code>onSurface()</code> function with an <code>action</code> object that represents the user interface control to which the command is bound each time it is surfaced. A single command might be surfaced in several places, and you can use the <code>action</code> object to react differently in each of them.</li>
+<li>The function also receives an <code>eventApi</code> object through which it can listen to changes in the records to which the action is being applied; and a <code>signal</code> object that indicates when this particular surfacing of the command is being removed.</li>
+<li>In our implementation, we subscribe to the <code>recordscontextchange</code> event, which tells us when the current records change. When they <em>do</em> change, we set the enabled state of the action to a value based on whether there is a geospatial value in the current records.</li>
+<li>Event listeners are normally invoked when the event occurs. However, we don&#39;t want to wait for a <code>recordscontextchange</code> event before we run our <code>setEnabled()</code> code, so we specify <code>dispatchNow: true</code> to invoke the callback immediately, without waiting for the event. This in turn causes our action to be enabled or disabled correctly, right away.</li>
+<li>We forward the <code>signal</code> to the event listener so that it unsubscribes automatically from the <code>recordscontextchange</code> event when the action is unsurfaced.</li>
+</ul>
+</li>
+<li><p>Reload i2 Notebook. The button in the application ribbon is now enabled only when a geospatial property exists in the selection.</p>
+</li>
+</ol>
+<h2 id="use-the-command-in-more-than-one-place">Use the command in more than one place</h2>
+<p>As well as adding it to the ribbon, we can add exactly the same command to the chart pop-up menu with a single line of code.</p>
+<ol>
+<li><p>After the existing call to <code>surfaceCommands()</code>, add:</p>
+<pre><code class="lang-javascript">api.commands.chartPopupMenu.surfaceCommands(viewOnMap);
+</code></pre></li>
+<li><p>Reload i2 Notebook. The same command, with the same enablement rules, is now present in the chart&#39;s pop-up menu.</p>
+</li>
+</ol>
+<h2 id="deploy-the-plug-in">Deploy the plug-in</h2>
+<p>To deploy our plug-in on the server, we need to add it to the server configuration, and then redeploy the server.</p>
+<blockquote><p><strong>Note:</strong> If you follow this procedure in a deployment that provides high availability, you must complete each step on every Liberty server in your environment before you move to the next step.</p>
+</blockquote>
+<ol>
+<li><p>On the server that hosts the i2 Analyze deployment, find the <code>toolkit/configuration</code> directory, and then navigate to the <code>fragments/opal-services</code> directory that it contains.</p>
+</li>
+<li><p>If the <code>opal-services</code> directory does not already contain a <code>plugins</code> subdirectory, create one.</p>
+</li>
+<li><p>Create a directory for our plug-in inside the <code>plugins</code> directory (for example, <code>plugins/plugin-basic</code>), and copy the <code>entrypoint.js</code> and <code>plugin.json</code> files into it.</p>
+</li>
+<li><p>Run the following toolkit commands to update the deployed i2 Analyze server:</p>
+<pre><code class="lang-cmd">setup -t stopLiberty
+setup -t deployLiberty
+setup -t startLiberty
+</code></pre></li>
+<li><p>Stop the development proxy, and use the browser to navigate to your real server address.
+You&#39;ll find that your plug-in was successfully deployed.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>By following the procedure in this tutorial, you&#39;ve created an i2 Notebook plug-in that, though basic, is fully integrated with the application. It displays actions in the user interface, it responds to changes in selection, and it sends data from chart records to an external application.</p>
+<p>Most real plug-ins go further than this one by adding a tool view that presents users with a custom interface for performing more complex tasks. You can see the fundamentals of how tool views work by following one of the examples that use popular UI frameworks to implement a tool view.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

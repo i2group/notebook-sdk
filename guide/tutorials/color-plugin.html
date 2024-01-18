@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating a plug-in that changes the colors of nodes </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating a plug-in that changes the colors of nodes ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-a-plug-in-that-changes-the-colors-of-nodes">Creating a plug-in that changes the colors of nodes</h1>
+
+<p>This tutorial takes you through writing a plug-in for the i2 Notebook web client that can change the color of nodes on a chart.</p>
+<p>You can find a full version of the source code for this tutorial in the <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/color-plugin"><code>samples/color-plugin</code></a> folder.</p>
+<h2 id="prerequisities">Prerequisities</h2>
+<p>This tutorial requires a running instance of i2 Analyze on which you have permission to use the i2 Notebook web client.</p>
+<p>To follow the tutorial, you must install at least version 12 of Node.js on your development machine.
+For downloads and more information about Node.js, visit the project website at <a href="https://nodejs.org">https://nodejs.org</a>.</p>
+<p>The tutorial also requires you to create GUIDs for a number of its elements.
+The project files use some sample fixed GUIDs (<code>00000000-0000-0000-0000-000000000001</code>, <code>00000000-0000-0000-0000-000000000002</code>, and so on), but you should always create real GUIDs for real projects.</p>
+<p><strong>Note:</strong> A suitable GUID generator is available online at <a href="https://www.guidgenerator.com">https://www.guidgenerator.com</a>.</p>
+<h2 id="create-a-basic-plug-in">Create a basic plug-in</h2>
+<p>To arrive at the starting point for this tutorial, follow the instructions in the <a href="basic-plugin.html">basic plug-in tutorial</a>, up to but not including the section named <em>Add a ribbon command to the plug-in</em>.</p>
+<p>In <code>entrypoint.js</code>, change the requested API version to <code>1.2</code>:</p>
+<pre><code class="lang-javascript">const api = await notebook.getEntryPointApi(&#39;00000000-0000-0000-0000-000000000001&#39;, &#39;1.2&#39;);
+</code></pre><p>Make sure that you have a working plug-in before you continue.</p>
+<h2 id="add-a-ribbon-command">Add a ribbon command</h2>
+<p>Starting from the essentially empty plug-in, we&#39;ll add a new command to the ribbon that will eventually change the color of nodes that contain vehicle records to the colors of those vehicles.</p>
+<ol>
+<li><p>In <code>entrypoint.js</code>, just before the call to <code>initializationComplete()</code>, create a command and surface it on the Home tab:</p>
+<pre><code class="lang-javascript">const colorVehicleNodes = api.commands.createCommand({
+  id: &#39;00000000-0000-0000-0000-000000000002&#39;,
+  name: &#39;Color vehicle nodes&#39;,
+  type: &#39;application&#39;,
+  icon: {
+    type: &#39;inlineSvg&#39;,
+    svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;rect width=&quot;8&quot; height=&quot;8&quot; x=&quot;4&quot; y=&quot;4&quot;/&gt;&lt;/svg&gt;&#39;,
+  },
+  onExecute() {},
+});
+
+const homeTab = api.commands.applicationRibbon.homeTab;
+const searchInfoStoreCommand = homeTab.systemGroups.searchInfoStore;
+
+homeTab.after(searchInfoStoreCommand).surfaceCommands(colorVehicleNodes);
+</code></pre><p>So far, this command is almost identical to the one that you would have added, if you had continued with the basic plug-in tutorial.</p>
+</li>
+<li><p>Reload i2 Notebook and check that the command is visible in the application ribbon.</p>
+</li>
+</ol>
+<h2 id="set-node-colors">Set node colors</h2>
+<p>To set the color of a node, we&#39;ll use a <em>mutation</em> (see <a href="../mutation-commands.html">Supported mutation operations</a>) that requires the <code>NodeSpecifier</code> of the node, and the color to change the node to.</p>
+<p>In the sections that follow, we will:</p>
+<ol>
+<li>Find all records of the vehicle entity type on the chart.</li>
+<li>Retrieve the color of the vehicle from each vehicle record.</li>
+<li>Set each vehicle record&#39;s node element to the color of the vehicle.</li>
+</ol>
+<h3 id="find-all-vehicle-records-on-the-chart">Find all vehicle records on the chart</h3>
+<p>Elements on the chart surface are defined by and contain records that store data (see <a href="../data-access.html">Record data</a>). We can gain access to the chart and all the entity records via the argument of type <code>app.IApplicationContents</code> passed to the <code>onExecute()</code> event handler.</p>
+<p>To determine whether a record has a particular type, we need to specify which type we&#39;re looking for! We&#39;ll search the item types in the chart&#39;s <code>schema</code> object (see <a href="../data-access.html">Schema data</a>) for the one that corresponds to vehicle records.</p>
+<ol>
+<li><p>Specify the type identifier of the vehicle item type in the i2 Analyze schema.</p>
+</li>
+<li><p>Access the chart schema through the <code>onExecute()</code> application contents parameter, and get the chart item type that corresponds to that type identifier.</p>
+</li>
+<li><p>Access all of the chart <code>entityRecords</code> through the <code>onExecute()</code> application contents parameter.</p>
+</li>
+<li><p>Find the records with the vehicle item type.</p>
+</li>
+<li><p>If there are no vehicle records, just return.</p>
+<pre><code class="lang-javascript">const vehicleAnalyzeTypeId = &#39;ET3&#39;;
+...
+onExecute(applicationContents) {
+   const vehicleItemType = applicationContents.chart.schema.getItemType(vehicleAnalyzeTypeId);
+
+   const allEntityRecords = applicationContents.chart.entityRecords;
+
+   const vehicleRecords = allEntityRecords.filter(
+     (record) =&gt; record.itemType === vehicleItemType
+   );
+},
+...
+</code></pre></li>
+</ol>
+<p>At this point, we now have all the vehicle type entity records, and we&#39;re ready to retrieve the color property for each record.</p>
+<h3 id="retrieve-a-color-from-each-vehicle-record">Retrieve a color from each vehicle record</h3>
+<p>We will now find the color for each vehicle. Instead of accessing the item types in the <code>schema</code>, we&#39;ll need to access the property types in the vehicle item type.</p>
+<ol>
+<li><p>Specify the type identifier of the color property type of the vehicle item type.</p>
+</li>
+<li><p>Use the <code>vehicleItemType</code> object to get the property type that corresponds to that type identifier.</p>
+</li>
+<li><p>Gain access to mutations by calling <code>api.runTrackedMutations()</code> and setting a handler function.</p>
+</li>
+<li><p>Inside the mutation handler, loop over every vehicle entity record.</p>
+</li>
+<li><p>Use the color property type to retrieve the color of the vehicle that the record represents.</p>
+<pre><code class="lang-javascript">const vehicleColorAnalyzeTypeId = &#39;VEH9&#39;;
+...
+const colorPropertyType = vehicleItemType.getPropertyType(vehicleColorAnalyzeTypeId);
+
+api.runTrackedMutations((_, mutations) =&gt; {
+  for (const vehicleRecord of vehicleRecords) {
+    const vehicleColor = vehicleRecord.getProperty(colorPropertyType);
+    ...
+</code></pre></li>
+</ol>
+<h3 id="set-the-records-element-to-the-color-of-the-vehicle">Set the record&#39;s element to the color of the vehicle</h3>
+<p>Finally, for each vehicle record we found, we&#39;ll use a mutation to set the color of the node element that contains it to the color of the vehicle.</p>
+<ol>
+<li><p>Retrieve the record&#39;s containing element using the <code>element</code> property.</p>
+</li>
+<li><p>Use the <code>mutations</code> parameter to call the <code>editNode()</code> method, and then the <code>setColor()</code> method.</p>
+</li>
+<li><p>Return an <code>ITrackedMutationCommit</code> object from the <code>runTrackedMutations()</code> method call.</p>
+<pre><code class="lang-javascript">...
+api.runTrackedMutations((_, mutations) =&gt; {
+  for (const vehicleRecord of vehicleRecords) {
+    const vehicleColor = vehicleRecord.getProperty(colorPropertyType);
+
+    const vehicleElement = vehicleRecord.element;
+    mutations.editNode(vehicleElement.id).setColor(vehicleColor?.toString());
+  }
+
+  return {
+    type: &#39;commit&#39;,
+    actionDisplayName: &#39;Set vehicle node colors&#39;,
+  };
+});
+...
+</code></pre></li>
+</ol>
+<blockquote><p><strong>Note:</strong> This implementation assumes that the vehicle color value in the record property is in a format that the <code>setColor()</code> method supports.</p>
+</blockquote>
+<p>Now, if a chart contains one or more nodes with a vehicle record, clicking the ribbon button changes the color of all those nodes to their vehicle color.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>
