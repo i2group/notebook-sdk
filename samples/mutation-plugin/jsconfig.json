@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "target": "es2018",
+    "types": [
+      "@i2analyze/notebook-sdk"
+    ],
+    "moduleResolution": "node",
+    "strict": true,
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules"
+  ]
+}
