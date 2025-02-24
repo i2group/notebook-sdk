@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>commands.ICommandKeyboardHelp.keys property </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="commands.ICommandKeyboardHelp.keys property ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="notebook-sdk.html">@i2analyze/notebook-sdk</a> &gt; <a href="notebook-sdk.commands.html">commands</a> &gt; <a href="notebook-sdk.commands.icommandkeyboardhelp.html">ICommandKeyboardHelp</a> &gt; <a href="notebook-sdk.commands.icommandkeyboardhelp.keys.html">keys</a></p>
+<h2 id="commandsicommandkeyboardhelpkeys-property">commands.ICommandKeyboardHelp.keys property</h2>
+<p>Gets the shortcut keys of the command in the keyboard help.</p>
+<p><b>Signature:</b></p>
+<pre><code class="lang-typescript">readonly keys: string[];
+</code></pre><p><b>Returns:</b>
+string[]</p>
+<p><b>Introduced:</b>
+version 1.0</p>
+<h2 id="remarks">Remarks</h2>
+<p>The value of this property is an array of key combinations, to support multiple combinations for a single command.</p>
+<p>Each key combination contains one or more machine-readable key names, separated by &#39;<code>+</code><!-- -->&#39; to mean &quot;at the same time&quot;, or a space to mean &quot;in sequence&quot;. For example, &#39;<code>a</code><!-- -->&#39;, &#39;<code>shift+a</code><!-- -->&#39;, and &#39;<code>a b c</code><!-- -->&#39; are all valid key combinations.</p>
+<p>The supported modifier keys are &#39;<code>shift</code><!-- -->&#39; (as above), &#39;<code>alt</code><!-- -->&#39;, and &#39;<code>mod</code><!-- -->&#39; (which maps to &#39;<code>ctrl</code><!-- -->&#39; in Windows and &#39;<code>meta</code><!-- -->&#39;/&#39;<code>cmd</code><!-- -->&#39; in Mac OS).</p>
+<p>Some keys are referred to by name instead of the symbol on their keycaps; the full list is: &#39;<code>backspace</code><!-- -->&#39;, &#39;<code>tab</code><!-- -->&#39;, &#39;<code>enter</code><!-- -->&#39;, &#39;<code>return</code><!-- -->&#39;, &#39;<code>capslock</code><!-- -->&#39;, &#39;<code>escape</code><!-- -->&#39;, &#39;<code>esc</code><!-- -->&#39;, &#39;<code>space</code><!-- -->&#39;, &#39;<code>pageup</code><!-- -->&#39;, &#39;<code>pagedown</code><!-- -->&#39;, &#39;<code>end</code><!-- -->&#39;, &#39;<code>home</code><!-- -->&#39;, &#39;<code>left</code><!-- -->&#39;, &#39;<code>up</code><!-- -->&#39;, &#39;<code>right</code><!-- -->&#39;, &#39;<code>down</code><!-- -->&#39;, &#39;<code>ins</code><!-- -->&#39;, &#39;<code>del</code><!-- -->&#39;, &#39;<code>plus</code><!-- -->&#39;.</p>
+<p>All other keys, including special characters like <code>/</code><!-- -->, <code>$</code><!-- -->, <code>*</code><!-- -->, and <code>=</code><!-- -->, are referred to by their keycap symbols. In all cases, key combinations are expressed in lowercase letters. For example, it is always <code>shift+e</code> and never <code>E</code> or <code>shift+E</code><!-- -->.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
