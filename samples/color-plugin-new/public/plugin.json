@@ -1,0 +1,11 @@
+{
+  "$schema": "https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json",
+  "name": "color-plugin",
+  "pluginId": "73623dbf-294d-4035-973b-24dc3badaad7",
+  "pluginVersion": "1.0.0",
+  "entryPointUrl": "./entrypoint.js",
+  "entryPointCsp": {
+    "script-src": "'unsafe-eval'",
+    "connect-src": "*"
+  }
+}
