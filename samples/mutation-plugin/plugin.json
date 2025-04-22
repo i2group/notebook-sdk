@@ -1,0 +1,7 @@
+{
+  "$schema": "https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json",
+  "name": "My plug-in",
+  "pluginId": "79a7dafb-75eb-4fa2-ae04-660f17df83a6",
+  "pluginVersion": "1.0.0",
+  "entryPointUrl": "./entrypoint.js"
+}
