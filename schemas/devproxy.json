@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://i2group.github.io/notebook-sdk/schemas/devproxy.json",
+  "type": "object",
+  "title": "JSON schema for the i2 Notebook SDK proxy configuration file.",
+  "default": {},
+  "examples": [
+    {
+      "port": 3000,
+      "server": "http://localhost:9082/opal",
+      "plugins": [
+        "http://localhost:5002/opal/plugins/plugin2",
+        "http://localhost:5003/opal/plugins/plugin3",
+        "http://localhost:5004/opal/plugins/plugin4"
+      ]
+    }
+  ],
+  "required": ["port", "server", "plugins"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "port": {
+      "$id": "#/properties/port",
+      "type": "integer",
+      "description": "The port that the development proxy should listen on.",
+      "default": 3000,
+      "examples": [3000]
+    },
+    "server": {
+      "$id": "#/properties/server",
+      "type": "string",
+      "description": "The server that the development proxy should proxy to.",
+      "examples": ["http://localhost:9082/opal"]
+    },
+    "skipHttpsCertificateVerification": {
+      "type": "boolean",
+      "title": "Whether to skip verification of HTTPS certificates; this is necessary when proxying to HTTPS servers."
+    },
+    "plugins": {
+      "$id": "#/properties/plugins",
+      "type": "array",
+      "description": "URLs for plug-ins in development.",
+      "default": [],
+      "examples": [
+        ["http://localhost:5002/opal/plugins/plugin2", "http://localhost:5003/opal/plugins/plugin3"]
+      ],
+      "additionalItems": false,
+      "items": {
+        "$id": "#/properties/plugins/items",
+        "anyOf": [
+          {
+            "$id": "#/properties/plugins/items/anyOf/0",
+            "type": "string",
+            "title": "A URL pointing to the root directory of a plug-in.",
+            "examples": [
+              "http://localhost:5002/opal/plugins/plugin2",
+              "http://localhost:5003/opal/plugins/plugin3"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": false
+}
