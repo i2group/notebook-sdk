@@ -1,0 +1,64 @@
+.record-header {
+  /* Override the default browser styling of h1s */
+  font-size: 20px;
+  margin: 0;
+}
+
+.record-properties {
+  padding: 8px;
+  font-size: 16px;
+}
+
+.property {
+  padding: 4px 0;
+}
+
+.property-label {
+  font-weight: bold;
+}
+
+.property-value {
+  padding: 4px 0 0;
+}
+
+.record-image {
+  width: 80px;
+  height: 80px;
+  object-fit: scale-down;
+  object-position: center top;
+}
+
+.record-label {
+  padding: 0 8px;
+}
+
+.record-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px;
+}
+
+.navigation-button {
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+
+  /* Stop the default browser styling */
+  margin: 0;
+  padding: 0;
+}
+
+.navigation-buttons {
+  display: flex;
+}
+
+.record-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
