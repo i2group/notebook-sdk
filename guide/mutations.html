@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Changing data from a plug-in </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Changing data from a plug-in ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="changing-data-from-a-plug-in">Changing data from a plug-in</h1>
+
+<p>The i2 Notebook Web API provides the ability to write data to the chart, either by adding new records or by editing or deleting existing records. The API also allows you to change which records on the chart are selected, and to modify the view state of the chart.</p>
+<p>All changes to the chart take place asynchronously, and you must perform them using transactions to ensure that they do not conflict with changes made by other plug-ins or users.</p>
+<p>In the i2 Notebook Web API, you use <em>mutations</em> for this purpose. Mutations are transactions that run as a single atomic action, and contain one or more operations that make changes to chart data or application state.</p>
+<p>When asked to start a mutation transaction, the application calls a <em>mutation handler</em> that you provide, which receives the following parameters:</p>
+<ul>
+<li><p>A parameter of type <a href="../api/notebook-sdk.app.iapplicationcontents.html"><code>IApplicationContents</code></a>, which provides read access to the visual and record data for the chart, as well as to its schema.</p>
+</li>
+<li><p>A parameter that implements one of the <code>...Mutations</code> interfaces, which provides access to mutation operations that allow changes to record and application state.</p>
+</li>
+</ul>
+<h2 id="commit-and-rollback">Commit and rollback</h2>
+<p>Just like database transactions, when your mutation handler finishes, it must indicate whether the mutation operations that it created should be &quot;committed&quot; and applied to the chart and application, or &quot;rolled back&quot; and not applied.</p>
+<p>Committing a mutation causes operations in the handler to be applied to the chart. Some operations, such as selection and view changes, are applied immediately. Other operations, such as writing record data, are sent to the server before control returns to the application.</p>
+<h3 id="mutation-reports">Mutation reports</h3>
+<p>When you commit or roll back a mutation, you can opt to provide information that is displayed to the user as a notification pop-up. The <a href="../api/notebook-sdk.app.isuccessreport.html"><code>ISuccessReport</code></a> and <a href="../api/notebook-sdk.app.idetailedreport.html"><code>IDetailedReport</code></a> define objects that you can return from mutation handlers.</p>
+<p><strong>Note:</strong> The fate of the transaction (commit or rollback) and the report that the user sees (success, failure, or nothing) are independent from each other. Reporting an error to the user is <em>often</em> associated with rolling back the mutation transaction, but you <em>can</em> combine a transaction commit with an error report, or a rollback with a success report.</p>
+<p>i2 Notebook adheres to two standard design behaviors - demonstrated most obviously in the built-in Expand functionality - that provide a helpful and unobtrusive user experience when you follow them in your own plug-ins:</p>
+<ol>
+<li><p>It&#39;s not always necessary to provide an explicit success report to the user. For a command that adds data to the chart, the success of the operation is often obvious from the fact that data has been added to the chart. Only provide an explicit &quot;success&quot; report if there is something else of value to report to the user.</p>
+</li>
+<li><p>If a command is supposed to add data to the chart but after starting the mutation you discover that there is no (new) data to add, then roll back the transaction and provide an explicit report to the user to indicate that there was nothing to add.</p>
+<p>(In these circumstances, reporting nothing to the user would leave them uncertain whether the command even ran, harming their confidence in the application and your plug-in.)</p>
+<p>Deciding whether &quot;nothing was added&quot; is a &quot;success&quot; or a &quot;failure&quot; will depend on factors such as whether the lack of new data is a normal situation or caused by an error.</p>
+</li>
+</ol>
+<h2 id="tracked-and-untracked-mutations">Tracked and untracked mutations</h2>
+<p>i2 Notebook supports two different types of mutation:</p>
+<ul>
+<li><p><em>Tracked mutations</em>, which users can undo, and which you start by calling <a href="../api/notebook-sdk.app.iapplication.runtrackedmutations.html"><code>IApplication.runTrackedMutations()</code></a>.</p>
+<p>Your <em>tracked</em> mutation handler receives an <a href="../api/notebook-sdk.app.itrackedmutations.html"><code>ITrackedMutations</code></a> object, which provides a full set of chart mutation operations.</p>
+<p>A committed, tracked mutation collects all of its operations into a single entry in the application undo stack. A user can undo all of the changes from a tracked mutation with a single undo action.</p>
+</li>
+<li><p><em>Untracked mutations</em>, which users cannot undo, and which you start by calling <a href="../api/notebook-sdk.app.iapplication.rununtrackedmutations.html"><code>IApplication.runUntrackedMutations()</code></a>.</p>
+<p>Your <em>untracked</em> mutation handler receives an <a href="../api/notebook-sdk.app.iuntrackedmutations.html"><code>IUntrackedMutations</code></a> object, which provides a more restricted set of chart mutation operations. You can use an untracked mutation to change chart selection, chart view position and zoom level, and some other visual aspects of entities and links on the chart.</p>
+<p>The operations in an untracked mutation take place without creating an entry in the application undo stack.</p>
+</li>
+</ul>
+<p>If your command <em>only</em> affects selection or the view of the chart, then consider implementing it with untracked mutations. For all other commands, use tracked mutations.</p>
+<h2 id="cancelation-and-status-messages">Cancelation and status messages</h2>
+<p>If you implement a mutation handler as an asynchronous function, the handler can be canceled through the <a href="../api/notebook-sdk.app.icancelation.html"><code>ICancelation</code></a> object that it receives. Triggering the cancelation automatically rolls back the mutation.</p>
+<p>While a mutation handler is running, the application can show status messages that your handler provides by using the <a href="../api/notebook-sdk.app.istatus.html"><code>status</code></a> property of the <code>ITrackedMutations</code> or <code>IUntrackedMutations</code> interface. For example:</p>
+<pre><code class="lang-typescript">// Use an asynchronous mutation handler so that we can wait for the external data.
+// During the fetch, the application shows a spinner, a message, and a cancel button.
+getToolViewApi().runTrackedMutations(async (application, mutations, cancelation) =&gt; {
+
+  do {
+    // Fetch some external data, passing in the cancelation signal so that the fetch
+    // is aborted if the signal is. After each fetch, the external resource returns
+    // an object that indicates whether there&#39;s more data to fetch.
+    const response = await fetch(&#39;http://some-external-service.com&#39;, { signal: cancelation.signal });
+    const responseJSON = response.json();
+
+    // Update the application progress message.
+    mutations.status.setMessage(&#39;Fetching data&#39;);
+
+    // We&#39;ve got the data, so we can create some mutation commands with it.
+    mutations.addEntityRecord(...);
+
+    // Only carry on with the loop if the signal is not aborted.
+  } while (responseJSON.moreDataToFetch &amp;&amp; !cancelation.signal.aborted);
+
+  // If the signal is aborted, roll back mutations and show a notification.
+  if (cancelation.signal.aborted) {
+    return {
+      type: &#39;rollback&#39;,
+      report: {
+        type: &#39;warning&#39;,
+        title: &#39;Aborted&#39;,
+        details: &#39;Data fetch aborted&#39;
+      }
+    }
+  }
+
+  return {
+    type: &#39;commit&#39;,
+    actionDisplayName: &#39;Fetch data&#39;
+  }
+});
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
