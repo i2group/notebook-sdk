@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "module": "esnext",
+    "target": "es2020",
+    "lib": ["esnext", "dom", "dom.iterable"],
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
+    "baseUrl": "./",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "paths": {
+      "assets/*": ["src/assets/*"],
+    }
+  },
+  "include": ["./src"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "plugin",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "serve -l 5001"
+  },
+  "dependencies": {
+    "@i2analyze/notebook-sdk": "^1.4"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

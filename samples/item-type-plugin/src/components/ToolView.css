@@ -1,0 +1,15 @@
+.tool-view-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0 10px;
+}
+
+.tool-view-container textarea {
+  flex: 1;
+}
+
+.tool-view-container button {
+  margin: 10px;
+  align-self: flex-end;
+}
