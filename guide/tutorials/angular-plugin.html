@@ -1,0 +1,1239 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating an Angular plug-in </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating an Angular plug-in ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-an-angular-plug-in">Creating an Angular plug-in</h1>
+
+<p>This is a <em>long</em> tutorial that will take a couple of hours to work through.
+It&#39;s designed to function more like a complete hands-on workshop than a simple &#39;Hello World&#39; example, and takes you from nothing to creating a working
+(but simplified) replacement for the Record Inspector, using
+Angular.</p>
+<p>The tutorial covers the following concepts:</p>
+<ul>
+<li>Configuring
+Angular
+correctly</li>
+<li>Starting a plug-in project</li>
+<li>Running the i2 Notebook plug-in development proxy</li>
+<li>Creating and surfacing commands in the application ribbon and the pop-up menu</li>
+<li>Subscribing to change and selection events, and using them to control the state of commands</li>
+<li>Creating a tool view</li>
+<li>Accessing chart data</li>
+<li>Accessing user data, such as theme choice and locale</li>
+<li>Formatting, localization, and right-to-left language support</li>
+<li>Common mistakes when writing plug-ins, with solutions for fixing them</li>
+</ul>
+<p>And it does so as you build the example through these stages:</p>
+<ol>
+<li>Create the simplest possible plug-in, without a custom user interface.
+We&#39;ll get it working in a development environment, and then add a ribbon command that accesses chart data and sends some of it to an external website for viewing.</li>
+<li>Create a custom tool view, and learn about configuring
+Angular
+paths and working with a Content Security Policy.</li>
+<li>Do some basic styling and theming, and look at integrating the i2 Notebook web client&#39;s change notifications with
+Angular&#39;s
+change detection system.</li>
+<li>Access property data, learn about the facilities that the API provides to assist with consistent formatting, and display images and links to 360 views.</li>
+<li>(Briefly) cover issues with right-to-left and bidirectional text.</li>
+<li>Add record-navigation support to the tool view, and learn about restrictions on when you can access i2 Notebook data and best practices for working within those constraints.</li>
+<li>Learn about persisting tool view state, so that the user interface doesn&#39;t reset itself when being docked or floated.</li>
+<li>Remove the built-in Record Inspector and replace it with our own.</li>
+<li>Deploy our completed plug-in onto an i2 Analyze server.</li>
+</ol>
+<p>You can find a full version of the source code for this tutorial in the <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/angular-plugin"><code>samples/angular-plugin</code></a> folder.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>This tutorial requires a running instance of i2 Analyze on which you have permission to use the i2 Notebook web client.</p>
+<p>To follow the tutorial, you must install at least version 12 of Node.js on your development machine.
+For downloads and more information about Node.js, visit the project website at <a href="https://nodejs.org">https://nodejs.org</a>.</p>
+<p>You&#39;ll also need to install the Angular CLI, which you can do by following the instructions at <a href="https://angular.io/cli">https://angular.io/cli</a>.</p>
+<p>The tutorial also requires you to create GUIDs for a number of its elements.
+The project files use some sample fixed GUIDs (<code>00000000-0000-0000-0000-000000000001</code>, <code>00000000-0000-0000-0000-000000000002</code>, and so on), but you should always create real GUIDs for real projects.</p>
+<p><strong>Note:</strong> A suitable GUID generator is available online at <a href="https://www.guidgenerator.com">https://www.guidgenerator.com</a>.</p>
+<h2 id="create-a-basic-ui-free-plug-in">Create a basic UI-free plug-in</h2>
+<p>A basic i2 Notebook plug-in has the same requirements as a more complex one: in the plug-in directory, you must create the manifest and the entry point that enable the i2 Notebook web client to load and integrate your plug-in.</p>
+<p>The first part of this tutorial covers those requirements, and also explains how to set up both your development environment and a local Node.js server.</p>
+<ol>
+<li>Create an empty
+Angular
+application with <code>ng new</code>.
+For example: <code>ng new plugin-ng</code><ul>
+<li>The command will ask whether you want to use
+Angular
+routing.
+You don&#39;t need it for this tutorial, so choose No (the default).</li>
+<li>It will also ask which stylesheet technology you want to use.
+Any is fine, but raw CSS builds more quickly than the others, and for this tutorial we&#39;ll use <code>css</code>.</li>
+<li>Don&#39;t start the server yet.</li>
+</ul>
+</li>
+<li>Change directory to the new plug-in.
+For example:
+<code>cd plugin-ng</code></li>
+<li><p>Add the i2 Notebook SDK package:</p>
+<p><code>npm install @i2analyze/notebook-sdk</code></p>
+<p>The package contains a type library that enables inline assistance in your IDE.</p>
+</li>
+<li><p>Now you&#39;re in position to write the plug-in itself, starting with the manifest.
+Using an IDE such as VSCode, create a file named <code>plugin.json</code> in
+<code>src</code>,
+with the following contents:</p>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json&quot;
+}
+</code></pre><p>The schema enforces the structure and content of the file. For more information, see the <a href="../manifest.html">plug-in manifest</a> documentation.</p>
+</li>
+<li><p>Continue to populate the manifest with values for <code>&quot;name&quot;</code>, <code>&quot;pluginId&quot;</code>, and <code>&quot;pluginVersion&quot;</code>; and set <code>&quot;entryPointUrl&quot;</code> to <code>&quot;./entrypoint.js&quot;</code>. For example:</p>
+<pre><code class="lang-json">  &quot;name&quot;: &quot;My i2 Notebook plug-in&quot;,
+  &quot;pluginId&quot;: &quot;00000000-0000-0000-0000-000000000001&quot;,
+  &quot;pluginVersion&quot;: &quot;1.0.0&quot;,
+  &quot;entryPointUrl&quot;: &quot;./entrypoint.js&quot;
+</code></pre></li>
+<li><p>Next, we can create the entry point. Add a file named <code>entrypoint.js</code> to the
+<code>src</code>
+directory, and populate it:</p>
+<pre><code class="lang-javascript">// @ts-check
+/// &lt;reference types=&quot;@i2analyze/notebook-sdk&quot; /&gt;
+
+async function main() {
+  const api = await notebook.getEntryPointApi(&#39;00000000-0000-0000-0000-000000000001&#39;, &#39;1.1&#39;);
+  api.logger.info(&#39;plug-in running&#39;);
+  api.initializationComplete();
+}
+
+void main();
+</code></pre><p>Through this code, the plug-in retrieves the version of the entry point API that it wants to use, and uses it to declare that it has finished initializing.
+The GUID here must match the one in the plug-in manifest.</p>
+<p>If you enter the code by hand, you&#39;ll see how the type library provides auto-completion as you go.</p>
+</li>
+<li><p>Modify <code>angular.json</code> to configure the Angular builder to treat <code>plugin.json</code> and <code>entrypoint.js</code> as assets: to <code>&quot;projects&quot;&gt;&quot;plugin-ng&quot;&gt;&quot;architect&quot;&gt;&quot;build&quot;&gt;&quot;options&quot;&gt;&quot;assets&quot;</code>, add <code>&quot;src/entrypoint.js&quot;</code> and <code>&quot;src/plugin.json&quot;</code>.</p>
+</li>
+<li>Back on the command line, start the
+Angular
+project in development mode: <code>npm start</code>.</li>
+<li>Make a note of the connection address. For example, <code>http://localhost:4200</code>. We&#39;ll need that to connect to, and reference, our plug-in.</li>
+<li>Navigate to the project in a web browser.
+You should see
+an Angular
+demonstration page.
+Confirm that <code>plugin.json</code> and <code>entrypoint.js</code> are served correctly from their respective paths
+(for example, <a href="http://localhost:4200/plugin.json">http://localhost:4200/plugin.json</a> and <a href="http://localhost:4200/entrypoint.js">http://localhost:4200/entrypoint.js</a>).</li>
+</ol>
+<h2 id="test-the-plug-in-in-the-i2-notebook-web-client">Test the plug-in in the i2 Notebook web client</h2>
+<p>While we&#39;re developing and testing a plug-in, we won&#39;t deploy the plug-in directly to the i2 Analyze server.
+Instead, we&#39;ll use the i2 Notebook SDK plug-in development proxy to add our plug-in to an existing i2 Analyze deployment without needing to modify it.</p>
+<ol>
+<li><p>Anywhere on your workstation, create and populate a file named <code>devproxy.json</code>:</p>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/devproxy.json&quot;
+}
+</code></pre><p>This forms the basis of the configuration file for the development proxy.</p>
+</li>
+<li><p>Add a value for <code>&quot;server&quot;</code> that is the URL of an existing i2 Analyze deployment. For example, <code>&quot;http://localhost:9082/opal/&quot;</code>.</p>
+</li>
+<li><p>Add a value for <code>&quot;port&quot;</code> to specify the port that the development proxy should listen on. For example, <code>4000</code>.</p>
+</li>
+<li><p>Add a value for <code>&quot;plugins&quot;</code> that contains the root URL of your plug-in. For example, <code>[&quot;http://localhost:4200/&quot;]</code> for the server that we configured above.</p>
+</li>
+<li><p>On the command line, navigate to the folder that contains the configuration file, and run the i2 Notebook plug-in development proxy (no installation is required):</p>
+<p><code>npx @i2analyze/notebook-sdk-plugin-proxy --config devproxy.json</code></p>
+</li>
+<li><p>Open the proxy URL in a browser, log in to the i2 Notebook web client and open a new chart. For example, <code>http://localhost:4000/opal/</code>.</p>
+</li>
+<li><p>Open the browser&#39;s developer console and check for our plug-in&#39;s message being logged:</p>
+<p><img src="plugin-start-console-message.png" alt=""></p>
+<p>If you see this message, then the plug-in is working correctly.</p>
+</li>
+</ol>
+<h2 id="add-a-ribbon-command-to-the-plug-in">Add a ribbon command to the plug-in</h2>
+<p>So far, you have a plug-in that&#39;s being loaded into the i2 Notebook web client - but it doesn&#39;t do anything.
+Next, we&#39;ll make the plug-in add a command that opens geospatial locations in Google Maps to the application ribbon.</p>
+<ol>
+<li><p>In <code>entrypoint.js</code>, just before the call to <code>initializationComplete()</code>, create a command:</p>
+<pre><code class="lang-javascript">const viewOnMap = api.commands.createCommand({
+  id: &#39;00000000-0000-0000-0000-000000000002&#39;,
+  name: &#39;View on map&#39;,
+  icon: {
+    type: &#39;inlineSvg&#39;,
+    svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;rect width=&quot;8&quot; height=&quot;8&quot; x=&quot;4&quot; y=&quot;4&quot;/&gt;&lt;/svg&gt;&#39;,
+  },
+  type: &#39;records&#39;,
+  onExecute(payload) {},
+});
+</code></pre></li>
+<li><p>Straight afterward, surface the command on the ribbon&#39;s Home tab, just after the Information Store group:</p>
+<pre><code class="lang-javascript">api.commands.applicationRibbon.homeTab
+  .after(api.commands.applicationRibbon.homeTab.systemGroups.searchInfoStore)
+  .surfaceCommands(viewOnMap);
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client, and check that the action is visible in the application ribbon.</p>
+<p>Clicking the button won&#39;t do anything yet because we haven&#39;t implemented <code>onExecute()</code>, so let&#39;s do that now.</p>
+</li>
+<li><p>Create this helper function at the top level of the <code>entrypoint.js</code> file:</p>
+<pre><code class="lang-javascript">/**
+ * @param {import(&quot;@i2analyze/notebook-sdk&quot;).data.IReadOnlyCollection&lt;import(&quot;@i2analyze/notebook-sdk&quot;).records.IChartRecord&gt;} records
+ */
+function findGeospatialValue(records) {
+  for (const record of records) {
+    for (const propertyType of record.itemType.propertyTypes) {
+      if (propertyType.logicalType === &#39;geospatial&#39;) {
+        const property = record.getProperty(propertyType);
+        if (property !== undefined &amp;&amp; !record.isValueUnfetched(property)) {
+          return /** @type {import(&quot;@i2analyze/notebook-sdk&quot;).data.IGeoPoint} */ (property);
+        }
+      }
+    }
+  }
+  return undefined;
+}
+</code></pre><p>This function performs a simple scan of the records it receives, looking for a non-empty geospatial property that it returns if it finds one.</p>
+<blockquote><p><strong>Note:</strong> The <code>/** @type {import...} */</code> and <code>/** @param {import...} */</code> code helps the JavaScript type system to understand what we&#39;re working with, which enables auto-completion in the rest of the code. If we used TypeScript to create our <code>entrypoint.js</code> file, we&#39;d use <code>import type</code> statements instead.</p>
+</blockquote>
+</li>
+<li><p>We can now use the helper function in the implementation of <code>onExecute()</code> that we left empty in the call to <code>CreateCommand()</code>.
+We&#39;ll take the latitude and longitude to a new Google Maps window:</p>
+<pre><code class="lang-javascript">  onExecute(payload) {
+    const property = findGeospatialValue(payload.records);
+
+    if (!property) {
+      return;
+    }
+
+    window.open(
+      `https://www.google.com/maps/@${property.latitude},${property.longitude},18z`,
+      &quot;_blank&quot;
+    );
+  },
+</code></pre></li>
+<li><p>Reload the web client again, select an element with a geospatial property, and try the command.
+Google Maps should open at the relevant location.</p>
+</li>
+</ol>
+<h2 id="make-the-command-sensitive-to-selection">Make the command sensitive to selection</h2>
+<p>There&#39;s a problem with our command: the button is enabled even if the selection doesn&#39;t actually contain a geospatial property. That would be misleading for a user, but we can fix it by taking control of the <em>surfacing</em> of the command in the user interface.</p>
+<ol>
+<li><p>After the <code>onExecute()</code> parameter to <code>createCommand()</code>, add an <code>onSurface()</code> function definition:</p>
+<pre><code class="lang-javascript">onSurface(action, eventApi, signal) {
+  eventApi.addEventListener(
+    &quot;recordscontextchange&quot;,
+      (context) =&gt; {
+        action.setEnabled(!!findGeospatialValue(context.records));
+      },
+      { dispatchNow: true, signal }
+  );
+},
+</code></pre><p>There are a few things to notice here:</p>
+<ul>
+<li>i2 Notebook calls our <code>onSurface()</code> function with an <code>action</code> object that represents the user interface control to which the command is bound each time it is surfaced.
+A single command might be surfaced in several places, and you can use the <code>action</code> object to react differently in each of them.</li>
+<li>The function also receives an <code>eventApi</code> object through which it can listen to changes in the records to which the action is being applied; and a <code>signal</code> object that indicates when this particular surfacing of the command is being removed.</li>
+<li>In our implementation, we subscribe to the <code>recordscontextchange</code> event, which tells us when the current records change.
+When they <em>do</em> change, we set the enabled state of the action to a value based on whether there is a geospatial value in the current records.</li>
+<li>Event listeners are normally invoked when the event occurs.
+However, we don&#39;t want to wait for a <code>recordscontextchange</code> event before we run our <code>setEnabled()</code> code, so we specify <code>dispatchNow: true</code> to invoke the callback immediately, without waiting for the event.
+This in turn causes our action to be enabled or disabled correctly, right away.</li>
+<li>We forward the <code>signal</code> to the event listener so that it unsubscribes automatically from the <code>recordscontextchange</code> event when the action is unsurfaced.</li>
+</ul>
+</li>
+<li><p>Reload the i2 Notebook web client.
+The button in the application ribbon is now enabled only when a geospatial property exists in the selection.</p>
+</li>
+</ol>
+<h2 id="use-the-command-in-more-than-one-place">Use the command in more than one place</h2>
+<p>As well as adding it to the ribbon, we can add exactly the same command to the chart pop-up menu with a single line of code.</p>
+<ol>
+<li><p>After the existing call to <code>surfaceCommands()</code>, add:</p>
+<pre><code class="lang-javascript">api.commands.chartPopupMenu.surfaceCommands(viewOnMap);
+</code></pre></li>
+<li><p>Reload the web client.
+The same command, with the same enablement rules, is now present in the chart&#39;s pop-up menu.</p>
+</li>
+</ol>
+<h2 id="create-a-tool-view">Create a tool view</h2>
+<p>The first part of this tutorial didn&#39;t use any features from the
+Angular
+framework! That changes now, as we use
+Angular
+to create a custom user interface for our plug-in.</p>
+<ol>
+<li><p>On the command line, navigate to the project directory and run the following command to create an Angular component called &#39;toolView1&#39;:</p>
+<p><code>ng generate component toolView1</code></p>
+</li>
+<li><p>Navigate to the <code>src/app</code> folder inside the project directory, and replace the contents of the generated <code>app.component.html</code> file with:</p>
+<pre><code class="lang-html">&lt;div&gt;
+  &lt;app-tool-view1&gt;&lt;/app-tool-view1&gt;
+&lt;/div&gt;
+</code></pre></li>
+<li><p>In a web browser, load the root page (<code>/</code>) from your
+Angular
+development environment
+(<a href="http://localhost:4200/">http://localhost:4200/</a>).
+You should see the default message, &quot;tool-view1 works!&quot;.</p>
+<p>We&#39;ll now turn the
+Angular
+component into an i2 Notebook tool view.</p>
+</li>
+<li><p>In <code>src/entrypoint.js</code>, insert a line before the call to <code>initializationComplete()</code>:</p>
+<pre><code class="lang-javascript">const toolView = api.createToolView(&#39;My tool view&#39;, &#39;./&#39;);
+</code></pre><p>This line declares a tool view by specifying its display name (&#39;My tool view&#39;) and its location <em>relative to the entry point</em>, which is &#39;<code>./</code>&#39;.</p>
+</li>
+<li><p>Still in the entry point code, tell i2 Notebook to create a command that opens and closes the tool view:</p>
+<pre><code class="lang-javascript">const toggle = api.commands.createToolViewToggleCommand(
+  {
+    id: &#39;00000000-0000-0000-0000-000000000003&#39;,
+    name: &#39;My tool&#39;,
+    icon: {
+      type: &#39;inlineSvg&#39;,
+      svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;4&quot; /&gt;&lt;/svg&gt;&#39;,
+    },
+  },
+  toolView
+);
+</code></pre></li>
+<li><p>Finally, surface the command in the application ribbon&#39;s Home tab. This code places it after the <strong>View on map</strong> command that we developed above:</p>
+<pre><code class="lang-javascript">api.commands.applicationRibbon.homeTab.after(viewOnMap.id).surfaceCommands(toggle);
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client, and you&#39;ll see the new button in the ribbon.
+Click it to display the tool view in the user interface; click it a second time to hide it again.</p>
+<p>However, the tool view itself doesn&#39;t look right, because the <code>.js</code> and <code>.css</code> files aren&#39;t being loaded correctly.
+To see what&#39;s happening, open up the developer tools in your browser, and look at the network diagnostics.
+When you click to display the tool view, you&#39;ll see that the requests for files such as <code>main.js</code> and <code>styles.css</code> are failing.</p>
+<p>We&#39;ll fix those problems in the next section.</p>
+</li>
+</ol>
+<h2 id="configure-angular-to-serve-content-from-the-correct-place">Configure Angular to serve content from the correct place</h2>
+<p>New
+Angular
+applications are hard-wired to serve their content from the root (<code>/</code>)
+of the server they&#39;re running on.
+i2 Notebook plug-ins, on the other hand, are served from <code>&lt;context root&gt;/plugins/&lt;some directory&gt;</code> on the i2 Analyze server, and our plug-in development proxy is simulating that for us.</p>
+<p>When you display the
+Angular
+tool view, the <code>.html</code> file loads correctly, but the <code>.css</code> and <code>.js</code> files fail to load because the <code>.html</code> file refers to them relative to the root - for example, <code>/styles.css</code>.
+This would work if the plug-in were served from <code>/</code>, but as it won&#39;t be, we need to make
+Angular
+generate the paths differently.</p>
+<ol>
+<li><p>Edit <code>angular.json</code>. At the path <code>&quot;projects&quot; &gt; &quot;plugin-ng&quot; &gt; &quot;architect&quot; &gt; &quot;build&quot; &gt; &quot;options&quot;</code>, add a <code>&quot;baseHref&quot;</code> field and set its value to <code>&quot;.&quot;</code>.</p>
+<p>This setting tells
+Angular
+to use paths relative to <code>.</code> instead of <code>/</code>, which causes generated HTML files to refer to their <code>.css</code> and <code>.js</code> files in the same folder, which is exactly what we want for this example.</p>
+</li>
+<li><p>Restart the Angular development server. (This is always necessary after you edit <code>angular.json</code>.)</p>
+</li>
+<li><p>Reload the i2 Notebook web client and try the tool view again.
+The &#39;tool-view1 works!&#39; text should now be displayed in the tool view panel.
+However, if you&#39;re using a dark theme in the application, it might be hard to see the black text on a dark background.
+We&#39;ll fix that by adding some simple theming support, but before we can do so, we must fix another problem.</p>
+<p>Look in the browser console, and you&#39;ll see some warnings about the browser refusing to apply inline styles because of a violation of a Content Security Policy (CSP) directive.
+We must fix that before we&#39;ll be able to apply any styling successfully.</p>
+</li>
+</ol>
+<h2 id="configure-the-content-security-policy">Configure the Content Security Policy</h2>
+<p>i2 Notebook runs with a heavily locked-down Content Security Policy (CSP) to limit the attack surface.
+Angular,
+however, uses features (specifically, inline styling) that require a looser CSP.</p>
+<p>We can use the plug-in manifest to loosen the CSP for our tool view.</p>
+<ol>
+<li><p>Edit the <code>src/plugin.json</code> file and add a <code>&quot;toolViewCsp&quot;</code> section:</p>
+<pre><code class="lang-json">&quot;toolViewCsp&quot;: {
+  &quot;style-src&quot;: &quot;&#39;unsafe-inline&#39;&quot;
+}
+</code></pre></li>
+<li><p>Once again, reload the i2 Notebook web client and display the tool view.
+The browser console will now be free of styling CSP errors, so we can proceed with some styling.</p>
+<blockquote><p><strong>Note:</strong> If you open the developer tools at this point and look at the console, you will still see other CSP errors where
+Angular
+is trying to connect to <code>sockjs-node/info</code>. These violations are due to the
+Angular
+application developer environment, and you can safely ignore them.</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="create-a-service-that-provides-the-tool-view-api">Create a service that provides the tool view API</h2>
+<p>We&#39;ll need to access the i2 Notebook tool view API from multiple components in our
+Angular
+application.
+Also, because fetching the API is asynchronous, we&#39;ll want to prevent the
+Angular
+application from loading until it is ready and available to use.</p>
+<p>To address both of these requirements, we can make the tool view API available through an
+Angular
+service.</p>
+<ol>
+<li><p>Back on the command line, run the following command to create an Angular service:</p>
+<p><code>ng generate service toolViewApi</code></p>
+<p>The command places a skeleton file named <code>tool-view-api.service.ts</code> in the <code>src/app</code> directory.</p>
+</li>
+<li><p>Edit <code>tool-view-api.service.ts</code>, replacing the file contents with the following:</p>
+<pre><code class="lang-typescript">import { Injectable } from &#39;@angular/core&#39;;
+import { getToolViewApi, toolview } from &#39;@i2analyze/notebook-sdk&#39;;
+
+@Injectable({
+  providedIn: &#39;root&#39;,
+})
+export class ToolViewApiService {
+  constructor() {}
+
+  private api!: toolview.IToolViewApi;
+
+  async init() {
+    this.api = await getToolViewApi();
+  }
+
+  public getApi() {
+    return this.api;
+  }
+}
+</code></pre><p>This service has an <code>init()</code> method that we&#39;ll call to set up the API, and a <code>getApi()</code> method that we can call from our components to acquire and use the API.</p>
+</li>
+<li><p>In <code>tool-view-api.service.ts</code>, after the <code>ToolViewApiService</code> class declaration, create an exported function named <code>initializeToolViewApiServiceFactory()</code>:</p>
+<pre><code class="lang-typescript">export function initializeToolViewApiServiceFactory(service: ToolViewApiService) {
+  return () =&gt; service.init();
+}
+</code></pre><p>We&#39;re going to use this function in the next step to wait until the service is initialized before we declare that our
+Angular
+application is ready to load.</p>
+</li>
+<li><p>In <code>src/app/app.module.ts</code>:</p>
+<ol>
+<li><p>Add the <code>APP_INITIALIZER</code> import from <code>@angular/core</code> right at the top of the file:</p>
+<pre><code class="lang-typescript">import { APP_INITIALIZER, NgModule } from &#39;@angular/core&#39;;
+</code></pre></li>
+<li><p>Add imports for <code>initializeToolViewApiServiceFactory</code> and <code>ToolViewApiService</code> from <code>./tool-view-api.service</code>:</p>
+<pre><code class="lang-typescript">import {
+  ToolViewApiService,
+  initializeToolViewApiServiceFactory,
+} from &#39;./tool-view-api.service&#39;;
+</code></pre></li>
+<li><p>In the <code>@NgModule</code> decorator, after <code>imports</code>, add a <code>providers</code> section:</p>
+<pre><code class="lang-typescript">@NgModule({
+  declarations: [AppComponent, ToolView1Component],
+  imports: [BrowserModule],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeToolViewApiServiceFactory,
+      deps: [ToolViewApiService],
+      multi: true,
+    },
+  ],
+  bootstrap: [AppComponent],
+})
+</code></pre><p>This section creates a provider for an initialization function for our Angular application. The application only loads the <code>AppComponent</code> when initialization is complete and we have fetched the tool view API.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="configure-the-tool-view-for-i2-notebook-web-client-themes">Configure the tool view for i2 Notebook web client themes</h2>
+<p>The i2 Notebook web client supports a number of visual themes.
+If you&#39;re using a light theme, the &quot;tool-view1 works!&quot; text should have been clear in your tool view.
+But if you&#39;re using a dark theme, the text was probably harder to read.
+We haven&#39;t yet configured the tool view to respect and respond to themes.</p>
+<blockquote><p><strong>Note:</strong> To change the theme in the i2 Notebook web client, go to the user menu and select <strong>Settings</strong> to open the Settings dialog.</p>
+</blockquote>
+<p>To style our tool view correctly, we need to access the theme information.</p>
+<ol>
+<li><p>At the top of the <code>src/app/app.component.ts</code> file, import <code>ToolViewApiService</code> from <code>./tool-view-api.service</code>:</p>
+<pre><code class="lang-typescript">import { ToolViewApiService } from &#39;./tool-view-api.service&#39;;
+</code></pre></li>
+<li><p>Use dependency injection to inject <code>ToolViewApiService</code> into the <code>AppComponent</code> class, and populate it:</p>
+<pre><code class="lang-typescript">export class AppComponent {
+  constructor(service: ToolViewApiService) {
+    const toolViewApi = service.getApi();
+  }
+}
+</code></pre><p>Theme information is now available from <code>toolViewApi.theme.appearance</code>, which tells us if the current theme is <code>light</code> or <code>dark</code>.</p>
+</li>
+<li><p>With the theme information, create a variable that we can use to set the component styling:</p>
+<pre><code class="lang-typescript">export class AppComponent {
+  public readonly isDarkTheme: boolean;
+
+  constructor(service: ToolViewApiService) {
+    const toolViewApi = service.getApi();
+    this.isDarkTheme = toolViewApi.theme.appearance === &#39;dark&#39;;
+  }
+}
+</code></pre></li>
+<li><p>We can use <code>isDarkTheme</code> to change how
+Angular
+generates the CSS, but first open <code>src/app/app.component.css</code> and populate it with the following:</p>
+<pre><code class="lang-css">.dark-theme {
+  color: white;
+}
+
+.light-theme {
+  color: black;
+}
+</code></pre><p>In other words, we want to set the font color to <code>white</code> in <code>dark</code> themes, and to <code>black</code> in <code>light</code> themes.</p>
+</li>
+<li><p>Open <code>app.component.html</code>, and replace the <code>class</code> attribute with the <code>[ngClass]</code> directive:</p>
+<pre><code class="lang-html">&lt;div [ngClass]=&quot;{ &#39;light-theme&#39;: !isDarkTheme, &#39;dark-theme&#39;: isDarkTheme }&quot;&gt;
+  &lt;app-tool-view1&gt;&lt;/app-tool-view1&gt;
+&lt;/div&gt;
+</code></pre><p>Now, our tool view will apply the <code>light-theme</code> or <code>dark-theme</code> class based on theme information from the i2 Notebook web client.</p>
+</li>
+<li><p>Reload the i2 Notebook web client and display the tool view again.
+Change the theme by swopping between light and dark, and notice how the tool view automatically adjusts its text coloring to match.</p>
+</li>
+</ol>
+<h2 id="access-record-data">Access record data</h2>
+<p>We&#39;ve done a lot of work to make our tool view integrate nicely with the i2 Notebook web client.
+Now it needs to do something useful.
+Let&#39;s enable it to access the data in selected records, which starts by working out what the current selection <em>is</em>:</p>
+<ol>
+<li><p>At the top of the <code>src/app/tool-view1/tool-view1.component.ts</code> file, import <code>ToolViewApiService</code> from <code>../tool-view-api.service</code>:</p>
+<pre><code class="lang-typescript">import { ToolViewApiService } from &#39;../tool-view-api.service&#39;;
+</code></pre></li>
+<li><p>Also import the <code>toolview</code> namespace from <code>@i2analyze/notebook-sdk</code>:</p>
+<pre><code class="lang-typescript">import type { toolview } from &#39;@i2analyze/notebook-sdk&#39;;
+</code></pre></li>
+<li><p>Use dependency injection to inject <code>ToolViewApiService</code> into the <code>ToolView1Component</code> class, and populate it:</p>
+<pre><code class="lang-typescript">export class ToolView1Component implements OnInit {
+  private readonly toolViewApi: toolview.IToolViewApi;
+
+  constructor(service: ToolViewApiService) {
+    this.toolViewApi = service.getApi();
+  }
+
+  ngOnInit(): void {}
+}
+</code></pre></li>
+<li><p>In the <code>ngOnInit()</code> function, subscribe to the <code>chartselectionchange</code> event:</p>
+<pre><code class="lang-typescript">ngOnInit(): void {
+  this.toolViewApi.addEventListener(
+    &#39;chartselectionchange&#39;,
+    this.handleChartSelectionChange
+  );
+}
+</code></pre></li>
+<li><p>And then add a method to <code>ToolView1Component</code> to handle it:</p>
+<pre><code class="lang-typescript">private handleChartSelectionChange = () =&gt; {
+  this.toolViewApi.logger.info(&#39;Chart selection has changed&#39;);
+}
+</code></pre><p>The method uses an <em>arrow function expression</em>, which binds the function so that the value of <code>this</code> is always <code>ToolView1Component</code>.</p>
+</li>
+<li><p>Reload the i2 Notebook web client and open the browser console.
+As you change the selection on the chart, you should see messages from your tool view: &quot;<strong>My i2 Notebook plug-in</strong> Chart selection has changed&quot;.</p>
+</li>
+<li><p>The <code>chartselectionchange</code> event provides the current selection in its payload.
+Change the implementation of <code>handleChartSelectionChange()</code> to take the label from the first record in the selection and display it in the tool view:</p>
+<ol>
+<li><p>Still in <code>tool-view1.component.ts</code>, add the <code>chart</code> and <code>records</code> namespaces from the <code>@i2analyze/notebook-sdk</code> package to the existing <code>import</code> statement:</p>
+<pre><code class="lang-typescript">import type { toolview, chart, records } from &#39;@i2analyze/notebook-sdk&#39;;
+</code></pre></li>
+<li><p>Create a <code>recordLabel</code> property in the <code>ToolView1Component</code> class:</p>
+<pre><code class="lang-typescript">public recordLabel = &#39;&#39;;
+</code></pre></li>
+<li><p>Change <code>handleChartSelectionChange()</code> as follows, and add <code>setValuesForRecord()</code>:</p>
+<pre><code class="lang-typescript">private handleChartSelectionChange: chart.SelectionListener = (selection) =&gt; {
+  const record = selection.records.firstOrDefault(undefined);
+  this.setValuesForRecord(record);
+}
+
+private setValuesForRecord(record: records.IChartRecord | undefined) {
+  if (record) {
+    this.recordLabel = record.labelOrFallback;
+  } else {
+    this.recordLabel = &#39;No records selected.&#39;;
+  }
+};
+</code></pre><p>The <code>firstOrDefault</code> function returns the first record from the selection,
+falling back to the specified <code>undefined</code> if there isn&#39;t a first record.
+The <code>labelOrFallback</code> property reads the label of the record, falling back
+to a standard string if empty.</p>
+</li>
+</ol>
+</li>
+<li><p>Now we&#39;ll display the extracted record label.
+Replace the contents of <code>src/app/tool-view1/tool-view1.component.html</code> with:</p>
+<pre><code class="lang-html">&lt;div&gt;
+  &lt;h1 class=&quot;record-header&quot;&gt;{{ recordLabel }}&lt;/h1&gt;
+&lt;/div&gt;
+</code></pre><blockquote><p><strong>Note:</strong> This and later HTML code uses CSS classes to apply styling to the tool view. To add the classes to your project, replace the file that Angular generated at <code>src/app/tool-view1/tool-view1.component.css</code> with its equivalent from <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/angular-plugin/src/app/tool-view1">Github</a>.</p>
+</blockquote>
+</li>
+<li><p>Reload the i2 Notebook web client, open the tool view, and select something on the chart.
+The tool view does not display the label, because the selection change event occurred outside
+Angular&#39;s
+change detection.
+We need to alert
+Angular
+that the state of our component has changed. Within <code>tool-view1.component.ts</code>:</p>
+<ol>
+<li><p>Add <code>ChangeDetectorRef</code> to the import from <code>@angular/core</code>:</p>
+<pre><code class="lang-typescript">import { Component, OnInit, ChangeDetectorRef } from &#39;@angular/core&#39;;
+</code></pre></li>
+<li><p>Inject the class into our component via the constructor:</p>
+<pre><code class="lang-typescript">constructor(service: ToolViewApiService, private readonly changeDetectorRef: ChangeDetectorRef) {
+  this.toolViewApi = service.getApi();
+}
+</code></pre></li>
+<li><p>After setting the <code>recordLabel</code> in <code>setValuesForRecord()</code>, alert Angular to the changes:</p>
+<pre><code class="lang-typescript">this.changeDetectorRef.detectChanges();
+</code></pre></li>
+</ol>
+</li>
+<li><p>Try the tool view again.
+Click around on the chart, selecting different items.
+It does now display the label of the first record in the chart selection, but there&#39;s still a problem.</p>
+<p>Close the tool view, select an item on the chart, and then open the tool view again.
+Notice that <em>when the tool view opens</em>, it&#39;s not displaying the record label.
+After you <em>change</em> the selection, the tool view does display the label correctly, but it&#39;s not displaying correctly at startup.</p>
+<p>The problem is that we&#39;re only setting the <code>recordLabel</code> field after a <code>chartselectionchange</code> event is received.
+Adding the <code>dispatchNow</code> option to the <code>addEventListener</code> subscription arranges for the <code>chartselectionchange</code> handler to be called immediately.</p>
+</li>
+<li><p>In <code>tool-view1.component.ts</code>, inside the <code>ngOnInit()</code> method
+<code>addEventListener</code> call, add a <code>dispatchNow: true</code> option:</p>
+<pre><code class="lang-typescript">ngOnInit(): void {
+  this.toolViewApi.addEventListener(
+    &#39;chartselectionchange&#39;,
+    this.handleChartSelectionChange,
+    { dispatchNow: true }
+  );
+}
+</code></pre></li>
+<li><p>Reload the web client again, select an item, and open the tool view.
+This time, it immediately displays the label of the first selected record (or our &quot;No records selected.&quot; message) without waiting for a selection change.</p>
+</li>
+</ol>
+<h2 id="display-property-data">Display property data</h2>
+<p>We have the record label, but we can build up our tool view to display data from more record properties.</p>
+<ol>
+<li><p>In <code>tool-view1.component.ts</code>, add <code>data</code> to the import from <code>@i2analyze/notebook-sdk</code>:</p>
+<pre><code class="lang-typescript">import type { toolview, chart, records, data } from &#39;@i2analyze/notebook-sdk&#39;;
+</code></pre></li>
+<li><p>Declare an interface that represents how we&#39;ll display the properties that we&#39;re going to retrieve:</p>
+<pre><code class="lang-typescript">interface IProperty {
+  label: string;
+  value: string;
+}
+</code></pre></li>
+<li><p>Next, add a property to the <code>ToolView1Component</code> that will store the record property information:</p>
+<pre><code class="lang-typescript">public properties: IProperty[] = [];
+</code></pre></li>
+<li><p>And edit <code>setValuesForRecord()</code> to extract property as well as label information from the record:</p>
+<pre><code class="lang-typescript">private setValuesForRecord(record: records.IChartRecord | undefined) {
+  const formatter = this.toolViewApi.formatter;
+
+  if (record) {
+    this.recordLabel = record.labelOrFallback;
+
+    const properties: IProperty[] = [];
+    for (const propertyType of record.itemType.propertyTypes) {
+      const label = propertyType.displayName;
+      const value = record.getProperty(propertyType);
+
+      if (value !== undefined &amp;&amp; !record.isValueUnfetched(value)) {
+        const formattedValue = formatter.formatValue(value);
+
+        properties.push({
+          label,
+          value: formattedValue
+        });
+      }
+    }
+
+    this.properties = properties;
+  } else {
+    this.recordLabel = &#39;No records selected.&#39;;
+    this.properties = [];
+  }
+
+  this.changeDetectorRef.detectChanges();
+};
+</code></pre><p>The <code>record.getProperty()</code> method can return values of type <code>undefined</code>, <code>data.IValueNotFetched</code>, or <code>data.PropertyValue</code>:</p>
+<ul>
+<li><p>An <code>undefined</code> value indicates that the record has no value for the specified property type.</p>
+</li>
+<li><p>A not-fetched property value (<code>data.IValueNotFetched</code>) indicates that the record does have a value for the property, but we don&#39;t have that value in the client at the moment.</p>
+<p><strong>Note:</strong> You can <a href="#extension-ensure-fetched-properties">ensure that the property is fetched</a> by using the <code>chart.ensurePropertiesFetched()</code> method.</p>
+</li>
+<li><p>A property value (<code>data.PropertyValue</code>) can be an object representing any of the legal data types in the schema. It might be a string, or a number, or a more complicated object such as a date, time, date-time, decimal, or geospatial structure.</p>
+<p>Angular
+cannot directly render any of these structures, so we use the <code>formatter.formatValue()</code> method to produce standard i2 Notebook string representations of them.</p>
+</li>
+</ul>
+<p>When we have a record, we filter out the <code>undefined</code> and not-fetched properties before displaying the remainder in our tool view. When we have no record at all, we set the properties to be an empty array.</p>
+</li>
+<li><p>In <code>tool-view1.component.html</code>, add some elements to display the property data after the record label:</p>
+<pre><code class="lang-html">&lt;div&gt;
+  &lt;h1 class=&quot;record-header&quot;&gt;{{ recordLabel }}&lt;/h1&gt;
+  &lt;div class=&quot;record-properties&quot;&gt;
+    &lt;div *ngFor=&quot;let property of properties&quot; class=&quot;property&quot;&gt;
+      &lt;div class=&quot;property-label&quot;&gt;{{ property.label }}&lt;/div&gt;
+      &lt;div class=&quot;property-value&quot;&gt;{{ property.value }}&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client and try out the tool view.
+Property values are now displayed, and numbers, dates, and times are formatted the same as in the rest of the application.</p>
+</li>
+</ol>
+<h2 id="display-an-image-and-a-link-to-more-information">Display an image and a link to more information</h2>
+<p>So far, our tool view displays the label of a selected record and its property values.
+In this section, we&#39;ll go further by displaying an image to represent the record, and by linking to its 360 view (if it has one).</p>
+<ol>
+<li><p>First, in <code>tool-view1.component.ts</code>, add properties on the <code>ToolView1Component</code> class to store the image and the URL:</p>
+<pre><code class="lang-typescript"> public threeSixtyUrl?: string;
+ public image?: data.IImage;
+</code></pre></li>
+<li><p>In the <code>setValuesForRecord()</code> method, set these properties if we have a record, and clear them if we don&#39;t:</p>
+<pre><code class="lang-typescript">if (record) {
+  this.recordLabel = record.labelOrFallback;
+
+  this.threeSixtyUrl = record.get360ViewUrl();
+  this.image =
+     record.image || (record.isEntity() ? record.itemType.image : undefined);
+  ...
+
+} else {
+  this.recordLabel = &#39;No records selected.&#39;;
+  this.threeSixtyUrl = undefined;
+  this.image = undefined;
+  ...
+
+}
+</code></pre><p>This code uses the record image if one exists, and falls back to the image associated with the record&#39;s item type if it does not.</p>
+</li>
+<li><p>In <code>tool-view1.component.html</code>, edit the heading to display the image and the link (if it exists):</p>
+<pre><code class="lang-html">&lt;h1 class=&quot;record-header&quot;&gt;
+  &lt;img *ngIf=&quot;image&quot; [src]=&quot;image.href&quot; [alt]=&quot;image.description&quot; class=&quot;record-image&quot; /&gt;
+  &lt;span class=&quot;record-label&quot;&gt;
+    &lt;a *ngIf=&quot;threeSixtyUrl; else elseblock&quot; [href]=&quot;threeSixtyUrl&quot; target=&quot;_blank&quot;&gt;
+      {{ recordLabel }}
+    &lt;/a&gt;
+    &lt;ng-template #elseblock&gt; {{ recordLabel }} &lt;/ng-template&gt;
+  &lt;/span&gt;
+&lt;/h1&gt;
+</code></pre><p>The <code>target=&quot;_blank&quot;</code> attribute on the <code>&lt;a&gt;</code> element is so that the view opens in a new browser tab or window, rather than in the tool view!</p>
+</li>
+<li><p>Reload the i2 Notebook web client once again, and watch the behavior of the tool view:</p>
+<ul>
+<li>For entity records that came from the Information Store, the label is now also a hyperlink.</li>
+<li>For all records that have images, the tool view displays that image.</li>
+</ul>
+</li>
+</ol>
+<h2 id="support-globalization">Support globalization</h2>
+<p>Not all users speak English, and not all languages are read from left to right.
+If your tool view is aimed internationally, it should flow and display its contents correctly in all locales.
+The i2 Notebook Web API includes support for dealing with localization.</p>
+<p>First, let&#39;s demonstrate one of the problems by simulating an Arabic locale.</p>
+<ol>
+<li><p>In your browser address bar, after the <code>contextpath</code> part of the address, add the query parameter <code>?translationLocale=ar-sa</code> and reload the page.
+(For example, <code>http://localhost:4000/opal/?translationLocale=ar-sa#charts</code>)</p>
+<p>The i2 Notebook web client responds by simulating the locale of Arabic (Saudi Arabia).</p>
+<blockquote><p><strong>Note:</strong> The web client actually provides two locales: the <code>translationLocale</code>, which is used for the translation of the text; and the <code>formattingLocale</code>, which is used for formatting data for display. The <code>?translationLocale</code> query parameter simulates both the translation and the formatting locale.</p>
+</blockquote>
+</li>
+<li><p>If you display the built-in Record Inspector tool (using the <code>R</code> keyboard shortcut), you&#39;ll see how its user interface now flows from right to left.</p>
+<p>When you open your tool view, however, it still flows from left to right.</p>
+</li>
+<li><p>The API can provide the information that we need. We just have to use it in the right place!
+In <code>src/app/app.component.ts</code>, inside the <code>AppComponent</code> class:</p>
+<ol>
+<li><p>Add a property for the <code>flowDirection</code>:</p>
+<pre><code class="lang-typescript">public readonly flowDirection: string;
+</code></pre></li>
+<li><p>Use the tool view API to set <code>flowDirection</code> in the <code>constructor</code> of <code>AppComponent</code>:</p>
+<pre><code class="lang-typescript">this.flowDirection = toolViewApi.locale.flowDirection;
+</code></pre><p>The <code>flowDirection</code> property has either the value <code>ltr</code> or <code>rtl</code>, which is perfect for use with the <code>dir</code> HTML attribute.</p>
+</li>
+</ol>
+</li>
+<li><p>In <code>app.component.html</code>, use <code>flowDirection</code> to set the <code>dir</code> attribute on the container:</p>
+<pre><code class="lang-html">&lt;div
+  [ngClass]=&quot;{ &#39;light-theme&#39;: !isDarkTheme, &#39;dark-theme&#39;: isDarkTheme }&quot;
+  [dir]=&quot;flowDirection&quot;
+&gt;
+  &lt;app-tool-view1&gt;&lt;/app-tool-view1&gt;
+&lt;/div&gt;
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client and display the tool view again.
+It&#39;s laid out correctly according to the locale.
+When you add and remove the <code>?translationLocale=ar-sa</code> query parameter, the flow alternates between left-to-right and right-to-left behavior.</p>
+</li>
+</ol>
+<blockquote><p><strong>Note:</strong> By using the built-in formatter for property values, we get date, time, and numeric formatting for the Arabic (Saudi Arabia) locale automatically.
+Select items on your chart that have date, time, or numeric properties to see this in action.</p>
+</blockquote>
+<p>Another globalization issue is the text in the tool view. When simulating the Arabic (Saudi Arabia) locale, the &quot;No records selected.&quot; text doesn&#39;t display correctly - it actually displays as &quot;.No records selected&quot;.</p>
+<p>This problem occurs because the browser is trying to lay out the text from right to left, but it doesn&#39;t realize that the &quot;.&quot; is meant to flow <em>with</em> the text, and shouldn&#39;t be considered by itself.
+(This issue affects most punctuation characters and numbers that aren&#39;t considered to be &quot;left-to-right&quot; or &quot;right-to-left&quot;, but instead take their directionality from the context around them.)</p>
+<p>To get the text to behave correctly, we need to mark it up with bidirectional characters.
+Once again, we can use the formatter from the tool view API.</p>
+<ol>
+<li><p>Inside <code>src/app/tool-view1/tool-view1.component.ts</code>, find the implementation of <code>ToolView1Component</code>.
+When we set the record label, we&#39;ll use the formatter to wrap it with bidirectional characters:</p>
+<pre><code class="lang-typescript">...
+this.recordLabel = formatter.wrapForBidi(record.labelOrFallback, &#39;raw&#39;);
+
+...
+this.recordLabel = formatter.wrapForBidi(&#39;No records selected.&#39;, &#39;raw&#39;);
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client, and continue to simulate the Arabic (Saudi Arabia) locale.
+The text is now wrapped correctly, and displays with the period at the end of the text as &quot;No records selected.&quot;</p>
+<p>In general, you should use <code>wrapForBidi()</code> for all read-only text that you display to the user.
+It&#39;s particularly important for text whose contents you don&#39;t know in advance because it comes from record data.</p>
+</li>
+<li><p>Update the plug-in code to use <code>wrapForBidi()</code> throughout <code>ToolView1Component</code>.
+In <code>tool-view1.component.ts</code>, the <code>setValuesForRecord()</code> function becomes:</p>
+<pre><code class="lang-typescript">private setValuesForRecord(record: records.IChartRecord | undefined) {
+  const formatter = this.toolViewApi.formatter;
+
+  if (record) {
+    this.recordLabel = formatter.wrapForBidi(record.labelOrFallback, &#39;raw&#39;);
+    this.threeSixtyUrl = record.get360ViewUrl();
+    this.image =
+      record.image || (record.isEntity() ? record.itemType.image : undefined);
+
+    const properties: IProperty[] = [];
+    for (const propertyType of record.itemType.propertyTypes) {
+      const label = formatter.wrapForBidi(propertyType.displayName, &#39;raw&#39;);
+      const value = record.getProperty(propertyType);
+
+      if (value !== undefined &amp;&amp; !record.isValueUnfetched(value)) {
+        const formattedValue = formatter.formatValue(value);
+
+        properties.push({
+          label,
+          value: formatter.wrapForBidi(formattedValue, &#39;raw&#39;),
+        });
+      }
+    }
+
+    this.properties = properties;
+  } else {
+    this.recordLabel = formatter.wrapForBidi(&#39;No records selected.&#39;, &#39;raw&#39;);
+    this.threeSixtyUrl = undefined;
+    this.image = undefined;
+
+    this.properties = [];
+  }
+
+  this.changeDetectorRef.detectChanges();
+};
+</code></pre></li>
+</ol>
+<p>A further consideration for good globalization is that some images and icons should be reversed in right-to-left locales, while others should not.
+For example, back and forward navigation buttons should always be mirrored.
+For more information on this and other topics, consult a resource such as <a href="https://material.io/design/usability/bidirectionality.html#mirroring-elements">https://material.io/design/usability/bidirectionality.html#mirroring-elements</a>.</p>
+<p>Before you continue with this tutorial, remove the <code>?translationLocale=ar-sa</code> query parameter to stop simulating the Arabic (Saudi Arabia) locale.</p>
+<h2 id="add-record-navigation-to-the-tool-view">Add record navigation to the tool view</h2>
+<p>So far, we have looked only at the first record in the selection, which is useful in an example but not realistic.
+Now let&#39;s look at <em>all</em> the records in the selection, and provide the user with a pair of buttons to page through those records and inspect their properties.
+As part of this work, we&#39;ll demonstrate what errors can occur if you access the data incorrectly, and then show you how to access the data correctly.</p>
+<ol>
+<li><p>In <code>tool-view1.component.ts</code>, add properties for the index of the current record, the total number of records, and the current selection to the <code>ToolView1Component</code> class:</p>
+<pre><code class="lang-typescript">public currentRecordIndex = 0;
+public totalRecords = 0;
+private selection?: chart.ISelection;
+</code></pre></li>
+<li><p>We&#39;ll store the selection and choose a record based on <code>currentRecordIndex</code>.
+Replace the implementation of <code>handleChartSelectionChange()</code> with the following code:</p>
+<pre><code class="lang-typescript">private handleChartSelectionChange: chart.SelectionListener = (selection) =&gt; {
+  this.selection = selection;
+  this.currentRecordIndex = 0;
+  this.totalRecords = selection.records.size;
+
+  this.readDataForCurrentRecord();
+};
+
+private readDataForCurrentRecord() {
+  const record =
+    this.totalRecords &amp;&amp; this.selection
+      ? Array.from(this.selection.records)[this.currentRecordIndex]
+      : undefined;
+  this.setValuesForRecord(record);
+}
+</code></pre><p>Here, we&#39;ve extracted the code that reads the record data and saves it in our component to a separate method named <code>readDataForCurrentRecord()</code>.
+We are now saving the selection and resetting the <code>currentRecordIndex</code> on every chart selection change.</p>
+</li>
+<li><p>Next, we&#39;re going to move the responsibility for reporting a lack of records from the record display to a title area. In the <code>setValuesForRecord()</code> method, replace this code:</p>
+<pre><code class="lang-typescript">this.recordLabel = formatter.wrapForBidi(&#39;No records selected.&#39;, &#39;raw&#39;);
+</code></pre><p>with:</p>
+<pre><code class="lang-typescript">this.recordLabel = &#39;&#39;;
+</code></pre></li>
+<li><p>Add handler methods to update the <code>currentRecordIndex</code> and set the new record data; properties to indicate when the &quot;previous&quot; and &quot;next&quot; buttons are disabled; and a property named <code>currentRecord</code> that formats the current record index for display. Still in <code>ToolView1Component</code>, add:</p>
+<pre><code class="lang-typescript">public onPreviousButtonClick = () =&gt; {
+  this.currentRecordIndex--;
+  this.readDataForCurrentRecord();
+};
+
+public onNextButtonClick = () =&gt; {
+  this.currentRecordIndex++;
+  this.readDataForCurrentRecord();
+};
+
+public get disablePreviousButton(): boolean {
+  return this.currentRecordIndex === 0;
+}
+
+public get disableNextButton(): boolean {
+  return this.currentRecordIndex === this.totalRecords - 1;
+}
+
+public get currentRecord(): number {
+  return this.currentRecordIndex + 1;
+}
+</code></pre></li>
+<li><p>In the same class, add a computed <code>navigationTitle</code> property:</p>
+<pre><code class="lang-typescript"> public get navigationTitle() {
+   const formatter = this.toolViewApi.formatter;
+
+   if (this.totalRecords === 0) {
+     return formatter.wrapForBidi(&#39;No records selected.&#39;, &#39;raw&#39;);
+   }
+
+   const currentRecord = formatter.formatValue(this.currentRecord);
+   const totalRecords = formatter.formatValue(this.totalRecords);
+
+   return formatter.wrapForBidi(
+     `Record ${currentRecord} of ${totalRecords}`,
+     &#39;raw&#39;
+   );
+ }
+</code></pre><p>This code creates a title with formatted numbers for the selected record and the total record count.</p>
+</li>
+<li><p>In <code>tool-view1.component.html</code>, above the <code>&lt;h1&gt;</code> element, add the title and our navigation buttons:</p>
+<pre><code class="lang-html">&lt;div class=&quot;record-navigation&quot;&gt;
+  &lt;div&gt;{{ navigationTitle }}&lt;/div&gt;
+  &lt;div class=&quot;navigation-buttons&quot; *ngIf=&quot;totalRecords&quot;&gt;
+    &lt;button
+      class=&quot;navigation-button&quot;
+      (click)=&quot;onPreviousButtonClick()&quot;
+      title=&quot;Previous record&quot;
+      [disabled]=&quot;disablePreviousButton&quot;
+    &gt;
+      &amp;lt;
+    &lt;/button&gt;
+    &lt;button
+      class=&quot;navigation-button&quot;
+      (click)=&quot;onNextButtonClick()&quot;
+      title=&quot;Next record&quot;
+      [disabled]=&quot;disableNextButton&quot;
+    &gt;
+      &amp;gt;
+    &lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</code></pre><p>This gives users a pair of buttons for changing the current record, and a title displaying which record they&#39;re viewing out of the total.
+It hides the buttons if there are no records selected.</p>
+</li>
+<li><p>Reload the i2 Notebook web client and open the plug-in.
+You&#39;ll see the title and the buttons that we added.
+As you change the selection on the chart, the plug-in reflects the contents of the whole selection, not just its first record.</p>
+</li>
+<li><p>Now, try changing the current record in the tool view by clicking the <strong>Next</strong> button.</p>
+<p>It doesn&#39;t work.</p>
+<p>If you look in the console, you&#39;ll see an error message:</p>
+<pre><code class="lang-text">Application and chart data MUST only be accessed during event listener or transaction listener callbacks. It is not safe to access data at any other time.
+</code></pre><p>We <em>are</em> trying to access data outside an event or transaction listener.
+We store the selection data in our component, and attempt
+to read it when the user clicks <strong>Next</strong>.</p>
+</li>
+<li><p>Let&#39;s see what happens if we store the <em>records</em>, instead of the whole selection.
+In <code>tool-view1.component.ts</code>:</p>
+<ol>
+<li><p>Remove the <code>selection</code> property from the <code>ToolView1Component</code> class, and replace it with a <code>records</code> property:</p>
+<pre><code class="lang-typescript">private records?: data.IKeyedReadOnlyCollection&lt;records.AnalyzeRecordId, records.IChartRecord&gt;;
+</code></pre></li>
+<li><p>Inside <code>handleChartSelectionChange()</code>, store the records instead of the selection:</p>
+<pre><code class="lang-typescript">this.records = selection.records;
+</code></pre></li>
+<li><p>Inside <code>readDataForCurrentRecord()</code>, change the declaration of the <code>record</code> variable to:</p>
+<pre><code class="lang-typescript">const record =
+  this.totalRecords &amp;&amp; this.records
+    ? Array.from(this.records)[this.currentRecordIndex]
+    : undefined;
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client and try again.</p>
+<p>It still doesn&#39;t work.</p>
+</li>
+</ol>
+<p>It doesn&#39;t matter if you&#39;re storing the selection or the records.
+<em>You cannot access i2 Notebook chart data outside an event, mutation, or transaction listener.</em>
+This rule ensures that API consumers always see a consistent view of the application data.
+Whenever you want to read data outside an event handler, you must request access to it from the application through a transaction or a mutation.</p>
+</li>
+<li><p>Remove the <code>records</code> property from the <code>ToolView1Component</code> class.
+Instead of storing them, we&#39;ll use the current record index to request the record that we want from the application.</p>
+</li>
+<li><p>Change the <code>handleChartSelectionChange()</code> implementation to:</p>
+<pre><code class="lang-typescript">private handleChartSelectionChange: chart.SelectionListener = () =&gt; {
+ this.currentRecordIndex = 0;
+
+ this.readDataForCurrentRecord();
+};
+</code></pre></li>
+<li><p>Change the <code>readDataForCurrentRecord()</code> function so that it requests the record data from the tool view API in a transaction handler:</p>
+<pre><code class="lang-typescript">private readDataForCurrentRecord() {
+  this.toolViewApi.runTransaction((application) =&gt; {
+    const records = application.chart.selection.records;
+    const recordIds = Array.from(records.map((r) =&gt; r.id));
+    this.totalRecords = records.size;
+
+    const currentRecordId = recordIds[this.currentRecordIndex];
+    const record = records.get(currentRecordId);
+
+    this.setValuesForRecord(record);
+  });
+}
+</code></pre><p>It&#39;s safe to access chart data during the callback, and we take advantage by populating the component fields with data from the current record.</p>
+</li>
+<li><p>Reload the i2 Notebook web client, select multiple items on the chart, and try using the buttons in our tool view to navigate among their records.</p>
+<p>Now, it works!</p>
+</li>
+</ol>
+<h3 id="extension-ensure-fetched-properties">Extension: Ensure fetched properties</h3>
+<p>While viewing record properties, eventually a property will be shown as <code>Exists but not fetched</code>.
+You can ensure that the property <em>is</em> fetched.</p>
+<ol>
+<li>Change the <code>readDataForCurrentRecord()</code> function so that it ensures all properties are fetched before setting the values for records:</li>
+</ol>
+<pre><code class="lang-typescript">  private readDataForCurrentRecord() {
+    this.toolViewApi.runTransaction(async(application) =&gt; {
+      const records = application.chart.selection.records;
+      const recordIds = Array.from(records.map((r) =&gt; r.id));
+      this.totalRecords = records.size;
+
+      const currentRecordId = recordIds[this.currentRecordIndex];
+      const record = records.get(currentRecordId);
+
+      if (record) {
+        const propertyTypes = record.itemType.propertyTypes;
+
+        await application.chart.ensurePropertiesFetched(record, propertyTypes);
+      }
+
+      this.setValuesForRecord(record);
+    });
+  }
+</code></pre><h2 id="store-and-restore-state-when-the-tool-view-is-floated-and-docked">Store and restore state when the tool view is floated and docked</h2>
+<p>Our tool view is almost complete, but for now there are still problems to solve.
+For example, you can select multiple items on the chart surface, and navigate to the second record in the selection by clicking <strong>Next</strong>. But if you then float the tool view, it returns to showing the first record again.</p>
+<p>When a tool view is docked or floated, its user interface is completely recreated in a different browser window, causing all of its temporary state to be lost.</p>
+<p>To address this, we can make use of the volatile store that&#39;s available from the tool view API.
+This store allows us to store state so that it survives tool view re-creation.
+(It&#39;s called the &quot;volatile&quot; store because its state does not persist across application reloads.)</p>
+<ol>
+<li><p>In <code>tool-view1.component.ts</code>, at the end of the <code>ngOnInit()</code> method, just after we subscribe to the <code>chartselectionchange</code> event, add some state persistence logic:</p>
+<pre><code class="lang-typescript">ngOnInit(): void {
+  ...
+
+  this.toolViewApi.addEventListener(&#39;unload&#39;, () =&gt; {
+    this.toolViewApi.volatileStore.set(
+      &#39;currentRecordIndex&#39;,
+      this.currentRecordIndex
+    );
+  });
+
+  this.currentRecordIndex =
+    this.toolViewApi.volatileStore.get(&#39;currentRecordIndex&#39;) || 0;
+
+  this.readDataForCurrentRecord();
+}
+</code></pre><p>This code means that we store <code>currentRecordIndex</code> when the tool view is unloaded, and retrieve it from the volatile store when the tool view is initialized.</p>
+</li>
+<li><p>Because we&#39;re now fetching data immediately when the tool view starts up, we no longer need to use the <code>dispatchNow</code> option for the <code>chartselectionchange</code> event handler
+in <code>ngOnInit()</code>.
+Remove it, leaving the event subscription as follows:</p>
+<pre><code class="lang-typescript">this.toolViewApi.addEventListener(&#39;chartselectionchange&#39;, this.handleChartSelectionChange);
+</code></pre></li>
+</ol>
+<p>The tool view now correctly maintains its state across docking and floating operations.</p>
+<h2 id="clear-state-when-the-tool-view-is-closed">Clear state when the tool view is closed</h2>
+<p>We&#39;re now preserving the tool view state across floating and docking operations.
+However, we&#39;re also preserving that state if the user explicitly <em>closes</em> the tool view, which isn&#39;t appropriate.
+When the user closes the tool view, we should reset the state.</p>
+<p>The <code>unload</code> event can tell us whether the tool view is being unloaded because of an explicit close operation.</p>
+<ol>
+<li><p>In <code>tool-view1.component.ts</code>, inside the <code>ngOnInit()</code> method, change the <code>unload</code> event handler to:</p>
+<pre><code class="lang-typescript">this.toolViewApi.addEventListener(&#39;unload&#39;, (isClosing) =&gt; {
+  if (isClosing) {
+    this.toolViewApi.volatileStore.clear();
+  } else {
+    this.toolViewApi.volatileStore.set(&#39;currentRecordIndex&#39;, this.currentRecordIndex);
+  }
+});
+</code></pre></li>
+</ol>
+<p>Now, if the tool view is being closed, we&#39;ll discard our state.
+Otherwise, we&#39;ll persist it.
+Reload the i2 Notebook web client to test the changes we&#39;ve made.
+Closing the tool view will reset the record index.</p>
+<h2 id="replace-the-built-in-record-inspector-with-our-tool-view">Replace the built-in Record Inspector with our tool view</h2>
+<p>We now have a functional tool view that allows users to view some of the details of a record.
+We can even use it to replace the web client&#39;s built-in Record Inspector!</p>
+<ol>
+<li><p>Removing the Record Inspector is easy. Edit <code>src/entrypoint.js</code> to insert the following command-removal code just before the call to <code>initializationComplete()</code>:</p>
+<pre><code class="lang-typescript">api.commands.removeCommand(api.commands.systemCommands.toggleRecordInspector);
+</code></pre></li>
+<li><p>Change the tool view toggle command name to &quot;Record inspector plug-in&quot;, and add a <code>keyboardHelp</code> section so that the tool can be opened using a keyboard shortcut:</p>
+<pre><code class="lang-typescript">const toggle = api.commands.createToolViewToggleCommand(
+  {
+    id: &#39;00000000-0000-0000-0000-000000000003&#39;,
+    name: &#39;Record inspector plug-in&#39;,
+    icon: {
+      type: &#39;inlineSvg&#39;,
+      svg: &#39;&lt;svg viewBox=&quot;0 0 16 16&quot;&gt;&lt;circle cx=&quot;8&quot; cy=&quot;8&quot; r=&quot;4&quot; /&gt;&lt;/svg&gt;&#39;,
+    },
+    keyboardHelp: {
+      category: &#39;discover&#39;,
+      label: &#39;Toggle record inspector plug-in&#39;,
+      keys: [&#39;shift+r&#39;],
+    },
+  },
+  toolView
+);
+</code></pre></li>
+<li><p>Reload the i2 Notebook web client, and you should see that:</p>
+<ul>
+<li>The built-in &quot;Record Inspector&quot; tool has been removed.</li>
+<li>The keyboard help dialog (displayed by pressing &quot;h&quot;) lists the keyboard shortcut <code>Shift+R</code> for our tool view.</li>
+<li>Using the keyboard shortcut <code>shift+r</code> also toggles our tool view.</li>
+</ul>
+</li>
+</ol>
+<h2 id="deploy-the-plug-in">Deploy the plug-in</h2>
+<p>To deploy our plug-in on the server, we first need to build it by running:</p>
+<pre><code class="lang-text">npm run build
+</code></pre><p>from the <code>plugin-ng</code> directory.
+This creates a production build of our tutorial plug-in inside <code>dist/plugin-ng</code>.</p>
+<p>For the actual deployment, we need to add the built plug-in to the server configuration, and then redeploy the server.</p>
+<blockquote><p><strong>Note:</strong> If you follow this procedure in a deployment that provides high availability, you must complete each step on every Liberty server in your environment before you move to the next step.</p>
+</blockquote>
+<ol>
+<li><p>On the server that hosts the i2 Analyze deployment, find the <code>toolkit/configuration</code> directory, and then navigate to the <code>fragments/opal-services</code> directory that it contains.</p>
+</li>
+<li><p>If the <code>opal-services</code> directory does not already contain a <code>plugins</code> subdirectory, create one.</p>
+</li>
+<li><p>Copy the <code>dist/plugin-ng</code> directory into the <code>plugins</code> directory, to create <code>plugins/plugin-ng</code>.</p>
+</li>
+<li><p>Run the following toolkit commands to update the deployed i2 Analyze server:</p>
+<pre><code class="lang-cmd">setup -t stopLiberty
+setup -t deployLiberty
+setup -t startLiberty
+</code></pre></li>
+<li><p>Stop the development proxy, and use the browser to navigate to your real server address.
+You&#39;ll find that your plug-in was successfully deployed.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>In this tutorial, we&#39;ve:</p>
+<ul>
+<li>Created a command to show a record&#39;s position on a map, and added that command to the application ribbon and the chart pop-up menu</li>
+<li>Created a tool view to display record data, and replaced the built-in Record Inspector with this new tool view</li>
+<li>Considered data access, formatting, and globalization</li>
+<li>Deployed our plug-in on the i2 Analyze server</li>
+</ul>
+<p>This is just a flavor of what you can do with the <code>@i2analyze/notebook-sdk</code> package. To understand more about the capabilities of the i2 Notebook Web API, see the rest of the SDK documentation.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

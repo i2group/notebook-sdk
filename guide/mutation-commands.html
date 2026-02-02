@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Supported mutation operations </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Supported mutation operations ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="supported-mutation-operations">Supported mutation operations</h1>
+
+<p>As <a href="mutations.html">Changing data from a plug-in</a> describes, the i2 Notebook Web API provides the ability to write data to the chart and to change the state of the i2 Notebook application.</p>
+<p>The types of changes that you can make through the API are:</p>
+<ul>
+<li>Record creation</li>
+<li>Record editing</li>
+<li>Record removal</li>
+<li>Item type creation</li>
+<li>Item type editing</li>
+<li>Selection changes</li>
+<li>Node position changes</li>
+<li>Node and edge style changes</li>
+<li>View changes</li>
+</ul>
+<p>A single mutation can contain any number of these changes, in any combination.
+The changes are typically applied when the mutation itself is committed.</p>
+<p>The i2 Notebook SDK includes a <a href="tutorials/mutation-plugin.html">mutations tutorial</a> that demonstrates how to make some of these changes.</p>
+<h2 id="creating-and-editing-records">Creating and editing records</h2>
+<p>The mutation handler that you pass to <a href="../api/notebook-sdk.app.iapplication.runtrackedmutations.html"><code>IApplication.runTrackedMutations()</code></a> can create entity and link records through the <a href="../api/notebook-sdk.app.itrackedmutations.addentityrecord.html"><code>addEntityRecord()</code></a> and <a href="../api/notebook-sdk.app.itrackedmutations.addlinkrecord.html"><code>addLinkRecord()</code></a> methods of the <code>ITrackedMutations</code> object that it receives.
+To each method, you provide the features of the new record including its item type, its notes, its security settings, and values for its properties.</p>
+<p>Both <code>add</code> methods return a &quot;pending&quot; record object that represents the new record in the mutation, before it is added to the chart.
+This object implements the <a href="../api/notebook-sdk.app.irecordeditor.html"><code>IRecordEditor</code></a> interface, which allows you to make further edits before you commit.</p>
+<p>To make changes to a record that is already on the chart, you can use the <a href="../api/notebook-sdk.app.itrackedmutations.editrecord.html"><code>ITrackedMutations.editRecord()</code></a> method, which also returns an object that implements <code>IRecordEditor</code>.</p>
+<p><strong>Note:</strong> New records, and changes to existing records, do not exist on the chart (and will not be seen in <code>IChart</code> collections) until you commit the mutation.
+Pending records and record editors are only valid in the mutation handler where they were created.</p>
+<h3 id="value-factories">Value factories</h3>
+<p>When you create or edit a record from a mutation handler, you can provide values for its properties.
+Some of these values - temporal and geospatial ones, for example - have reasonably complex structures.
+To help you construct valid values, <code>ITrackedMutations.valueFactory</code> provides an <a href="../api/notebook-sdk.app.ivaluefactory.html"><code>IValueFactory</code></a> object that contains helper methods for creating objects of the following types:</p>
+<ul>
+<li><code>IGeopoint</code></li>
+<li><code>IDecimal</code></li>
+<li><code>ILocalDate</code></li>
+<li><code>ILocalDateTime</code></li>
+<li><code>ILocalTime</code></li>
+<li><code>ISecuritySettings</code></li>
+<li><code>IZonedDateTime</code></li>
+</ul>
+<h2 id="removing-records-and-elements">Removing records and elements</h2>
+<p>Just as a mutation handler can create and edit records, it can also remove them from the chart, through the <a href="../api/notebook-sdk.app.itrackedmutations.removerecords.html"><code>ITrackedMutations.removeRecords()</code></a> method.</p>
+<p>You can also remove visual nodes and edges from the chart by calling the <a href="../api/notebook-sdk.app.itrackedmutations.removeelements.html"><code>ITrackedMutations.removeElements()</code></a> method.
+Doing so implicitly removes any records that an element contains, while removing a node also removes any connected edges.</p>
+<h2 id="creating-and-editing-item-types">Creating and editing item types</h2>
+<p>When you create a record, you specify its item type. Often, you will use an item type that already exists in the chart schema, but you can also use a tracked mutation handler to create item types and to edit existing ones.</p>
+<p>For item types that you create, you can configure their behavior and add and edit property types both during and after creation. For existing item types, you can only add or edit custom property types.</p>
+<p>To create a custom entity type in the chart schema, you call the <a href="../api/notebook-sdk.app.itrackedmutations.addentitytype.html"><code>ITrackedMutations.addEntityType()</code></a> method. To create a custom link type, you call <a href="../api/notebook-sdk.app.itrackedmutations.addlinktype.html"><code>ITrackedMutations.addLinkType()</code></a>.</p>
+<p>You can use the <a href="../api/notebook-sdk.app.itrackedmutations.edititemtype.html"><code>ITrackedMutations.editItemType()</code></a> method to modify the custom item types that you create, or to add custom property types to existing item types. There is no method to <em>remove</em> a custom item type, although you can use the undo action to reverse creation if you do so immediately afterwards.</p>
+<p>For information about the item types that are added or changed in the chart schema, you can:</p>
+<ul>
+<li>Check the <a href="../api/notebook-sdk.app.imutationresult.chartschemachange.html"><code>chartSchemaChange</code></a> object in the mutation result.</li>
+<li>Listen for the <a href="../api/notebook-sdk.chart.charteventmap.chartschemachange.html"><code>chartschemachange</code></a> event from the application.</li>
+</ul>
+<h2 id="changing-selection">Changing selection</h2>
+<p>You can change the selection state of the chart through tracked and untracked mutation handlers.
+<code>ITrackedMutations</code> and <code>IUntrackedMutations</code> both inherit <a href="../api/notebook-sdk.app.imutationsbase.selection.html"><code>IMutationsBase.selection</code></a>, which provides an implementation of the <a href="../api/notebook-sdk.app.iselectioneditor.html"><code>ISelectionEditor</code></a> interface.</p>
+<p><strong>Note:</strong> Selection changes in untracked mutations are not explicitly added to the undo stack, but the next tracked mutation can capture the current selection as part of its undoable state.</p>
+<h2 id="moving-nodes-on-the-chart">Moving nodes on the chart</h2>
+<p>From a tracked mutation handler, you can arrange the nodes on the chart by changing their positions one-by-one, or as a group:</p>
+<ul>
+<li><p>Set the position of a single node directly by using the <a href="../api/notebook-sdk.app.itrackedmutations.setnodecenter.html"><code>ITrackedMutations.setNodeCenter()</code></a> method.</p>
+</li>
+<li><p>Move a selection that includes nodes by an offset through the <a href="../api/notebook-sdk.app.itrackedmutations.moveselectednodesrelative.html"><code>ITrackedMutations.moveSelectedNodesRelative()</code></a> method.</p>
+</li>
+</ul>
+<h2 id="changing-the-style-of-nodes-and-edges-on-the-chart">Changing the style of nodes and edges on the chart</h2>
+<p>You can change the visual appearance of node and edges displayed on a chart by using the <a href="../api/notebook-sdk.app.itrackedmutations.editnode.html"><code>ITrackedMutations.editNode()</code></a> and <a href="../api/notebook-sdk.app.itrackedmutations.editedge.html"><code>ITrackedMutations.editEdge()</code></a> methods.</p>
+<ul>
+<li><p>Change the size of a node by calling <a href="../api/notebook-sdk.app.inodeeditor.setsize.html"><code>INodeEditor.setSize()</code></a></p>
+</li>
+<li><p>Change the colors of edges and nodes by calling <a href="../api/notebook-sdk.app.ielementeditorbase.setcolor.html"><code>INodeEditor.setColor()</code></a> or <a href="../api/notebook-sdk.app.ielementeditorbase.setcolor.html"><code>IEdgeEditor.setColor()</code></a>.</p>
+</li>
+</ul>
+<h3 id="local-style-and-label-changes">Local style and label changes</h3>
+<p>You can use untracked mutations (<a href="../api/notebook-sdk.app.iuntrackedmutations.html"><code>IUntrackedMutations</code></a>) to make local changes to the appearance of nodes and edges on the chart. Changes like these are not sent to the server, and exist only on the browser page displaying the current chart.</p>
+<p>For example, you can set the label of an edge summary by using the <a href="../api/notebook-sdk.app.iedgesummaryeditor.setlabel.html"><code>IUntrackedMutations.editEdgeSummary().setLabel()</code></a> method.</p>
+<p>Untracked mutations are also not added to the undo/redo stack, which makes them useful in plug-ins that want to alter the appearance of chart elements temporarily without affecting the user&#39;s workflow.</p>
+<p>If you want an untracked mutation to survive an undo operation, you can reapply it in response to a <code>chartchange</code> event.</p>
+<h2 id="changing-the-view">Changing the view</h2>
+<p>Finally, you can use tracked or untracked mutations to change the current view of the chart by moving its center point or changing the zoom level.</p>
+<p><code>ITrackedMutations</code> and <code>IUntrackedMutations</code> both inherit <a href="../api/notebook-sdk.app.imutationsbase.view.html"><code>IMutationsBase.view</code></a>, which provides an implementation of the <a href="../api/notebook-sdk.app.ivieweditor.html"><code>IViewEditor</code></a> interface.</p>
+<h2 id="validation">Validation</h2>
+<p>The parameters of all calls to mutation methods are validated to ensure that the correct value types are passed, and that any record and type identifiers are associated with existing objects.</p>
+<p>A validation failure results in an error notification in the i2 Notebook user interface that provides information about which argument was incorrect.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

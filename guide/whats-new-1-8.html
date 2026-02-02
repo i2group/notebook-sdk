@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>What's new in version 1.8 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="What's new in version 1.8 ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="whats-new-in-version-18">What&#39;s new in version 1.8</h1>
+
+<p>Version 1.8 of the i2 Notebook API adds support for node groups (grouping nodes together on a chart),
+expanded editing capabilities for node groups and edges, new system commands and ribbon areas for grouping and layouts,
+and several small improvements to collection APIs and source-reference metadata.</p>
+<p>The documentation has been updated with information about each of the following features:</p>
+<h2 id="app-namespace">app namespace</h2>
+<p><code>NodeGroupSpecifier</code></p>
+<ul>
+<li>common specifier type for node groups (<code>visual.ElementId | visual.INodeGroup</code>)</li>
+</ul>
+<p><code>INodeGroupEditor</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.setlabel.html"><code>setLabel</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.setbordercolor.html"><code>setBorderColor</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.setborderwidth.html"><code>setBorderWidth</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.setcolor.html"><code>setColor</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.setimage.html"><code>setImage</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.setisminimized.html"><code>setIsMinimized</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.addnodes.html"><code>addNodes</code></a></li>
+<li><a href="../api/notebook-sdk.app.inodegroupeditor.removenodes.html"><code>removeNodes</code></a></li>
+</ul>
+<p><code>IEdgeEditor</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.iedgeeditor.setwidth.html"><code>setWidth</code></a></li>
+</ul>
+<p><code>IPendingNodeGroup</code></p>
+<ul>
+<li>pending node-group type returned by mutations when creating node groups</li>
+</ul>
+<p><code>ITrackedMutations</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.itrackedmutations.addnodegroup.html"><code>addNodeGroup</code></a></li>
+<li><a href="../api/notebook-sdk.app.itrackedmutations.editnodegroup.html"><code>editNodeGroup</code></a></li>
+<li><a href="../api/notebook-sdk.app.itrackedmutations.removenodegroups.html"><code>removeNodeGroups</code></a></li>
+<li><a href="../api/notebook-sdk.app.itrackedmutations.removefromnodegroup.html"><code>removeFromNodeGroup</code></a></li>
+</ul>
+<h2 id="chart-namespace">chart namespace</h2>
+<p><code>IChart</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.ichart.nodegroups.html"><code>nodeGroups</code></a></li>
+</ul>
+<p><code>IChartChangeMinor</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.ichartchangeminor.nodegroups.html"><code>nodeGroups</code></a></li>
+</ul>
+<h2 id="visual-namespace">visual namespace</h2>
+<p><code>INodeGroup</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.inodegroup.id.html"><code>id</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroup.label.html"><code>label</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroup.style.html"><code>style</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroup.isminimized.html"><code>isMinimized</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroup.nodes.html"><code>nodes</code></a></li>
+</ul>
+<p><code>INodeGroupStyle</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.inodegroupstyle.image.html"><code>image</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroupstyle.color.html"><code>color</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroupstyle.bordercolor.html"><code>borderColor</code></a></li>
+<li><a href="../api/notebook-sdk.visual.inodegroupstyle.borderwidth.html"><code>borderWidth</code></a></li>
+</ul>
+<p><code>IEdgeStyle</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.iedgestyle.width.html"><code>width</code></a></li>
+</ul>
+<h2 id="commands-namespace">commands namespace</h2>
+<p><code>ICollectTabActionArea</code>, <code>IAnalyzeTabActionArea</code>, <code>IDisseminateTabActionArea</code></p>
+<ul>
+<li>New typed action areas for the Collect, Analyze and Disseminate tabs in the application ribbon.</li>
+</ul>
+<p><code>IApplicationRibbon</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.iapplicationribbon.collecttab.html"><code>collectTab</code></a></li>
+<li><a href="../api/notebook-sdk.commands.iapplicationribbon.analyzetab.html"><code>analyzeTab</code></a></li>
+<li><a href="../api/notebook-sdk.commands.iapplicationribbon.disseminatetab.html"><code>disseminateTab</code></a></li>
+</ul>
+<p><code>ISystemCommands</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.editelementlabel.html"><code>editElementLabel</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.editgrouplabel.html"><code>editGroupLabel</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.groupnodes.html"><code>groupNodes</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutcircular.html"><code>layoutCircular</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutorganization.html"><code>layoutOrganization</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutminimizecrossedlinks.html"><code>layoutMinimizeCrossedLinks</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.maximizegroups.html"><code>maximizeGroups</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.minimizegroups.html"><code>minimizeGroups</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.resetelementlabel.html"><code>resetElementLabel</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.resetgrouplabel.html"><code>resetGroupLabel</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.selectuniteditems.html"><code>selectUnitedItems</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.ungroupnodes.html"><code>ungroupNodes</code></a></li>
+</ul>
+<p><code>IHomeTabSystemGroups</code>, <code>ICollectTabSystemGroups</code>, <code>IAnalyzeTabSystemGroups</code>, <code>IDisseminateTabSystemGroups</code></p>
+<ul>
+<li>New system groups for layouts and groups have been added to the Home tab and split into Collect/Analyze tabs where appropriate.</li>
+</ul>
+<h2 id="data-namespace">data namespace</h2>
+<p><code>IReadOnlyCollection</code> / <code>IKeyedReadOnlyCollection</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.data.ireadonlycollection.isempty.html"><code>isEmpty</code></a> added to quickly test emptiness of collections.</li>
+</ul>
+<h2 id="records-namespace">records namespace</h2>
+<p><code>ISourceReference</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.records.isourcereference.isreadonly.html"><code>isReadOnly</code></a> indicates whether a source reference is read-only.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

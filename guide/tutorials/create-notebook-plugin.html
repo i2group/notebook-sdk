@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Creating a production-ready plug-in with the Create Notebook Plug-in tool </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Creating a production-ready plug-in with the Create Notebook Plug-in tool ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="creating-a-production-ready-plug-in-with-the-create-notebook-plug-in-tool">Creating a production-ready plug-in with the Create Notebook Plug-in tool</h1>
+
+<p>This tutorial takes you through creating a production-ready plug-in for the i2 Web Client using a project scaffold created with the <code>create-notebook-plugin</code> tool.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To follow the tutorial, you must install at least version 18 of Node.js on your development machine.
+For downloads and more information about Node.js, visit the project website at <a href="https://nodejs.org">https://nodejs.org</a>.</p>
+<p>This tutorial also requires a running instance of i2 Analyze on which you have permission to use the i2 Web Client.</p>
+<h2 id="create-a-plug-in">Create a plug-in</h2>
+<p>Run the following command on the command line:</p>
+<pre><code class="lang-sh">npm create @i2analyze/notebook-plugin
+</code></pre><p>This command installs and executes <a href="https://www.npmjs.com/package/@i2analyze/create-notebook-plugin">@i2analyze/create-notebook-plugin</a>, a tool designed for the purpose of creating plug-in projects for the i2 Web Client.</p>
+<p>When you run the tool, you&#39;ll see a number of options.
+For now, use the default value for each option by pressing <code>Enter</code> at each prompt.</p>
+<pre><code class="lang-sh">$ create-notebook-plugin
+
+Plugin-name: (My plug-in): My plug-in
+Plugin-description: (My plug-in description): My plug-in description
+Server URL: (http://localhost:9082/opal): http://localhost:9082/opal
+Run git init?: (no) No
+Run npm install?: (no) No
+
+$
+</code></pre><p>The tool creates a directory for the plug-in project whose name is derived from the name that you provide.
+With the default values, the directory is named <code>my-plug-in</code>.</p>
+<p>When the project is ready, run the following commands to install dependencies and start the development server and the plug-in proxy:</p>
+<pre><code class="lang-sh">cd my-plug-in
+npm install
+npm run dev
+</code></pre><p>The plug-in project is now running!
+In your browser, navigate to the Web Client at <code>http://localhost:4000/opal/</code> and check that the plug-in has loaded correctly.
+Look for a new button in the application ribbon, and a new message in the developer tools console:</p>
+<pre><code class="lang-sh">My plug-in running
+</code></pre><p>If you see this message, then the plug-in is working correctly.</p>
+<p>The Create Notebook Plug-in tool configures the project folder for TypeScript, ESLint, and prettier.
+It also creates <code>devproxy.json</code> and <code>plugin.json</code> manifests, and adds scripts to allow for development and production builds.
+The latter use <code>webpack</code> to create a bundle that&#39;s deployable to an i2 Analyze server.</p>
+<h2 id="add-a-ribbon-command-to-the-plug-in">Add a ribbon command to the plug-in</h2>
+<p>At this stage, the plug-in sends some basic information to the browser&#39;s developer tools console, and adds a button that does nothing to the application ribbon.
+Next, we&#39;ll replace the generated code with some calls to the i2 Web Client API that modify the button to open geospatial locations in Google Maps.</p>
+<ol>
+<li><p>In <code>src/entrypoint.ts</code>, make the following changes.</p>
+<ul>
+<li><p>Change the first line from:</p>
+<pre><code class="lang-ts">import { NotebookStatic } from &#39;@i2analyze/notebook-sdk&#39;;
+</code></pre><p>to:</p>
+<pre><code class="lang-ts">import { commands, data, records, NotebookStatic } from &#39;@i2analyze/notebook-sdk&#39;;
+</code></pre></li>
+<li><p>Change:</p>
+<pre><code class="lang-ts">name: &#39;My plug-in&#39;;
+</code></pre><p>to:</p>
+<pre><code class="lang-ts">name: &#39;View on map&#39;;
+</code></pre></li>
+<li><p>In the <code>createCommand()</code> call, change:</p>
+<pre><code class="lang-ts">type: &#39;unscoped&#39;;
+</code></pre><p>to:</p>
+<pre><code class="lang-ts">type: &#39;records&#39;;
+</code></pre><p>And change:</p>
+<pre><code class="lang-ts">onExecute() {
+</code></pre><p>to:</p>
+<pre><code class="lang-ts">onExecute(payload: commands.IRecordsContext) {
+</code></pre></li>
+</ul>
+</li>
+<li><p>Create this helper function at the top level of the <code>entrypoint.ts</code> file:</p>
+<pre><code class="lang-typescript">function findGeospatialValue(chartRecords: data.IReadOnlyCollection&lt;records.IChartRecord&gt;) {
+  for (const record of chartRecords) {
+    for (const propertyType of record.itemType.propertyTypes) {
+      if (propertyType.logicalType === &#39;geospatial&#39;) {
+        const property = record.getProperty(propertyType);
+        if (property !== undefined &amp;&amp; !record.isValueUnfetched(property)) {
+          return property as data.IGeoPoint;
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+</code></pre><p>This function performs a simple scan of the records that it receives, and returns the first non-empty geospatial property that it finds.</p>
+</li>
+<li><p>We can now use the helper function in the implementation of <code>onExecute()</code>, replacing the default code that the project was created with.
+We&#39;ll take the latitude and longitude to a new Google Maps window:</p>
+<pre><code class="lang-ts">onExecute(payload: commands.IRecordsContext) {
+  const property = findGeospatialValue(payload.records);
+
+  if (!property) {
+    return;
+  }
+
+  window.open(
+    `https://www.google.com/maps/@${property.latitude},${property.longitude},18z`,
+    &quot;_blank&quot;
+  );
+},
+</code></pre></li>
+<li><p>Reload the Web Client, select an element with a geospatial property, and try the command.
+Google Maps should open at the relevant location.</p>
+</li>
+</ol>
+<h2 id="make-the-command-sensitive-to-selection">Make the command sensitive to selection</h2>
+<p>There&#39;s a problem with our command: The button is enabled even if the selection doesn&#39;t actually contain a geospatial property.
+That would be misleading for a user, but we can fix it by taking control of the <em>surfacing</em> of the command in the user interface.</p>
+<ol>
+<li><p>After the <code>onExecute()</code> parameter to <code>createCommand()</code>, replace the <code>onSurface()</code> function definition:</p>
+<pre><code class="lang-ts">onSurface(action, eventApi, signal) {
+  eventApi.addEventListener(
+    &quot;recordscontextchange&quot;,
+      (context) =&gt; {
+        action.setEnabled(!!findGeospatialValue(context.records));
+      },
+      { dispatchNow: true, signal }
+  );
+},
+</code></pre><p>There are a few things going on here:</p>
+<ul>
+<li><p>The Web Client calls our <code>onSurface()</code> function with an <code>action</code> object that represents the user interface control to which the command is bound each time it is surfaced.
+A single command might be surfaced in several places, and you can use the <code>action</code> object to react differently in each of them.</p>
+</li>
+<li><p>The function also receives an <code>eventApi</code> object through which it can listen to changes in the records to which the action is being applied; and a <code>signal</code> object that indicates when this particular surfacing of the command is being removed.</p>
+</li>
+<li><p>In our implementation, we subscribe to the <code>recordscontextchange</code> event, which tells us when the current records change.
+When they <em>do</em> change, we set the enabled state of the action to a value based on whether there is a geospatial value in the current records.</p>
+</li>
+<li><p>Event listeners are normally invoked when the event occurs.
+However, we don&#39;t want to wait for a <code>recordscontextchange</code> event before we run our <code>setEnabled()</code> code, so we specify <code>dispatchNow: true</code> to invoke the callback immediately, without waiting for the event.
+This in turn causes our action to be enabled or disabled correctly, right away.</p>
+</li>
+<li><p>We forward the <code>signal</code> to the event listener so that it unsubscribes automatically from the <code>recordscontextchange</code> event when the action is unsurfaced.</p>
+</li>
+</ul>
+</li>
+<li><p>Reload the Web Client.
+The button in the application ribbon is now enabled only when a geospatial property exists in the selection.</p>
+</li>
+</ol>
+<h2 id="use-the-command-in-more-than-one-place">Use the command in more than one place</h2>
+<p>As well as adding it to the ribbon, we can add exactly the same command to the chart pop-up menu with a single line of code.</p>
+<ol>
+<li><p>After the existing call to <code>surfaceCommands()</code>, add:</p>
+<pre><code class="lang-typescript">api.commands.chartPopupMenu.surfaceCommands(viewOnMap);
+</code></pre></li>
+<li><p>Reload the Web Client.
+The same command, with the same enablement rules, is now present in the chart&#39;s pop-up menu.</p>
+</li>
+</ol>
+<h2 id="deploy-the-plug-in">Deploy the plug-in</h2>
+<p>To deploy our plug-in on the server, we should rebuild it ready for deployment using a production build.
+We then need to add it to the server configuration, and then redeploy the server.</p>
+<p><strong>Note:</strong> If you follow this procedure in a deployment that provides high availability, you must complete each step on every Liberty server in your environment before you move to the next step.</p>
+<ol>
+<li><p>Build a production version of the plug-in by executing the following command:</p>
+<pre><code class="lang-sh">npm run build
+</code></pre><p>This compiles the plug-in and bundles it into a <code>dist</code> folder in the project.
+That folder contains everything that you need to copy to the server.</p>
+</li>
+<li><p>On the server that hosts the i2 Analyze deployment, find the <code>toolkit/configuration</code> directory, and then navigate to the <code>fragments/opal-services</code> directory that it contains.</p>
+</li>
+<li><p>If the <code>opal-services</code> directory does not already contain a <code>plugins</code> subdirectory, create one.</p>
+</li>
+<li><p>Create a directory for your plug-in inside the <code>plugins</code> directory (for example, <code>plugins/plugin-basic</code>), and copy the contents of the <code>dist</code> folder into this folder.</p>
+</li>
+<li><p>Run the following toolkit commands to update the deployed i2 Analyze server:</p>
+<pre><code class="lang-sh">setup -t stopLiberty
+setup -t deployLiberty
+setup -t startLiberty
+</code></pre></li>
+<li><p>Stop the development proxy, and use the browser to navigate to your real server address.
+You&#39;ll find that your plug-in was successfully deployed.</p>
+</li>
+</ol>
+<h2 id="next-steps">Next steps</h2>
+<p>By following the procedure in this tutorial, you&#39;ve used the <code>create-notebook-plugin</code> tool to create an i2 Web Client plug-in that, though basic, is fully integrated with the application.
+It displays actions in the user interface, it responds to changes in selection, and it sends data from chart records to an external application.</p>
+<p>Most real plug-ins go further than this one by adding a tool view that presents users with a custom interface for performing more complex tasks.
+You can see the fundamentals of how tool views work by following one of the examples that use popular UI frameworks to implement a tool view.</p>
+<p>You can instruct <code>create-notebook-plugin</code> to create such a plug-in by specifying a <code>template</code> that uses <a href="https://react.dev/">React</a> to implement a skeleton tool view:</p>
+<pre><code class="lang-sh">npm create @i2analyze/notebook-plugin -- --template=plugin-with-toolview
+</code></pre></article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

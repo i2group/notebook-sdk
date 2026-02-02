@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>The plug-in entry point </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="The plug-in entry point ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="the-plug-in-entry-point">The plug-in entry point</h1>
+
+<p>Every i2 Notebook plug-in has an <em>entry point</em>, which is a JavaScript file that the i2 Notebook web client runs when it starts up.
+The entry point is responsible for several important aspects of a plug-in&#39;s functionality, including:</p>
+<ul>
+<li>Registering and surfacing commands</li>
+<li>Registering tool views</li>
+<li>Arranging access to chart data</li>
+<li>Telling i2 Notebook that initialization of the plug-in is complete</li>
+</ul>
+<p>Conventionally, the entry point file is named <code>entrypoint.js</code>, but you can choose its name and location when you specify it in the <code>&quot;entryPointUrl&quot;</code> field of the plug-in manifest.</p>
+<h2 id="accessing-the-entry-point-api">Accessing the entry point API</h2>
+<p>To perform any of its tasks, the entry point must get access to the entry point API that the i2 Notebook web client makes available through the <a href="../api/notebook-sdk.ientrypointapi.html"><code>IEntryPointApi</code></a> interface.</p>
+<p>To access the interface, you use the <code>getEntryPointApi()</code> function, which you can call in one of two ways:</p>
+<ul>
+<li><p>If you build the entry point file using a bundler such as webpack or parcel, you can import the <a href="../api/notebook-sdk.getentrypointapi.html"><code>getEntryPointApi()</code></a> function directly from the <code>@i2analyze/notebook-sdk</code> package.</p>
+</li>
+<li><p>If you use an unbundled entry point file, you can call the <a href="../api/notebook-sdk.notebookstatic.getentrypointapi.html"><code>getEntryPointApi()</code></a> function on the global <code>notebook</code> object.</p>
+</li>
+</ul>
+<p><code>getEntryPointApi()</code> is asynchronous.
+On completion, it returns an entry point API object, through which you can access the rest of the API.</p>
+<h3 id="checking-compatibility">Checking compatibility</h3>
+<p>When you call <a href="../api/notebook-sdk.notebookstatic.getentrypointapi.html"><code>getEntryPointApi()</code></a>, you can use the <code>apiVersion</code> parameter to check that the i2 Notebook web client you&#39;re communicating with supports the <a href="versioning.html">Notebook API version</a> that you need.
+If the web client doesn&#39;t support the requested API version, you&#39;ll see an error message in the browser console.</p>
+<p>For example, imagine that you&#39;ve been using version 2.4 of the i2 Notebook SDK to develop your plug-in, but that you then attempt to use it with a client that supports supports only API version 2.3.
+Your call to <code>getEntryPointApi()</code> might look like this:</p>
+<pre><code class="lang-javascript">const api = await notebook.getEntryPointApi(&#39;00000000-0000-0000-0000-000000000000&#39;, &#39;2.4&#39;);
+</code></pre><p>This call will fail, because the web client doesn&#39;t support API version 2.4.</p>
+<p>On the other hand, if your call to <code>getEntryPointApi()</code> specifies version 2.2, then the call will succeed and you&#39;ll receive an entry point object that supports version 2.<em>3</em> of the API.</p>
+<p><strong>Note:</strong> Requesting API version 2.2 doesn&#39;t guarantee that the object you receive supports exactly that version.
+On success, <code>getEntryPointApi()</code> always returns the latest version of the API that the Notebook web client implements. New minor versions of the Notebook API are backward-compatible with old versions.</p>
+<p>You can find out which version of the API an interface, a type, or other functionality was introduced in by checking for the <strong>Introduced</strong> keyword in the documentation or the <code>@since</code> indicator in the type definition file.
+For example:</p>
+<pre><code class="lang-ts">/**
+ * An example type.
+ * @since Major.Minor
+ */
+export type Message = string;
+</code></pre><p>See the related documentation topic for more information about i2&#39;s policy on <a href="versioning.html">SDK and API versioning</a>.</p>
+<h2 id="registering-commands">Registering commands</h2>
+<p>The entry point is where you register the commands that your plug-in adds to the i2 Notebook web client user interface.
+You can arrange for a command to display a tool view that your plug-in implements, or to perform a task in its own right.</p>
+<p>By integrating with the web client&#39;s event system, you can make commands appear in the application ribbon and the chart pop-up menu.
+And you can disable or enable commands according to the current context.</p>
+<h2 id="registering-tool-views">Registering tool views</h2>
+<p>The entry point is also where you register the tool views through which your plug-in can display its own user interface, inside the i2 Notebook web client.</p>
+<p>Tool views consist of HTML pages and code for performing custom user tasks.
+In the entry point, you must provide the web client with the location of that code.</p>
+<h2 id="accessing-chart-data">Accessing chart data</h2>
+<p>The <code>IEntryPointApi</code> interface provides full access to all chart data and metadata: the data that records contain, their visual representation, the schema that defines their types, and whether they are currently selected.</p>
+<p>The same interface gives your plug-in code the ability to subscribe to events in the i2 Notebook web client, so that your code is called when data or selections change.</p>
+<h2 id="entry-point-lifecycle">Entry point lifecycle</h2>
+<p>After the entry point file loads, it must perform command and tool view registrations quickly.
+The i2 Notebook web client blocks its startup until these
+registrations are complete, so that it can render its user interface
+in one go without elements shifting around.</p>
+<p>When your registrations are complete, your entry point must call the <code>initializationComplete()</code> method on the <code>IEntryPointApi</code> interface.
+Failure to do so delays the start of the i2 Notebook web client, and causes your plug-in to be shut down. After the call to <code>initializationComplete()</code>, no
+further commands or tool views can be registered or surfaced.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

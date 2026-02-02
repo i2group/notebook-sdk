@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>The plug-in development proxy </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="The plug-in development proxy ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="the-plug-in-development-proxy">The plug-in development proxy</h1>
+
+<p>In a production deployment of i2 Analyze, the i2 Notebook web client connects to the server and fetches the plug-ins that are deployed on that server:</p>
+<p><img src="devproxy-architecture-without-proxy.png" alt=""></p>
+<p>Developing any software, including an i2 Notebook plug-in, is an iterative process: we write code, try it out, write some more code, and so on.
+If we had to deploy our plug-in code to the i2 Analyze server each time around that iterative loop, it would cost a lot of time and disrupt other server users.</p>
+<p>The i2 Notebook SDK provides a more efficient environment in which to develop an i2 Notebook plug-in, through the use of a development proxy:</p>
+<p><img src="devproxy-architecture-with-proxy.png" alt=""></p>
+<p>The SDK proxy server sits in front of both the i2 Analyze server and your plug-in development environment (for example, a React, Angular, or Vue development server).
+The proxy passes most traffic through to the i2 Analyze server untouched, but it intercepts and modifies requests pertaining to plug-ins.
+In this way, the proxy server can add your in-development plug-ins &quot;on top&quot; of the i2 Analyze server environment.</p>
+<p>The effect of using the proxy is that you can layer a development plug-in on top of an existing i2 Analyze server without affecting that server; and you can use the plug-in live from your development environment without having to copy files around.</p>
+<h2 id="using-the-development-proxy">Using the development proxy</h2>
+<p>To use the development proxy, you just need to tell it where to find the i2 Analyze server and your in-development plug-ins, and then launch and connect to it.</p>
+<h3 id="configuring-the-proxy">Configuring the proxy</h3>
+<p>You provide the information that configures the proxy in a JSON file that can have any name, and be placed anywhere in your file system.</p>
+<p>The i2 Notebook SDK includes a JSON schema that enforces the structure and content of the development proxy configuration file.
+You can use the schema to assist during configuration from a compatible editor such as Microsoft Visual Studio Code.
+To reference the schema from your configuration file, include the <code>&quot;$schema&quot;</code> field as the first entry, like this:</p>
+<pre><code class="lang-json">{
+    &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/devproxy.json&quot;,
+    ...
+}
+</code></pre><h4 id="development-proxy-configuration-syntax">Development proxy configuration syntax</h4>
+<p>The following fields are valid in an i2 Notebook development proxy configuration file:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Mandatory?</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plugins</code></td>
+<td>Yes</td>
+<td>The URLs of the development plug-ins. This is an array of strings, with each URL pointing to the root of a plug-in (where the <code>plugin.json</code> file is located).</td>
+</tr>
+<tr>
+<td><code>port</code></td>
+<td>Yes</td>
+<td>The TCP port that the development proxy should listen on. For example, <code>4000</code>.</td>
+</tr>
+<tr>
+<td><code>server</code></td>
+<td>Yes</td>
+<td>The URL of the i2 Analyze server.</td>
+</tr>
+<tr>
+<td><code>skipHttpsCertificateVerification</code></td>
+<td>No</td>
+<td>A boolean (<code>true</code>/<code>false</code>) indicating whether to skip HTTPS certificate verification. The development proxy is unable to verify some HTTPS (SSL/TLS) certificates, so if either the i2 Analyze server or any plug-ins are running on <code>https://</code> addresses, you must set this field to <code>true</code> to allow the proxy to run. Be aware that when this field is <code>true</code>, no certificate checking takes place.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<pre><code class="lang-json">{
+  &quot;$schema&quot;: &quot;https://i2group.github.io/notebook-sdk/schemas/devproxy.json&quot;,
+  &quot;server&quot;: &quot;http://i2analyze-server/opal/&quot;,
+  &quot;port&quot;: 4000,
+  &quot;plugins&quot;: [&quot;http://localhost:3000&quot;, &quot;http://localhost:4200&quot;]
+}
+</code></pre><h3 id="launching-the-proxy">Launching the proxy</h3>
+<p>The only prerequisite for the development proxy is that you have at least version 12 of Node.js on your development machine.
+No other installations are required.</p>
+<p>If you named your configuration <code>devproxy.json</code>, then you can launch the proxy with:</p>
+<pre><code class="lang-sh">npx @i2analyze/notebook-sdk-plugin-proxy --config devproxy.json
+</code></pre><p>The proxy starts after a few seconds, with output similar to this:</p>
+<p><img src="devproxy-output.png" alt=""></p>
+<p>Then, while you&#39;re developing plug-ins, use the URL of the proxy in your web browser instead of the i2 Analyze server URL.
+The i2 Notebook web client that you see through the proxy includes your in-development plug-ins.</p>
+<p><strong>Note:</strong> If you&#39;re using Create React App (CRA) or Vue CLI to develop your plug-in, be aware that these servers only support IPv4, and might not be compatible with the latest version of the proxy.</p>
+<p>To ensure compatibility with these servers, use the following command to launch the latest version of the proxy with the <code>--forceIPv4</code> flag:</p>
+<pre><code class="lang-sh">npx @i2analyze/notebook-sdk-plugin-proxy@latest --config devproxy.json --forceIPv4
+</code></pre><p>Alternatively, you can opt to use version 1 of the proxy specifically:</p>
+<pre><code class="lang-sh">npx @i2analyze/notebook-sdk-plugin-proxy@1 --config devproxy.json
+</code></pre><h2 id="proxy-functions">Proxy functions</h2>
+<p>In addition to layering development plug-ins on top of an existing i2 Analyze server, the proxy provides the following functions:</p>
+<ul>
+<li>It validates any <code>plugin.json</code> (plug-in manifest) files. Any problems are reported to the proxy&#39;s console output.</li>
+<li>It simulates an accurate URL path that your plug-in will eventually be deployed to. (For example, the <code>/opal/plugins/xxxxx/</code> paths in the above output.)
+This information helps you to identify problems with intra-plug-in paths before you get to deployment.</li>
+<li>It switches the i2 Notebook application into a &quot;stricter&quot; plug-in development mode that makes it more sensitive to incorrect API usage at a small performance cost.</li>
+</ul>
+<h2 id="shutting-down-and-restarting-the-proxy">Shutting down and restarting the proxy</h2>
+<p>When you no longer require the proxy, you can shut it down with the <code>Ctrl+C</code> keyboard combination.</p>
+<p>If you change the proxy configuration file, you must stop and restart the proxy manually.
+However, changes to plug-in manifest files, stopping and starting plug-in development servers, and restarting the i2 Analyze server do not require proxy restarts.</p>
+<h2 id="example-use">Example use</h2>
+<p>For a worked example of configuring and running a proxy for a simple i2 Notebook plug-in, see <a href="tutorials/basic-plugin.html">the tutorial</a>.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>schema namespace </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="schema namespace ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="notebook-sdk.html">@i2analyze/notebook-sdk</a> &gt; <a href="notebook-sdk.schema.html">schema</a></p>
+<h2 id="schema-namespace">schema namespace</h2>
+<p>The members of the <code>schema</code> namespace provide access to the specifications that govern the structure of records in the i2 Notebook web client. Schemas determine what properties records can contain; place constraints on notes, source identifiers, and source references; and describe the security model that controls access to records.</p>
+<p><b>Signature:</b></p>
+<pre><code class="lang-typescript">export declare namespace schema 
+</code></pre><p><b>Introduced:</b>
+version 1.0</p>
+<h2 id="interfaces">Interfaces</h2>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="notebook-sdk.schema.ichartentitytype.html">IChartEntityType</a></td>
+<td>An entity type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartentitytypedata.html">IChartEntityTypeData</a></td>
+<td>A set of data for creating a custom entity type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartitemtypebase.html">IChartItemTypeBase</a></td>
+<td>A set of information that is common to all item types in i2 Notebook.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartitemtypedatabase.html">IChartItemTypeDataBase</a></td>
+<td>A set of data that is common to creating all custom item types.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartlinktype.html">IChartLinkType</a></td>
+<td>A link type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartlinktypedata.html">IChartLinkTypeData</a></td>
+<td>A set of data for creating a custom link type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartpropertylabelpart.html">IChartPropertyLabelPart</a></td>
+<td>A part of a label that consists of a property value.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartpropertytype.html">IChartPropertyType</a></td>
+<td>A property type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartschema.html">IChartSchema</a></td>
+<td>A chart schema, which defines the types of the records and properties that can appear on charts in the i2 Notebook web client.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartschemachange.html">IChartSchemaChange</a></td>
+<td>A change that has occurred to an i2 Notebook chart schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.iitemtypeeditor.html">IItemTypeEditor</a></td>
+<td>A set of methods for modifying a custom item type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.iliterallabelpart.html">ILiteralLabelPart</a></td>
+<td>A part of a label that consists of a literal string.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.inotesschema.html">INotesSchema</a></td>
+<td>A schema for notes, which places constraints on their use.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ipendingitemtype.html">IPendingItemType</a></td>
+<td>An item type that has been created in a transaction handler, but has not yet been added to a chart&#39;s schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ipendingpropertytype.html">IPendingPropertyType</a></td>
+<td>A custom property type that has been created in a transaction handler, but has not yet been added to a chart schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ipossiblevalue.html">IPossibleValue</a></td>
+<td>A possible value for a property whose property type has a string-based logical type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ipropertytypedata.html">IPropertyTypeData</a></td>
+<td>A set of data for creating a custom property type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ipropertytypeeditor.html">IPropertyTypeEditor</a></td>
+<td>A set of methods for modifying a custom property type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ipropertytypeseditor.html">IPropertyTypesEditor</a></td>
+<td>A set of methods for adding and modifying custom property types on schema and custom item types.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ischemainfo.html">ISchemaInfo</a></td>
+<td>Information about a schema in an i2 Analyze deployment.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isecuritydimension.html">ISecurityDimension</a></td>
+<td>A security dimension.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isecuritydimensionvalue.html">ISecurityDimensionValue</a></td>
+<td>A security dimension value.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isecurityschema.html">ISecuritySchema</a></td>
+<td>A security schema, which defines the available security dimensions and their dimension values.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isourceidentifiersschema.html">ISourceIdentifiersSchema</a></td>
+<td>A schema for source identifiers, which places constraints on their use.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isourcereferenceschema.html">ISourceReferenceSchema</a></td>
+<td>A schema for source references, which places constraints on their use.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isourcereferenceselectedfromvaluetype.html">ISourceReferenceSelectedFromValueType</a></td>
+<td>A type that represents the constraints on a selected-from string value in a source reference.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isourcereferencestringvaluetype.html">ISourceReferenceStringValueType</a></td>
+<td>A type that represents the constraints on a single-line string value in a source reference.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isourcereferencesuggestedfromvaluetype.html">ISourceReferenceSuggestedFromValueType</a></td>
+<td>A type that represents the constraints on a suggested-from string value in a source reference.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.istringlimitedvaluetype.html">IStringLimitedValueType</a></td>
+<td>A type that represents the constraints on a string value in a source reference.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="type-aliases">Type Aliases</h2>
+<table>
+<thead>
+<tr>
+<th>Type Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="notebook-sdk.schema.analyzeitemtypeid.html">AnalyzeItemTypeId</a></td>
+<td>An identifier of an item type in the i2 Analyze schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.analyzepropertytypeid.html">AnalyzePropertyTypeId</a></td>
+<td>An identifier of a property type in the i2 Analyze schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.chartitemtypeid.html">ChartItemTypeId</a></td>
+<td>An identifier of an item type in a chart schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.chartitemtypespecifier.html">ChartItemTypeSpecifier</a></td>
+<td>A common specifier for a chart item type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.chartpropertytypeid.html">ChartPropertyTypeId</a></td>
+<td>An identifier of a property type in a chart schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.customlogicaltype.html">CustomLogicalType</a></td>
+<td>A logical type for the value of a custom record property.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ichartitemtype.html">IChartItemType</a></td>
+<td>An entity type or a link type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.ilabelpart.html">ILabelPart</a></td>
+<td>A part of a label definition.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.isourcereferencevaluetype.html">ISourceReferenceValueType</a></td>
+<td>A type for the value of a field in a source reference.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.itemtypespecifier.html">ItemTypeSpecifier</a></td>
+<td>A common specifier for an item type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.propertytypespecifier.html">PropertyTypeSpecifier</a></td>
+<td>A common specifier for a chart property type.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.schematype.html">SchemaType</a></td>
+<td>The type of a schema.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.securitydimensionid.html">SecurityDimensionId</a></td>
+<td>An identifier of a security dimension.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.schema.securitydimensionvalueid.html">SecurityDimensionValueId</a></td>
+<td>The identifier of a security dimension value.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

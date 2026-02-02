@@ -1,0 +1,202 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>toolview namespace </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="toolview namespace ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="notebook-sdk.html">@i2analyze/notebook-sdk</a> &gt; <a href="notebook-sdk.toolview.html">toolview</a></p>
+<h2 id="toolview-namespace">toolview namespace</h2>
+<p>The members of the <code>toolview</code> namespace enable you to integrate the tool views that you write for your plug-ins with the i2 Notebook application.</p>
+<p><b>Signature:</b></p>
+<pre><code class="lang-typescript">export declare namespace toolview 
+</code></pre><p><b>Introduced:</b>
+version 1.0</p>
+<h2 id="interfaces">Interfaces</h2>
+<table>
+<thead>
+<tr>
+<th>Interface</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="notebook-sdk.toolview.itoolview.html">IToolView</a></td>
+<td>A tool view, as returned by <a href="notebook-sdk.ientrypointapi.createtoolview_1.html">IEntryPointApi.createToolView()</a><!-- -->.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.itoolviewapi.html">IToolViewApi</a></td>
+<td>A collection of methods and properties that allow plug-in tool views to interact with i2 Notebook.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.itoolviewconfig.html">IToolViewConfig</a></td>
+<td>A set of information for creating a tool view.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.ivolatilestore.html">IVolatileStore</a></td>
+<td>The volatile store that i2 Notebook makes available to tool views.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewapieventmap.html">ToolViewApiEventMap</a></td>
+<td>A combined mapping of tool view and other event types to their listener types.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewapieventoptionsmap.html">ToolViewApiEventOptionsMap</a></td>
+<td>A combined mapping of tool view and other event types to their listener options types.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolvieweventmap.html">ToolViewEventMap</a></td>
+<td>A mapping of tool view event types to their listener types.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolvieweventoptionsmap.html">ToolViewEventOptionsMap</a></td>
+<td>A mapping of tool view event types to their listener options types.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="type-aliases">Type Aliases</h2>
+<table>
+<thead>
+<tr>
+<th>Type Alias</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="notebook-sdk.toolview.serializablevalue.html">SerializableValue</a></td>
+<td>A serializable value that a tool view puts into the volatile store.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewminimizedlistener.html">ToolViewMinimizedListener</a></td>
+<td>A callback function that handles tool view minimized events.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewposition.html">ToolViewPosition</a></td>
+<td>The position of the tool view, relative to an edge of the chart.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewsize.html">ToolViewSize</a></td>
+<td>The size of the tool view.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewstatelistener.html">ToolViewStateListener</a></td>
+<td>A callback function that handles tool view state change events.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.toolviewunloadlistener.html">ToolViewUnloadListener</a></td>
+<td>A callback function that handles tool view unload events.</td>
+</tr>
+<tr>
+<td><a href="notebook-sdk.toolview.volatilestorechangelistener.html">VolatileStoreChangeListener</a></td>
+<td>A callback function that handles change events in the volatile store.</td>
+</tr>
+</tbody>
+</table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
