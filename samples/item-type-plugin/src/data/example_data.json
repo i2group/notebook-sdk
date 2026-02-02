@@ -1,0 +1,58 @@
+{
+  "data": [
+    {
+      "shipmentId": "S1-DEP",
+      "typeId": "departure",
+      "name": "Departure",
+      "icon": "Cargo Plane (Rotary Wing)",
+      "properties": [
+        {
+          "type": "date",
+          "name": "Departure Date",
+          "value": "2023-10-01"
+        },
+        {
+          "type": "singleLineString",
+          "name": "Country",
+          "value": "Congo"
+        }
+      ]
+    },
+    {
+      "shipmentId": "S1-DES",
+      "typeId": "destination",
+      "name": "Destination",
+      "icon": "Place",
+      "properties": [
+        {
+          "type": "date",
+          "name": "Expected Arrival",
+          "value": "2023-10-04"
+        },
+        {
+          "type": "singleLineString",
+          "name": "Country",
+          "value": "Vietnam"
+        }
+      ]
+    },
+    {
+      "typeId": "seizure",
+      "name": "Seizure",
+      "fromId": "S1-DEP",
+      "toId": "S1-DES",
+      "properties": [
+        {
+          "type": "date",
+          "name": "Seizure Date",
+          "value": "2023-10-03"
+        },
+        {
+          "type": "singleLineString",
+          "name": "Seizure Country",
+          "value": "Singapore"
+        }
+      ]
+    }
+  ]
+}

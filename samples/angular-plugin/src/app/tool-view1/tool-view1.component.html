@@ -1,0 +1,54 @@
+<div>
+  <div class="record-navigation">
+    <div>{{ navigationTitle }}</div>
+    @if (totalRecords) {
+      <div class="navigation-buttons">
+        <button
+          class="navigation-button"
+          (click)="onPreviousButtonClick()"
+          title="Previous record"
+          [disabled]="disablePreviousButton"
+          >
+          &lt;
+        </button>
+        <button
+          class="navigation-button"
+          (click)="onNextButtonClick()"
+          title="Next record"
+          [disabled]="disableNextButton"
+          >
+          &gt;
+        </button>
+      </div>
+    }
+  </div>
+  <h1 class="record-header">
+    @if (image) {
+      <img
+        [src]="image.href"
+        [alt]="image.description"
+        class="record-image"
+        />
+    }
+    <span class="record-label">
+      @if (threeSixtyUrl) {
+        <a
+          [href]="threeSixtyUrl"
+          target="_blank"
+          >
+          {{ recordLabel }}
+        </a>
+      } @else {
+        {{ recordLabel }}
+      }
+    </span>
+  </h1>
+  <div class="record-properties">
+    @for (property of properties; track property) {
+      <div class="property">
+        <div class="property-label">{{ property.label }}</div>
+        <div class="property-value">{{ property.value }}</div>
+      </div>
+    }
+  </div>
+</div>

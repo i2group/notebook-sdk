@@ -1,0 +1,16 @@
+{
+  "$schema": "https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json",
+  "name": "item-type-plugin",
+  "pluginId": "ac7bcb47-f3d5-45c8-8d41-8ca30cf8ec06",
+  "pluginVersion": "1.0.0",
+  "entryPointUrl": "./entrypoint.js",
+  "entryPointCsp": {
+    "script-src": "'unsafe-eval'",
+    "connect-src": "*"
+  },
+  "toolViewCsp": {
+    "script-src": "'unsafe-eval' 'unsafe-inline'",
+    "style-src": "'unsafe-inline'",
+    "connect-src": "*"
+  }
+}
