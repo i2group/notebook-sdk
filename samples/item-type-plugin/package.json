@@ -1,0 +1,53 @@
+{
+  "name": "item-type-plugin",
+  "description": "A sample plugin for the i2 Notebook SDK to add and edit item types.",
+  "version": "1.0.0",
+  "main": "src/index.tsx",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm-run-all -s prettier -p build:*",
+    "build:compile": "webpack --mode=production --env production --progress",
+    "build:copy": "cpx ./public/**/* ./dist -i *.html",
+    "dev": "run-p dev:*",
+    "dev:serve": "webpack-cli serve --mode=development --env development",
+    "dev:proxy": "npx @i2analyze/notebook-sdk-plugin-proxy --config devproxy.json",
+    "dev:copy": "run-p \"build:copy -- --watch\"",
+    "prettier": "prettier \"./src/**/*.{ts,tsx,js}\" --write",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"./src/**/*.{ts,tsx}\" --fix"
+  },
+  "devDependencies": {
+    "@i2analyze/notebook-sdk-plugin-proxy": "^2.0.3",
+    "@types/node": "16.18.59",
+    "@types/react": "18.2.31",
+    "@types/react-dom": "18.2.14",
+    "@types/webpack": "5.28.5",
+    "@types/webpack-dev-server": "4.7.1",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.62.0",
+    "cpx2": "^7.0.1",
+    "css-loader": "^7.1.2",
+    "eslint": "8.52.0",
+    "eslint-plugin-import": "2.29.0",
+    "eslint-plugin-react": "7.33.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-webpack-plugin": "3.2.0",
+    "fork-ts-checker-webpack-plugin": "7.3.0",
+    "html-webpack-plugin": "5.5.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "2.8.8",
+    "style-loader": "^4.0.0",
+    "ts-loader": "9.5.0",
+    "ts-node": "10.9.1",
+    "tsconfig-paths-webpack-plugin": "3.5.2",
+    "typescript": "4.9.5",
+    "webpack": "5.104.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "5.2.3"
+  },
+  "dependencies": {
+    "@i2analyze/notebook-sdk": "^1.8.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

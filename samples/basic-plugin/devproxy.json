@@ -1,0 +1,6 @@
+{
+  "$schema": "https://i2group.github.io/notebook-sdk/schemas/devproxy.json",
+  "port": 4000,
+  "plugins": ["http://localhost:5001/"],
+  "server": "http://localhost:9082/opal"
+}

@@ -1,0 +1,43 @@
+{
+  "name": "dialog-sample-plugin",
+  "description": "A sample plugin demonstrating dialog usage.",
+  "version": "1.0.0",
+  "main": "src/entrypoint.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm-run-all -s prettier -p build:*",
+    "build:compile": "webpack --mode=production --env production --progress",
+    "build:copy": "cpx ./public/**/* ./dist -i *.html",
+    "dev": "run-p dev:*",
+    "dev:serve": "webpack-cli serve --mode=development --env development",
+    "dev:proxy": "npx @i2analyze/notebook-sdk-plugin-proxy --config devproxy.json",
+    "dev:copy": "run-p \"build:copy -- --watch\"",
+    "prettier": "prettier \"./src/**/*.{ts,tsx,js}\" --write",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"./src/**/*.{ts,tsx}\" --fix"
+  },
+  "devDependencies": {
+    "@i2analyze/notebook-sdk-plugin-proxy": "^2.1.0",
+    "@types/node": "16.18.59",
+    "@types/webpack": "5.28.4",
+    "@typescript-eslint/eslint-plugin": "5.62.0",
+    "@typescript-eslint/parser": "5.62.0",
+    "cpx2": "^7.0.1",
+    "eslint": "8.52.0",
+    "eslint-plugin-import": "2.29.0",
+    "eslint-webpack-plugin": "3.2.0",
+    "fork-ts-checker-webpack-plugin": "7.3.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "2.8.8",
+    "ts-loader": "9.5.0",
+    "ts-node": "10.9.1",
+    "tsconfig-paths-webpack-plugin": "3.5.2",
+    "typescript": "4.9.5",
+    "webpack": "5.104.1",
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "5.2.3"
+  },
+  "dependencies": {
+    "@i2analyze/notebook-sdk": "^1.8.0"
+  }
+}
