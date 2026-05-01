@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Accessing data from a plug-in </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Accessing data from a plug-in ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="accessing-data-from-a-plug-in">Accessing data from a plug-in</h1>
+
+<p>The i2 Notebook Web API gives your plug-in access to two kinds of information:</p>
+<ul>
+<li><strong>Application data</strong>, such as the current user, theme, and locale.</li>
+<li><strong>Chart data</strong>, such as the schema, the records on the chart, the current selection, and the view.</li>
+</ul>
+<p>This page shows you how to read both kinds of data, and how to safely combine reads and writes when your code involves asynchronous operations.</p>
+<h2 id="application-data">Application data</h2>
+<p>Data that&#39;s relevant to the whole application, such as <a href="../api/notebook-sdk.app.iapplication.user.html">user</a>, <a href="../api/notebook-sdk.app.iapplication.theme.html">theme</a>, and <a href="../api/notebook-sdk.app.iapplication.locale.html">locale</a> data, is available directly from the root API object — both the <a href="../api/notebook-sdk.ientrypointapi.html">entry point API</a> and the <a href="../api/notebook-sdk.toolview.itoolviewapi.html">tool view API</a> extend the <a href="../api/notebook-sdk.app.iapplication.html"><code>IApplication</code> interface</a>.</p>
+<pre><code class="lang-typescript">const api = await getToolViewApi();
+
+const user = api.user;
+const appearance = api.theme.appearance;
+const locale = api.formattingLocale;
+</code></pre><blockquote><p><strong>Did you know?</strong> When the i2 Notebook web client opens a tool view, it includes some theme and locale data in the URL as query parameters. This is useful when you want to render your tool view immediately, before <code>await getToolViewApi()</code> resolves. The available parameters are:</p>
+<ul>
+<li><code>?baseTextDirection</code></li>
+<li><code>?flowDirection</code></li>
+<li><code>?formattingLocale</code></li>
+<li><code>?translationLocale</code></li>
+<li><code>?appearance</code></li>
+<li><code>?themeName</code> (deprecated — use <code>?appearance</code> instead)</li>
+</ul>
+</blockquote>
+<h2 id="chart-data">Chart data</h2>
+<p>Chart data is also available directly from the root API object. Both <a href="../api/notebook-sdk.ientrypointapi.html"><code>IEntryPointApi</code></a> and <a href="../api/notebook-sdk.toolview.itoolviewapi.html"><code>IToolViewApi</code></a> extend <a href="../api/notebook-sdk.app.iapplicationcontents.html"><code>IApplicationContents</code></a>, which provides <code>chart</code> and <code>view</code> properties.</p>
+<pre><code class="lang-typescript">const api = await getToolViewApi();
+
+// The schema describes what types of records can appear on the chart.
+const personType = api.chart.schema.getItemType(personAnalyzeItemTypeId);
+
+// Records, elements, and the current selection are all on `api.chart`.
+const selectedRecords = api.chart.selection.records;
+const allRecords = api.chart.records;
+
+// The view describes what the user is currently looking at.
+const zoomScale = api.view.zoomScale;
+</code></pre><blockquote><p><strong>Note:</strong> When you use the entry point API, <code>chart</code> and <code>view</code> are only available after you call <code>await api.initializationComplete()</code>. The tool view API has them available as soon as <code>getToolViewApi()</code> resolves.</p>
+</blockquote>
+<h3 id="whats-available-on-apichart">What&#39;s available on <code>api.chart</code></h3>
+<p>The <code>api.chart</code> object provides access to everything on the chart:</p>
+<ul>
+<li><strong><code>api.chart.schema</code></strong> — the <a href="../api/notebook-sdk.chart.ichart.schema.html">schema</a>: record types, property types, notes, and security settings.</li>
+<li><strong><code>api.chart.records</code></strong> — all <a href="../api/notebook-sdk.chart.ichart.records.html">records</a> on the chart, including their property data, metadata, notes, source references, and security information.</li>
+<li><strong><code>api.chart.elements</code></strong> — the <a href="../api/notebook-sdk.chart.ichart.elements.html">nodes and edges</a> on the chart surface.</li>
+<li><strong><code>api.chart.selection</code></strong> — the currently selected records and elements.</li>
+</ul>
+<p>For more information about the chart schema and how to use it, see <a href="chart-schema.html">Chart schema and identifiers</a>.</p>
+<h3 id="visual-data">Visual data</h3>
+<p>Visual data comes in two forms. The chart view describes what the chart itself looks like — its center, extent, and zoom level — and is available through <a href="../api/notebook-sdk.app.iapplicationcontents.view.html"><code>api.view</code></a>.</p>
+<p>The chart elements — the nodes and edges that users interact with on the chart surface — are available through <a href="../api/notebook-sdk.chart.ichart.elements.html"><code>api.chart.elements</code></a>.</p>
+<h3 id="record-data">Record data</h3>
+<p>Every element on an i2 Notebook chart can contain records. Each record contains:</p>
+<ul>
+<li>Property data</li>
+<li>Metadata, including creation date and time, display name, and principal name</li>
+<li>Notes, source references, and security information</li>
+</ul>
+<p>You can get information about all the records on the chart through <a href="../api/notebook-sdk.chart.ichart.records.html"><code>api.chart.records</code></a>. Some event handlers also receive more specific record data. For example, the <code>chartchange</code> event payload contains the records (and elements) that changed. The <a href="../api/notebook-sdk.commands.icommandconfig.onexecute.html"><code>onExecute()</code> method</a> of a command receives an <a href="../api/notebook-sdk.commands.irecordscontext.html"><code>IRecordsContext</code></a> representing the records that were selected when the user invoked the command.</p>
+<h3 id="reacting-to-changes">Reacting to changes</h3>
+<p>You can register event handlers to respond when the chart changes. For example, the <code>chartchange</code> event fires when records are added, removed, or modified — whether by the user or by another plug-in:</p>
+<pre><code class="lang-typescript">api.addEventListener(&#39;chartchange&#39;, (change, applicationContents) =&gt; {
+  // Respond to records or elements that have changed.
+  const changedRecords = change.records;
+  const changedElements = change.elements;
+});
+</code></pre><p>You can also listen for selection and view changes. The <code>chartselectionchange</code> event payload includes an <a href="../api/notebook-sdk.chart.iselection.html"><code>ISelection</code></a> object, while the <code>chartviewchange</code> event provides direct access to the <a href="../api/notebook-sdk.chart.ichartview.html"><code>IChartView</code></a> interface:</p>
+<pre><code class="lang-typescript">api.addEventListener(&#39;chartselectionchange&#39;, (selection, applicationContents) =&gt; {
+  const selectedRecords = selection.records;
+  // Update your UI to reflect the new selection.
+});
+
+api.addEventListener(&#39;chartviewchange&#39;, (view, applicationContents) =&gt; {
+  const zoomScale = view.zoomScale;
+  // Respond to the user panning or zooming the chart.
+});
+</code></pre><p>For the full list of events, see <a href="../api/notebook-sdk.app.applicationeventmap.html"><code>ApplicationEventMap</code></a>.</p>
+<blockquote><p><strong>Did you know?</strong> Most event handlers also receive an <a href="../api/notebook-sdk.app.iapplicationcontents.html"><code>IApplicationContents</code></a> argument, so you can access the rest of the chart from inside the handler — for example, <code>applicationContents.chart.schema</code> and <code>applicationContents.view</code>.</p>
+</blockquote>
+<h2 id="using-transactions-with-async-operations">Using transactions with async operations</h2>
+<p>Reading chart data directly from <code>api</code> is fine for synchronous code. However, if you <code>await</code> an asynchronous operation, the chart might change in the meantime — another plug-in could add records, or the user could change the selection. After the <code>await</code>, values you read earlier might be stale:</p>
+<pre><code class="lang-typescript">// Not safe — the chart data might change during the await.
+const selected = api.chart.selection.records;
+const enriched = await fetchExtraDataFor(selected);
+
+// By now, `selected` might not match what&#39;s on the chart.
+await api.runTrackedMutations((application, mutations) =&gt; {
+  applyEnrichment(mutations, enriched);
+  return { type: &#39;commit&#39; };
+});
+</code></pre><p>To avoid this, use <a href="../api/notebook-sdk.app.iapplication.runtransaction.html"><code>runTransaction()</code></a>. The transaction callback receives an <code>applicationContents</code> argument that provides a consistent, point-in-time view of the chart — even across <code>await</code> boundaries. Any mutation that follows will wait until the transaction is complete before executing:</p>
+<pre><code class="lang-typescript">let enriched;
+api.runTransaction(async (applicationContents) =&gt; {
+  // Read from applicationContents, not from api — this is guaranteed to be consistent.
+  const selected = applicationContents.chart.selection.records;
+  enriched = await fetchExtraDataFor(selected);
+});
+
+// This call waits until the transaction above is complete before executing.
+await api.runTrackedMutations((application, mutations) =&gt; {
+  applyEnrichment(mutations, enriched);
+  return { type: &#39;commit&#39; };
+});
+</code></pre><blockquote><p><strong>Note:</strong> If you only need to make changes (without an async step between read and write), you can call <a href="../api/notebook-sdk.app.iapplication.runtrackedmutations.html"><code>runTrackedMutations()</code></a> or <a href="../api/notebook-sdk.app.iapplication.rununtrackedmutations.html"><code>runUntrackedMutations()</code></a> directly. Tracked mutations are added to the undo stack as a single entry; untracked mutations are not. See <a href="mutations.html">Mutations</a> and <a href="mutation-commands.html">Mutation commands</a> for details.</p>
+</blockquote>
+<h2 id="further-reading">Further reading</h2>
+<ul>
+<li><a href="../api/notebook-sdk.app.applicationeventmap.html"><code>ApplicationEventMap</code></a> — the full list of events you can listen for.</li>
+<li><a href="mutations.html">Mutations</a> and <a href="mutation-commands.html">Mutation commands</a> — how to make changes to the chart.</li>
+<li>The <a href="tutorials/angular-plugin.html">Angular</a>, <a href="tutorials/react-plugin.html">React</a>, and <a href="tutorials/vue-plugin.html">Vue</a> plug-in tutorials — end-to-end examples that combine data access, events, and mutations.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

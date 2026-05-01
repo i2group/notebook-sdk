@@ -1,0 +1,142 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Unfetched property values </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Unfetched property values ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="unfetched-property-values">Unfetched property values</h1>
+
+<p>The values of properties with logical types such as <code>multipleLineString</code> can be large.
+To reduce memory and bandwidth consumption, the i2 Notebook web client does not always fetch these values when it fetches records that contain them from the server.
+In code that manipulates property values, you must take the possibility of <em>unfetched</em> values into account.</p>
+<p>With a record in hand, you can distinguish between a property that actually has no value, and a property whose value has not yet been fetched, in two different ways:</p>
+<ul>
+<li><p>Call the <a href="../api/notebook-sdk.records.ichartrecordbase.isvalueunfetched.html"><code>isValueUnfetched()</code></a> method on the value of an individual property.</p>
+</li>
+<li><p>Test <a href="../api/notebook-sdk.records.ichartrecordbase.hasunfetchedproperties.html"><code>hasUnfetchedProperties</code></a> on the record, and then call <a href="../api/notebook-sdk.records.ichartrecordbase.getunfetchedpropertytypes.html"><code>getUnfetchedPropertyTypes()</code></a>.</p>
+</li>
+</ul>
+<h2 id="requesting-unfetched-property-values">Requesting unfetched property values</h2>
+<p>You can request unfetched property values from within a transaction or a mutation by calling <a href="../api/notebook-sdk.chart.ichart.ensurepropertiesfetched.html"><code>IChart.ensurePropertiesFetched()</code></a>.
+This asynchronous method fetches values from the server for the specified properties of the specified records.</p>
+<p>For example:</p>
+<pre><code class="lang-typescript">getToolViewApi().runTransaction(async (application) =&gt; {
+  const record = application.chart.records.get(myRecordId);
+  const propertyType = record.itemType.propertyTypes.get(myPropertyTypeId);
+
+  // Check if the value of the property with type &#39;propertyType&#39; has been
+  // fetched for &#39;record&#39;. If not, request the value from the server.
+  await application.chart.ensurePropertiesFetched([record], propertyType);
+});
+</code></pre><p>For performance reasons, <code>ensurePropertiesFetched()</code> actually takes an <em>array</em> of records.
+It can fetch properties for many records efficiently in a small number of server round-trips.
+Calling it repeatedly for one record at a time results in much poorer performance and increased network use.</p>
+<p>Fetching property values is not itself a mutation operation, and does not form part of the undo action that a tracked mutation constructs.</p>
+<p><strong>Note:</strong> The i2 Notebook web client is at liberty to dispose of property values that you fetch through <code>ensurePropertiesFetched()</code>.
+Do not rely on fetched values remaining fetched for all time.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

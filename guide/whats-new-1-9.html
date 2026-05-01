@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>What's new in version 1.9 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="What's new in version 1.9 ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="whats-new-in-version-19">What&#39;s new in version 1.9</h1>
+
+<p>Version 1.9 of the i2 Notebook API adds support for brush sets, granular property-level change tracking in chart change events,
+improved mutation APIs that return promises, new line and border styling options, local-only element style editing,
+and several smaller additions and deprecations.</p>
+<ul>
+<li><strong>Brush Sets API</strong> — Create and manage brush sets to apply color-based highlighting to chart elements with discrete or gradient color ranges.</li>
+<li><strong>Property-level change tracking</strong> — Chart change events now include granular details about which properties, notes, and source references changed within each record.</li>
+<li><strong>Async mutations</strong> — <code>runTrackedMutations</code> and <code>runUntrackedMutations</code> now return promises for better control flow in long-running operations.</li>
+<li><strong>Direct chart and view access</strong> — Access the chart and view objects directly from the root API for simplified data queries and operations.</li>
+<li><strong>Line and border styling</strong> — New <code>lineStyle</code> and <code>borderStyle</code> properties on nodes, edges, and groups with support for solid, dashed, dotted, dash-dot, and dash-dot-dot styles.</li>
+<li><strong>Local-only style editing</strong> — Edit element appearance locally without persisting changes to the server, useful for transient UI state.</li>
+<li><strong>Group layout commands</strong> — New layout commands that work within groups or on selections.</li>
+</ul>
+<h2 id="app-namespace">app namespace</h2>
+<p><code>IApplication</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.iapplication.brushsets.html"><code>brushSets</code></a> — access to the brush sets manager for creating and managing brush sets.</li>
+<li><a href="../api/notebook-sdk.app.iapplication.valuefactory.html"><code>valueFactory</code></a> — factory for creating values used in the API, including brush color ranges.</li>
+</ul>
+<p><code>ITrackedMutations</code> / <code>IUntrackedMutations</code></p>
+<ul>
+<li><code>runTrackedMutations</code> and <code>runUntrackedMutations</code> now return a promise of the mutation response. The callback API is deprecated.</li>
+<li><a href="../api/notebook-sdk.app.istatus.setprogress.html"><code>setProgress</code></a> — new mutation API for setting progress during long-running operations.</li>
+<li><code>IUntrackedMutations</code> provides methods (<code>editNode</code>, <code>editEdge</code>, <code>editEdgeSummary</code>, <code>editNodeGroup</code>) for editing element appearance locally without persisting to the server. Useful for temporary styling, transient highlights, or UI state visualization. Changes are applied immediately to the chart UI but are lost on page reload.</li>
+</ul>
+<p><code>IValueFactory</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.ivaluefactory.createbrushcolorrange.html"><code>createBrushColorRange</code></a> — create discrete or continuous (gradient) color ranges for brush sets.</li>
+</ul>
+<p><code>PropertiesSpecifier</code> / <code>EditPropertiesSpecifier</code></p>
+<ul>
+<li>New common specifier types for record properties in mutation APIs.</li>
+</ul>
+<p><code>IApplicationContents</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.iapplicationcontents.chart.html"><code>chart</code></a> and <a href="../api/notebook-sdk.app.iapplicationcontents.view.html"><code>view</code></a> — direct access to chart and view on root APIs.</li>
+</ul>
+<h2 id="chart-namespace">chart namespace</h2>
+<p><code>IChartChangeMinor</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.ichartchangeminor.recordchanges.html"><code>recordChanges</code></a> — optional field providing granular change details for each changed record, enabling plug-ins to determine exactly which properties, notes, and source references changed.</li>
+</ul>
+<p><code>IRecordChanges</code></p>
+<ul>
+<li>New interface providing detailed change information for properties, notes, and source references within records; see <a href="../api/notebook-sdk.chart.irecordchanges.html"><code>IRecordChanges</code></a>.</li>
+</ul>
+<p><code>ChartEventMap</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.charteventmap.brushsetchange.html"><code>brushsetchange</code></a> — new event fired when a brush set changes.</li>
+</ul>
+<h2 id="visual-namespace">visual namespace</h2>
+<p><code>INodeStyle</code> / <code>IEdgeStyle</code> / <code>INodeGroupStyle</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.iedgestyle.linestyle.html"><code>lineStyle</code></a> — line style property added to edge visual styles.</li>
+<li><a href="../api/notebook-sdk.visual.inodestyle.borderstyle.html"><code>borderStyle</code></a> — border style property added to node and group visual styles.</li>
+<li>Added <a href="../api/notebook-sdk.visual.linestyle.html"><code>LineStyle</code></a> type with support for <code>solid</code>, <code>dashed</code>, <code>dotted</code>, <code>dash-dot</code>, and <code>dash-dot-dot</code> styles.</li>
+<li>Updated border color, border width and border style valid options.</li>
+</ul>
+<p><code>IBrushSet</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.ibrushset.id.html"><code>id</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.isactive.html"><code>isActive</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.colorrange.html"><code>colorRange</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.setcolorrange.html"><code>setColorRange</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.set.html"><code>set</code></a> — set brush indices for records.</li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.remove.html"><code>remove</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.getbrushindex.html"><code>getBrushIndex</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushset.clear.html"><code>clear</code></a></li>
+</ul>
+<p><code>IBrushSetsManager</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.ibrushsetsmanager.create.html"><code>create</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushsetsmanager.activate.html"><code>activate</code></a></li>
+<li><a href="../api/notebook-sdk.visual.ibrushsetsmanager.deactivate.html"><code>deactivate</code></a></li>
+</ul>
+<p><code>IBrushColorRange</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.ibrushcolorrange.getcolor.html"><code>getColor</code></a> — resolve a brush index to a CSS color string, with interpolation for continuous ranges.</li>
+</ul>
+<h2 id="commands-namespace">commands namespace</h2>
+<p><code>ISystemCommands</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutgroupedonselection.html"><code>layoutGroupedOnSelection</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutgroupedwithingroup.html"><code>layoutGroupedWithinGroup</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutpackedonselection.html"><code>layoutPackedOnSelection</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutpackedwithingroup.html"><code>layoutPackedWithinGroup</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutpeacockonselection.html"><code>layoutPeacockOnSelection</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutpeacockwithingroup.html"><code>layoutPeacockWithinGroup</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutcircularonselection.html"><code>layoutCircularOnSelection</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutcircularwithingroup.html"><code>layoutCircularWithinGroup</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutorganizationonselection.html"><code>layoutOrganizationOnSelection</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutorganizationwithingroup.html"><code>layoutOrganizationWithinGroup</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutminimizecrossedlinksonselection.html"><code>layoutMinimizeCrossedLinksOnSelection</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.layoutminimizecrossedlinkswithingroup.html"><code>layoutMinimizeCrossedLinksWithinGroup</code></a></li>
+</ul>
+<p><code>IGroup</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.igroup.type.html"><code>type</code></a> — new property whose <code>GroupType</code> values are <code>&#39;expanded&#39;</code>, <code>&#39;collapsed&#39;</code>, or <code>&#39;command&#39;</code>; it supersedes the deprecated <code>isCollapsed</code> boolean. The <code>&#39;command&#39;</code> value creates split-ribbon-button command groups.</li>
+</ul>
+<h2 id="schema-namespace">schema namespace</h2>
+<p><code>ChartItemTypeIdentifier</code></p>
+<ul>
+<li>New type that allows schema types to be identified by either <code>ChartItemTypeId</code> or <code>AnalyzeItemTypeId</code>.</li>
+</ul>
+<p><code>PropertyTypeIdentifier</code></p>
+<ul>
+<li>New type that allows record properties to be identified by either <code>ChartPropertyTypeId</code> or <code>AnalyzePropertyTypeId</code>.</li>
+</ul>
+<h2 id="data-namespace">data namespace</h2>
+<p><code>IBaseChartData</code></p>
+<ul>
+<li>New base interface for common chart data properties; see <a href="../api/notebook-sdk.data.ibasechartdata.html"><code>IBaseChartData</code></a>.</li>
+</ul>
+<h2 id="deprecations">Deprecations</h2>
+<ul>
+<li><strong>Callback API for mutations</strong>: The callback parameter on <code>runTrackedMutations</code> and <code>runUntrackedMutations</code> is deprecated. Use the returned promise instead.</li>
+<li><strong><code>RecordPropertiesSpecifier</code> / <code>EditRecordPropertiesSpecifier</code></strong>: Deprecated in favor of <code>PropertiesSpecifier</code> and <code>EditPropertiesSpecifier</code>.</li>
+<li><strong><code>IChartChangeMajor</code></strong>: The distinction between major and minor chart changes has been removed. All chart change events are now of type <code>&#39;minor&#39;</code>. Use <code>IChartChange</code> instead. This interface will be removed in the next major release.</li>
+<li><strong><code>IGroupBase.isCollapsed</code></strong>: Deprecated in favor of <code>IGroup.type</code>.</li>
+<li><strong><code>app.ThemeName</code> and <code>app.ITheme.themeName</code></strong>: Deprecated.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

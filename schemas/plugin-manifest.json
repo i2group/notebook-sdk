@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json",
+  "type": "object",
+  "title": "The JSON manifest for an i2 Notebook plug-in.",
+  "required": ["pluginId", "pluginVersion", "name", "entryPointUrl"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "pluginId": {
+      "type": "string",
+      "title": "The identifier of the plug-in, as a lower-case GUID.",
+      "minLength": 36,
+      "maxLength": 36,
+      "pattern": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+      "examples": ["01234567-89ab-cdef-0123-456789abcdef"]
+    },
+    "pluginVersion": {
+      "type": "string",
+      "title": "The version of the plug-in.",
+      "minLength": 1,
+      "examples": ["1.0"]
+    },
+    "name": {
+      "type": "string",
+      "title": "The name of the plug-in, which might appear in status messages.",
+      "minLength": 1,
+      "examples": ["My i2 Notebook plug-in"]
+    },
+    "entryPointUrl": {
+      "type": "string",
+      "title": "The URL of the plug-in entry point JavaScript file, relative to the manifest.",
+      "minLength": 1,
+      "examples": ["./entrypoint.js"]
+    },
+    "entryPointCsp": {
+      "title": "Directives to add to the HTTP Content-Security-Policy for the page hosting the entry point.",
+      "$ref": "#/definitions/csp"
+    },
+    "toolViewCsp": {
+      "title": "Directives to add to the HTTP Content-Security-Policy for tool views.",
+      "$ref": "#/definitions/csp"
+    }
+  },
+  "definitions": {
+    "csp": {
+      "type": "object",
+      "title": "Directives to add to the HTTP Content-Security-Policy response header.",
+      "default": {},
+      "examples": [
+        {
+          "connect-src": "http://external-server-to-access-from-script",
+          "style-src": "'unsafe-inline'"
+        }
+      ],
+      "patternProperties": {
+        ".*": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
