@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>What's new in version 1.10 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="What's new in version 1.10 ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="whats-new-in-version-110">What&#39;s new in version 1.10</h1>
+
+<p>Version 1.10 of the i2 Notebook API adds richer command groups, invocation context for commands,
+appearance hints for new chart elements, badges, edge summary styling, hover events, read-only chart detection,
+more flexible dialog sizing, and several new system commands.</p>
+<ul>
+<li><strong>Command invocation context</strong> — Command handlers now receive the chart position and keyboard modifier state at the point at which the command was triggered, so that a plug-in can, for example, place a new node under the cursor.</li>
+<li><strong>Dynamic command groups</strong> — Register groups whose commands are created each time the group opens, either synchronously or asynchronously.</li>
+<li><strong>Command group enhancements</strong> — Groups gain an <code>onSurface</code> state hook, split-button primary commands, a <code>&#39;stacked&#39;</code> layout, ribbon-style pop-outs, and reusable group templates that you can surface into several places.</li>
+<li><strong>Appearance hints for new elements</strong> — When you add a record in a tracked mutation, you can specify the color, label, size, position, and other appearance details of the element that the system creates for it.</li>
+<li><strong>Badges</strong> — Read and set badge icons on nodes and edges.</li>
+<li><strong>Edge summary styling</strong> — Read the style of an edge summary, and override its color, direction, line style, and width.</li>
+<li><strong>Hover events</strong> — The new <code>charthoverchange</code> event fires when the pointer enters, leaves, or moves between chart elements.</li>
+<li><strong>Read-only charts</strong> — Detect whether the user opened the chart as a read-only snapshot.</li>
+<li><strong>Dialog sizing</strong> — Plug-in dialogs support an <code>&#39;xmedium&#39;</code> size, custom dimensions, and automatic height.</li>
+</ul>
+<h2 id="root-api">Root API</h2>
+<p><code>IEntryPointApi</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.ientrypointapi.pluginbaseurl.html"><code>pluginBaseUrl</code></a> — the base URL from which the plug-in&#39;s assets are served. The URL always ends with a forward slash.</li>
+</ul>
+<p><code>NotebookStatic</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.notebookstatic.getentrypointapi.html"><code>getEntryPointApi</code></a> accepts <code>&#39;1.10&#39;</code> as an <code>apiVersion</code>. The bundled <code>getEntryPointApi</code> function now requests version 1.10.</li>
+</ul>
+<h2 id="app-namespace">app namespace</h2>
+<p><code>ITrackedMutations</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.itrackedmutations.createnode.html"><code>createNode</code></a> and <a href="../api/notebook-sdk.app.itrackedmutations.createedge.html"><code>createEdge</code></a> — after you add an entity or link record, pass the pending record to obtain an editor that hints the appearance of the element that the system creates for it. The element is created with the hints applied, rather than first appearing with its default appearance.</li>
+</ul>
+<p><code>IElementEditorBase</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.ielementeditorbase.setbadge.html"><code>setBadge</code></a> and <a href="../api/notebook-sdk.app.ielementeditorbase.clearbadges.html"><code>clearBadges</code></a> — set or clear the badge icons on a node or edge.</li>
+</ul>
+<p><code>INodeEditor</code></p>
+<ul>
+<li>The inherited setters (<code>setLabel</code>, <code>setBadge</code>, <code>clearBadges</code>) now return the node editor, so that you can chain them with node-specific setters such as <code>setCenter</code>, <code>setSize</code>, and <code>setImage</code> in any order.</li>
+</ul>
+<p><code>IEdgeSummaryEditor</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.iedgesummaryeditor.setcolor.html"><code>setColor</code></a>, <a href="../api/notebook-sdk.app.iedgesummaryeditor.setdirection.html"><code>setDirection</code></a>, <a href="../api/notebook-sdk.app.iedgesummaryeditor.setlinestyle.html"><code>setLineStyle</code></a>, and <a href="../api/notebook-sdk.app.iedgesummaryeditor.setwidth.html"><code>setWidth</code></a> — override the style of an edge summary.</li>
+</ul>
+<h2 id="chart-namespace">chart namespace</h2>
+<p><code>IChart</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.ichart.isreadonly.html"><code>isReadOnly</code></a> — whether the user opened the chart as a read-only snapshot. On a read-only chart, mutations that would change the chart are rolled back, and their promises resolve with a result that contains no changes.</li>
+</ul>
+<p><code>ChartEventMap</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.charteventmap.charthoverchange.html"><code>charthoverchange</code></a> — new event that fires when the pointer enters, leaves, or moves between chart elements, but not on every pointer movement. The <a href="../api/notebook-sdk.chart.hoverchangelistener.html"><code>HoverChangeListener</code></a> receives the hovered node, edge, edge summary, or node group, or <code>null</code> when the pointer leaves all elements.</li>
+</ul>
+<p><code>IRecordChanges</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.irecordchanges.direction.html"><code>direction</code></a> — present and <code>true</code> for link records whose direction changed.</li>
+</ul>
+<h2 id="commands-namespace">commands namespace</h2>
+<p><code>ICommandConfig</code></p>
+<ul>
+<li><code>onExecute</code> now receives an <a href="../api/notebook-sdk.commands.icommandinvocationcontext.html"><code>ICommandInvocationContext</code></a>, with <code>triggerPosition</code> and <code>modifierKeys</code> (<a href="../api/notebook-sdk.commands.imodifierkeys.html"><code>IModifierKeys</code></a>), through the new <a href="../api/notebook-sdk.commands.commandexecutepayloadmap.html"><code>CommandExecutePayloadMap</code></a>. For <code>&#39;unscoped&#39;</code> commands, the context is an optional argument, so existing <code>onExecute</code> handlers that declare no parameter continue to work unchanged. An <code>&#39;unscoped&#39;</code> handler that explicitly declares a <code>void</code> parameter, such as <code>onExecute(_payload: void)</code>, no longer compiles; remove the parameter, or declare it as <code>invocationContext?: commands.ICommandInvocationContext</code>.</li>
+</ul>
+<p><code>ICommandApi</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.icommandapi.creategroup.html"><code>createGroup</code></a> — returns a detached <a href="../api/notebook-sdk.commands.igrouptemplate.html"><code>IGroupTemplate</code></a> that you build once and surface into one or more action areas.</li>
+</ul>
+<p><code>IActionArea</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.iactionarea.adddynamicgroup.html"><code>addDynamicGroup</code></a> — add a group whose commands are created each time its host surface (pop-up menu or ribbon drop-down) opens. The group&#39;s <code>onPopulate</code> callback receives an <a href="../api/notebook-sdk.commands.idynamicactionarea.html"><code>IDynamicActionArea</code></a>, and can return a promise; the host opens the pop-up immediately with placeholder rows and shows the real items when the promise resolves.</li>
+<li><a href="../api/notebook-sdk.commands.iactionarea.surfacegroup.html"><code>surfaceGroup</code></a> — surface a group template that was created with <code>createGroup</code>.</li>
+<li><code>addGroup</code> and <code>addOrGetGroup</code> are now generic in the command type, so that the type of a group&#39;s <code>onSurface</code> event API is inferred from its <code>context</code>.</li>
+</ul>
+<p><code>IGroup</code> / <code>IDynamicGroupConfig</code></p>
+<ul>
+<li><code>IGroup</code> is now a union of <a href="../api/notebook-sdk.commands.istandardgroup.html"><code>IStandardGroup</code></a> and <a href="../api/notebook-sdk.commands.icommandgroup.html"><code>ICommandGroup</code></a>, and <code>IDynamicGroupConfig</code> is a union of <a href="../api/notebook-sdk.commands.istandarddynamicgroup.html"><code>IStandardDynamicGroup</code></a> and <a href="../api/notebook-sdk.commands.icommanddynamicgroup.html"><code>ICommandDynamicGroup</code></a>.</li>
+<li><code>primaryCommand</code> — specifies a <code>&#39;command&#39;</code> (split-button) group&#39;s primary command, which runs when users click the main part of the button. If a static group does not specify one, the first command that is surfaced in the group is its primary command, as in version 1.9. A dynamic <code>&#39;command&#39;</code> group must specify one. No other group type can specify one.</li>
+<li><code>onSurface</code> — drive a group&#39;s label, icon, and enabled or hidden state from application events through an <a href="../api/notebook-sdk.commands.igroupaction.html"><code>IGroupAction</code></a>, in the same way as <code>ICommandConfig.onSurface</code> for individual commands. Disabling an expanded group also disables its immediate children.</li>
+<li><code>context</code> — selects the command context type for the group&#39;s <code>onSurface</code> event API. It is optional on static groups, where it defaults to <code>&#39;unscoped&#39;</code>. On dynamic groups it is required, and it also determines the payload that <code>onPopulate</code> receives.</li>
+<li><code>popoutStyle</code> — on a static <code>&#39;collapsed&#39;</code> or <code>&#39;command&#39;</code> group, set to <code>&#39;ribbon&#39;</code> to open a floating ribbon-style panel instead of a standard drop-down menu.</li>
+</ul>
+<p><code>GroupType</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.grouptype.html"><code>&#39;stacked&#39;</code></a> — displays a group&#39;s children as a vertical column of small buttons in the ribbon, which collapses under overflow pressure. In pop-up menus, the children are displayed as normal menu items below a section header.</li>
+</ul>
+<p><code>ISystemCommands</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.copytonewchart.html"><code>copyToNewChart</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.getmatches.html"><code>getMatches</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.renamechart.html"><code>renameChart</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.sharechart.html"><code>shareChart</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.togglefindconnectingnetworks.html"><code>toggleFindConnectingNetworks</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.togglesocialnetworkanalysis.html"><code>toggleSocialNetworkAnalysis</code></a></li>
+</ul>
+<p>Command, group, and ribbon tab identifiers no longer need to be GUIDs. Any non-empty string is accepted, although a GUID or other globally unique value is still recommended to avoid collisions with other plug-ins.</p>
+<h2 id="dialog-namespace">dialog namespace</h2>
+<p><code>IDialogConfig</code></p>
+<ul>
+<li><code>size</code> now accepts:<ul>
+<li><code>&#39;xmedium&#39;</code> — a new preset <a href="../api/notebook-sdk.dialog.dialogsize.html"><code>DialogSize</code></a> between <code>&#39;medium&#39;</code> and <code>&#39;large&#39;</code>.</li>
+<li><a href="../api/notebook-sdk.dialog.idialogdimensions.html"><code>IDialogDimensions</code></a> — explicit CSS <code>width</code> and <code>height</code> lengths, each limited to the <code>&#39;large&#39;</code> size.</li>
+<li><a href="../api/notebook-sdk.dialog.idialogautoheightsize.html"><code>IDialogAutoHeightSize</code></a> — a preset <code>width</code> with <code>height: &#39;auto&#39;</code>, which makes the dialog&#39;s height fit its content.</li>
+</ul>
+</li>
+</ul>
+<h2 id="schema-namespace">schema namespace</h2>
+<p><code>IChartPropertyType</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.schema.ichartpropertytype.itemtype.html"><code>itemType</code></a> — the item type that owns the property type.</li>
+</ul>
+<h2 id="visual-namespace">visual namespace</h2>
+<p><code>IElementStyleBase</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.ielementstylebase.badges.html"><code>badges</code></a> and <a href="../api/notebook-sdk.visual.ielementstylebase.getbadge.html"><code>getBadge</code></a> — the badge icons on a node or edge; see <a href="../api/notebook-sdk.visual.ibadgeicon.html"><code>IBadgeIcon</code></a> and <a href="../api/notebook-sdk.visual.badgeslot.html"><code>BadgeSlot</code></a>.</li>
+</ul>
+<p><code>IEdge</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.iedge.summary.html"><code>summary</code></a> — the edge summary that contains the edge, if any.</li>
+</ul>
+<p><code>IEdgeSummary</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.iedgesummary.style.html"><code>style</code></a> — the style of the edge summary; see <a href="../api/notebook-sdk.visual.iedgesummarystyle.html"><code>IEdgeSummaryStyle</code></a>.</li>
+</ul>
+<h2 id="tooling">Tooling</h2>
+<ul>
+<li>The SDK packages are built with TypeScript 6. The public API is unchanged.</li>
+<li>The minimum supported Node.js version is now 20.19.</li>
+<li>The <code>@i2analyze/notebook-sdk</code> package and projects that <code>@i2analyze/create-notebook-plugin</code> generates now include an <code>AGENTS.md</code> file with guidance for AI coding assistants.</li>
+<li>The plug-in manifest supports an <code>isModule</code> field for plug-ins that are ES modules.</li>
+</ul>
+<h2 id="deprecations">Deprecations</h2>
+<ul>
+<li><strong><code>ISystemCommands.saveChart</code></strong>: Deprecated. The system now saves charts automatically. Use <code>renameChart</code> to rename a chart, or <code>shareChart</code> to manage sharing and access control.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

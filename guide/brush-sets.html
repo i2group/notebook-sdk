@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Applying color highlights with brush sets </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Applying color highlights with brush sets ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="applying-color-highlights-with-brush-sets">Applying color highlights with brush sets</h1>
+
+<p>The i2 Notebook Web API provides <em>brush sets</em>, which allow your plug-in to apply color-based highlighting to chart elements. Brush sets work by mapping records to numeric <em>brush indices</em>, which are resolved to colors through a <em>color range</em>. The resulting colors appear as halos around the affected nodes and edges on the chart surface.</p>
+<p>Brush sets are session-only: they exist in the browser and aren&#39;t persisted to the server. Changes are lost when the page or chart is reloaded.</p>
+<h2 id="overview">Overview</h2>
+<p>A brush set is a mapping from records to brush indices. Each brush index is a numeric value, where higher values take precedence if multiple indices apply to the same element. You provide a color range that translates those indices into CSS color strings.</p>
+<p>The typical workflow for using brush sets is:</p>
+<ol>
+<li>Create a color range that defines the mapping from brush indices to colors.</li>
+<li>Create a brush set and assign it the color range.</li>
+<li>Populate the brush set by mapping records to brush indices.</li>
+<li>Activate the brush set to apply the highlighting to the chart.</li>
+</ol>
+<p>Only one plug-in-owned brush set can be active at a time. Activating a new brush set automatically deactivates the previously active one.</p>
+<h2 id="creating-a-color-range">Creating a color range</h2>
+<p>A color range defines how brush indices are translated into colors. You create one by calling <a href="../api/notebook-sdk.app.ivaluefactory.createbrushcolorrange.html"><code>createBrushColorRange()</code></a> on the <a href="../api/notebook-sdk.app.iapplication.valuefactory.html"><code>valueFactory</code></a>, passing a <a href="../api/notebook-sdk.visual.colorrangeconfig.html"><code>ColorRangeConfig</code></a> that maps brush indices to CSS color strings.</p>
+<p>There are two approaches to configuring a color range:</p>
+<h3 id="discrete-color-ranges">Discrete color ranges</h3>
+<p>For a <strong>discrete</strong> color range, provide an explicit color for every brush index you intend to use. Each index maps directly to its specified color.</p>
+<pre><code class="lang-typescript">const colorRange = api.valueFactory.createBrushColorRange({
+  0: &#39;#1a9641&#39;, // Green
+  1: &#39;#a6d96a&#39;, // Light green
+  2: &#39;#ffffbf&#39;, // Yellow
+  3: &#39;#fdae61&#39;, // Orange
+  4: &#39;#d7191c&#39;, // Red
+});
+</code></pre><h3 id="continuous-gradient-color-ranges">Continuous (gradient) color ranges</h3>
+<p>For a <strong>continuous</strong> color range, provide colors only at key indices. Indices that fall between the keys are interpolated linearly. This is useful when brush indices span a wide numeric range.</p>
+<pre><code class="lang-typescript">// Indices 0 to 100 are interpolated between green and red
+const gradientRange = api.valueFactory.createBrushColorRange({
+  0: &#39;#1a9641&#39;, // Green at index 0
+  100: &#39;#d7191c&#39;, // Red at index 100
+});
+</code></pre><p>With this configuration, an index of 50 resolves to a color halfway between green and red.</p>
+<h2 id="creating-and-populating-a-brush-set">Creating and populating a brush set</h2>
+<p>Create a brush set through the <a href="../api/notebook-sdk.app.iapplication.brushsets.html"><code>brushSets</code></a> manager on the root API, then assign a color range and populate it with record mappings.</p>
+<pre><code class="lang-typescript">const brushSet = api.brushSets.create();
+brushSet.setColorRange(colorRange);
+</code></pre><p>Use <a href="../api/notebook-sdk.visual.ibrushset.set.html"><code>set()</code></a> to map records to brush indices. You can set a single record or provide multiple entries at once:</p>
+<pre><code class="lang-typescript">// Set a single record
+brushSet.set(someRecord, 4);
+
+// Set multiple records in bulk
+brushSet.set([
+  [record1, 0],
+  [record2, 1],
+  [record3, 4],
+]);
+</code></pre><p>Use <a href="../api/notebook-sdk.visual.ibrushset.remove.html"><code>remove()</code></a> to remove specific records from the brush set, or <a href="../api/notebook-sdk.visual.ibrushset.clear.html"><code>clear()</code></a> to remove all mappings:</p>
+<pre><code class="lang-typescript">// Remove specific records
+brushSet.remove([record1, record2]);
+
+// Remove all records from the brush set
+brushSet.clear();
+</code></pre><h2 id="activating-and-deactivating-brush-sets">Activating and deactivating brush sets</h2>
+<p>You must activate a brush set before its highlighting appears on the chart. To do so, call <a href="../api/notebook-sdk.visual.ibrushsetsmanager.activate.html"><code>activate()</code></a> on the brush sets manager. The brush set must have a color range assigned, or the call throws an error.</p>
+<pre><code class="lang-typescript">api.brushSets.activate(brushSet);
+</code></pre><p>Only one plug-in-owned brush set can be active at a time. If another brush set is already active, it is automatically deactivated when you activate a new one.</p>
+<p>To remove the highlighting, call <a href="../api/notebook-sdk.visual.ibrushsetsmanager.deactivate.html"><code>deactivate()</code></a>:</p>
+<pre><code class="lang-typescript">api.brushSets.deactivate(brushSet);
+</code></pre><p>You can check the currently active brush set through the <a href="../api/notebook-sdk.visual.ibrushsetsmanager.activebrushset.html"><code>activeBrushSet</code></a> property, which returns <code>null</code> if no plug-in brush set is active.</p>
+<h3 id="example">Example</h3>
+<p>The following example creates a brush set that highlights entities based on how many links they have, with more connected entities shown in warmer colors:</p>
+<pre><code class="lang-typescript">// Create a gradient color range — 0 links is green, 10+ links is red
+const colorRange = api.valueFactory.createBrushColorRange({
+  0: &#39;#1a9641&#39;, // Green — few connections
+  10: &#39;#d7191c&#39;, // Red — many connections
+});
+
+// Create and configure the brush set
+const brushSet = api.brushSets.create();
+brushSet.setColorRange(colorRange);
+
+// Map each entity record to a brush index based on its link count.
+// We cap the index at 10 to match the maximum value defined in our color range.
+const entries: [records.IChartEntityRecord, number][] = [];
+for (const record of api.chart.entityRecords) {
+  const linkCount = Math.min(record.linkRecords.size, 10);
+  entries.push([record, linkCount]);
+}
+brushSet.set(entries);
+
+// Activate to apply the highlighting
+api.brushSets.activate(brushSet);
+</code></pre><h2 id="resolving-colors">Resolving colors</h2>
+<p>The brush sets manager provides two methods for resolving the effective color for records and elements:</p>
+<ul>
+<li><a href="../api/notebook-sdk.visual.ibrushsetsmanager.getcolorforrecord.html"><code>getColorForRecord()</code></a> returns the CSS color string for a single record, or <code>null</code> if it is not brushed.</li>
+<li><a href="../api/notebook-sdk.visual.ibrushsetsmanager.getcolorforelement.html"><code>getColorForElement()</code></a> returns the CSS color string for a chart element, or <code>null</code> if none of its records are brushed.</li>
+</ul>
+<p>A visual element on the chart represents one or more records. When an element contains multiple records, <code>getColorForElement()</code> resolves the color by looking at all the constituent records and using the highest brush index.</p>
+<p>For example, if three records are merged into a single visual node:</p>
+<ul>
+<li>Record A has a brush index of 2 (Yellow)</li>
+<li>Record B has a brush index of 5 (Red)</li>
+<li>Record C is not brushed</li>
+</ul>
+<p>Because 5 is the highest index, the entire merged node takes the color Red.</p>
+<pre><code class="lang-typescript">const color = api.brushSets.getColorForRecord(recordId);
+if (color) {
+  console.log(`Record is highlighted with color: ${color}`);
+}
+
+const elementColor = api.brushSets.getColorForElement(elementId);
+if (elementColor) {
+  console.log(`Element is highlighted with color: ${elementColor}`);
+}
+</code></pre><p>You can also use <a href="../api/notebook-sdk.visual.ibrushcolorrange.getcolor.html"><code>getColor()</code></a> to get the color for a particular brush index. This is useful when you wish to color UI elements in a table to match the color of the highlighted elements.</p>
+<pre><code class="lang-typescript">const color = colorRange.getColor(5);
+</code></pre><blockquote><p><strong>Note:</strong> System features like &quot;Find items on the chart&quot; use internal brush sets that take precedence over plug-in brush sets. If a system feature is actively brushing a record, its color is returned instead of the plug-in brush set&#39;s color.</p>
+</blockquote>
+<h2 id="listening-for-brush-set-changes">Listening for brush set changes</h2>
+<p>You can listen for changes to brush sets by subscribing to the <code>brushsetchange</code> event on the root API. This event fires when a brush set is activated, deactivated, or when its contents change.</p>
+<pre><code class="lang-typescript">api.addEventListener(&#39;brushsetchange&#39;, (brushSet, applicationContents) =&gt; {
+  console.log(&#39;Brush set changed:&#39;, brushSet.id, &#39;Active:&#39;, brushSet.isActive);
+});
+</code></pre><p>The listener receives the <a href="../api/notebook-sdk.visual.ibrushset.html"><code>IBrushSet</code></a> that changed.</p>
+<h2 id="lifecycle-and-cleanup">Lifecycle and cleanup</h2>
+<p>Brush sets are <strong>session-only</strong>. They are not persisted to the server and are lost when the page or chart is reloaded.</p>
+<p>When records are removed from the chart, the application automatically purges their entries from all brush sets. If those records are later restored (for example, through an undo operation), your plug-in is responsible for re-populating the brush set with the restored records.</p>
+<p>To permanently remove a brush set, call <a href="../api/notebook-sdk.visual.ibrushsetsmanager.delete.html"><code>delete()</code></a>:</p>
+<pre><code class="lang-typescript">api.brushSets.delete(brushSet);
+</code></pre><p>Deleting an active brush set also removes its highlighting from the chart.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

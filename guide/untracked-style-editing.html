@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Untracked element style editing </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Untracked element style editing ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="untracked-element-style-editing">Untracked element style editing</h1>
+
+<p>Untracked mutations provide a powerful way to apply automatic formatting and visual changes to chart elements without affecting the user&#39;s undo stack. This makes them ideal for temporary visual enhancements, dynamic styling, and non-persistent UI feedback.</p>
+<h2 id="overview">Overview</h2>
+<p>When you use untracked mutations to edit the appearance of nodes, edges, and edge summaries, the changes are:</p>
+<ul>
+<li><strong>Local only</strong>: Applied in the browser and not sent to the server</li>
+<li><strong>Not persisted</strong>: Lost when the page or chart is reloaded</li>
+<li><strong>Not undoable</strong>: Do not appear in the undo stack, preserving the user&#39;s workflow</li>
+</ul>
+<p>These characteristics make untracked style editing particularly useful for automatic formatting scenarios where you want to enhance the visual presentation without creating permanent changes and affecting the undo stack.</p>
+<h2 id="available-editing-methods">Available editing methods</h2>
+<p>The <a href="../api/notebook-sdk.app.iuntrackedmutations.html"><code>IUntrackedMutations</code></a> interface provides methods for editing element appearance:</p>
+<ul>
+<li><a href="../api/notebook-sdk.app.iuntrackedmutations.editnode.html"><code>editNode()</code></a> - Returns an <a href="../api/notebook-sdk.app.inodeeditor.html"><code>INodeEditor</code></a> for modifying node appearance</li>
+<li><a href="../api/notebook-sdk.app.iuntrackedmutations.editedge.html"><code>editEdge()</code></a> - Returns an <a href="../api/notebook-sdk.app.iedgeeditor.html"><code>IEdgeEditor</code></a> for modifying edge appearance</li>
+</ul>
+<h2 id="common-use-cases">Common use cases</h2>
+<h3 id="automatic-visual-highlighting">Automatic visual highlighting</h3>
+<p>You can use untracked mutations to automatically change certain elements based on their properties or context, without requiring user interaction:</p>
+<pre><code class="lang-typescript">// Apply highlighting when chart changes
+api.addEventListener(&#39;chartchange&#39;, (change) =&gt; {
+  // Only process minor changes that contain detailed change information
+  if (change.type === &#39;minor&#39;) {
+    api.runUntrackedMutations((application, mutations) =&gt; {
+      // Process added and changed records
+      const recordsToCheck = [...change.records.added, ...change.records.changed];
+
+      for (const record of recordsToCheck) {
+        if (record.itemType.id === &#39;ET_Transaction&#39;) {
+          const amount = record.getProperty(&#39;PT_Amount&#39;)?.value as number;
+          const element = record.element;
+          if (element.isEdge() &amp;&amp; amount &gt; 0) {
+            // Use logarithmic scale to set edge width based on transaction amount
+            // Log10 of amount scaled to reasonable width values (1-10)
+            const logAmount = Math.log10(amount);
+            const width = Math.max(1, Math.min(10, logAmount / 2));
+            mutations.editEdge(element).setWidth(width);
+          }
+        }
+      }
+
+      return { type: &#39;commit&#39; };
+    });
+  }
+});
+</code></pre><h3 id="conditional-styling-rules">Conditional styling rules</h3>
+<p>Apply styling rules that respond to data patterns or business logic:</p>
+<pre><code class="lang-typescript">api.runUntrackedMutations((application, mutations) =&gt; {
+  for (const record of application.chart.records) {
+    // Apply color coding based on risk level
+    const riskLevel = record.getProperty(&#39;PT_RiskLevel&#39;)?.value;
+    let color: string | undefined;
+
+    switch (riskLevel) {
+      case &#39;High&#39;:
+        color = &#39;#DC143C&#39;; // Crimson
+        break;
+      case &#39;Medium&#39;:
+        color = &#39;#FFA500&#39;; // Orange
+        break;
+      case &#39;Low&#39;:
+        color = &#39;#32CD32&#39;; // LimeGreen
+        break;
+    }
+
+    if (color) {
+      const element = record.element;
+      if (element.isNode()) {
+        mutations.editNode(element).setColor(color);
+      }
+    }
+  }
+
+  return { type: &#39;commit&#39; };
+});
+</code></pre><h2 id="maintaining-styles-across-undo-operations">Maintaining styles across undo operations</h2>
+<p>Since untracked mutations are not part of the undo stack, your visual changes will be lost when a user performs an undo operation. If you want to maintain your automatic formatting across undo/redo, you can reapply it in response to chart change events:</p>
+<pre><code class="lang-typescript">// Store your formatting logic as a reusable function
+function applyAutoFormatting(
+  application: app.IApplicationContents,
+  mutations: app.IUntrackedMutations
+) {
+  // Your formatting logic here
+  for (const record of application.chart.records) {
+    const priority = record.getProperty(&#39;PT_Priority&#39;)?.value;
+    if (priority === &#39;Critical&#39;) {
+      const element = record.element;
+      if (element.isNode()) {
+        mutations.editNode(element).setColor(&#39;#FF0000&#39;);
+      }
+    }
+  }
+}
+
+// Apply initial formatting
+api.runUntrackedMutations((application, mutations) =&gt; {
+  applyAutoFormatting(application, mutations);
+  return { type: &#39;commit&#39; };
+});
+
+// Reapply after chart changes
+api.addEventListener(&#39;chartchange&#39;, () =&gt; {
+  api.runUntrackedMutations((application, mutations) =&gt; {
+    applyAutoFormatting(application, mutations);
+    return { type: &#39;commit&#39; };
+  });
+});
+</code></pre><h2 id="best-practices">Best practices</h2>
+<h3 id="when-to-use-untracked-style-editing">When to use untracked style editing</h3>
+<p>Use untracked mutations for style editing when:</p>
+<ul>
+<li>The styling is automatic or computed, not user-initiated</li>
+<li>You want to provide visual feedback without affecting the undo stack</li>
+<li>The changes should be temporary or recalculated frequently</li>
+<li>You&#39;re implementing dynamic visualizations that respond to data patterns</li>
+</ul>
+<h3 id="when-to-use-tracked-mutations">When to use tracked mutations</h3>
+<p>Use tracked mutations for style editing when:</p>
+<ul>
+<li>The user explicitly requests a visual change</li>
+<li>The change should be persistent and saved to the server</li>
+<li>The user should be able to undo the change</li>
+<li>The styling is part of a larger set of changes that should be undoable together</li>
+</ul>
+<h3 id="performance-considerations">Performance considerations</h3>
+<ul>
+<li><strong>Batch operations</strong>: Group multiple style changes in a single untracked mutation rather than running many separate mutations</li>
+<li><strong>Filter efficiently</strong>: Pre-filter records and elements to only those that need styling changes</li>
+<li><strong>Avoid excessive reapplication</strong>: When listening to chart change events, consider throttling or debouncing your reapplication logic</li>
+<li><strong>Be selective</strong>: Only apply styles to visible or relevant elements when working with large charts</li>
+</ul>
+<h3 id="user-experience">User experience</h3>
+<ul>
+<li><strong>Provide clarity</strong>: If your automatic formatting might confuse users, consider providing documentation or UI hints about what the colors/styles mean</li>
+<li><strong>Respect user preferences</strong>: Where appropriate, allow users to disable automatic formatting</li>
+<li><strong>Avoid conflicts</strong>: Be careful not to override user-applied styles in ways that might be disorienting</li>
+<li><strong>Test reload behavior</strong>: Remember that your styles will disappear on page reload, so ensure this doesn&#39;t negatively impact the user experience</li>
+</ul>
+<h3 id="respecting-user-applied-styles">Respecting user-applied styles</h3>
+<p>When applying automatic styling with untracked mutations, be aware that you may overwrite styles that users have explicitly set through the application UI. To avoid this, you can check whether a style property is using its default value before applying your automatic formatting:</p>
+<pre><code class="lang-typescript">api.runUntrackedMutations((application, mutations) =&gt; {
+  for (const record of application.chart.records) {
+    const element = record.element;
+    if (element.isNode()) {
+      // Only apply automatic coloring if the node is using the default color
+      if (element.style.color.isDefault) {
+        const priority = record.getProperty(&#39;PT_Priority&#39;)?.value;
+        if (priority === &#39;High&#39;) {
+          mutations.editNode(element).setColor(&#39;#FF0000&#39;);
+        }
+      }
+    }
+  }
+
+  return { type: &#39;commit&#39; };
+});
+</code></pre><p>The <code>isDefault</code> property on style settings (such as <code>color</code>, <code>size</code>, <code>width</code>) indicates whether the value is inherited from the schema or has been explicitly set by the user. By checking this property, you can ensure your automatic formatting only applies to elements that haven&#39;t been manually styled, preserving the user&#39;s intentional customizations.</p>
+<h2 id="comparison-with-tracked-mutations">Comparison with tracked mutations</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Untracked Mutations</th>
+<th>Tracked Mutations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Undo/Redo</strong></td>
+<td>Not in undo stack</td>
+<td>Added to undo stack</td>
+</tr>
+<tr>
+<td><strong>Persistence</strong></td>
+<td>Local only, lost on reload</td>
+<td>Sent to server, persisted</td>
+</tr>
+<tr>
+<td><strong>Use case</strong></td>
+<td>Automatic formatting, temporary feedback</td>
+<td>User-initiated changes, data modifications</td>
+</tr>
+<tr>
+<td><strong>Impact on workflow</strong></td>
+<td>No impact on user&#39;s undo history</td>
+<td>Can be undone by user</td>
+</tr>
+<tr>
+<td><strong>Available operations</strong></td>
+<td>Limited to visual styling</td>
+<td>Full record editing and chart modifications</td>
+</tr>
+</tbody>
+</table>
+<h2 id="see-also">See also</h2>
+<ul>
+<li><a href="mutations.html">Changing data from a plug-in</a> - General overview of mutations</li>
+<li><a href="mutation-commands.html">Supported mutation operations</a> - Complete list of mutation operations</li>
+<li><a href="../api/notebook-sdk.app.iuntrackedmutations.html"><code>IUntrackedMutations</code></a> - API reference</li>
+<li><a href="../api/notebook-sdk.app.inodeeditor.html"><code>INodeEditor</code></a> - Node styling methods</li>
+<li><a href="../api/notebook-sdk.app.iedgeeditor.html"><code>IEdgeEditor</code></a> - Edge styling methods</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

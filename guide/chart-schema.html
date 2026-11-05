@@ -1,0 +1,192 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Chart schema and identifiers </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Chart schema and identifiers ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="chart-schema-and-identifiers">Chart schema and identifiers</h1>
+
+<p>The i2 Notebook SDK exposes schema information through the <a href="../api/notebook-sdk.schema.ichartschema.html"><code>chart.schema</code></a> property. The chart schema acts as a structural blueprint for the data currently present in a specific chart. It describes the available item types (entity types and link types), the properties those records can contain, visual characteristics (such as icons and labels), and the constraints that dictate how records relate to each other.</p>
+<p>Additionally, the schema defines the rules for other record features, including notes, source identifiers, source references, and the security dimensions that govern access control.</p>
+<p>This guide explains why the chart schema is important and how to use it alongside identifiers when interacting with chart data.</p>
+<h2 id="why-do-you-need-the-schema">Why do you need the schema?</h2>
+<p>You typically use the schema to:</p>
+<ul>
+<li>Discover which entity and link types are available on the current chart.</li>
+<li>Resolve item types and property types before reading or writing property values.</li>
+<li>Choose the appropriate identifier for lookups, cached state, and mutations.</li>
+</ul>
+<p>Imagine writing a plug-in that imports data from an external source and places it on the chart. To do this, you cannot simply drop raw JSON onto the chart; you must translate your external data into a format the chart understands.</p>
+<p>The schema provides the answers to critical questions:</p>
+<ul>
+<li><em>What entity types are available to represent a &quot;Person&quot;?</em></li>
+<li><em>What properties are valid for that &quot;Person&quot; entity?</em></li>
+<li><em>Can a &quot;Vehicle&quot; link directly to a &quot;Location&quot;?</em></li>
+</ul>
+<p>By validating your operations against the schema, you ensure that the chart remains consistent and functions correctly.</p>
+<blockquote><p><strong>Link constraints</strong></p>
+<p>Link types define which entity types are valid at each end of the link. The schema exposes those rules through <a href="../api/notebook-sdk.schema.ichartlinktype.fromentitytypes.html"><code>fromEntityTypes</code></a> and <a href="../api/notebook-sdk.schema.ichartlinktype.toentitytypes.html"><code>toEntityTypes</code></a>, but the SDK does not prevent you from constructing links that fall outside them. Ignoring these rules may cause errors if those links are then passed to stores that strictly validate link constraints, so verify the constraints before creating links.</p>
+</blockquote>
+<h2 id="accessing-the-chart-schema">Accessing the chart schema</h2>
+<p>You can access the active chart&#39;s schema through the <code>chart.schema</code> property. This property is available on the root <code>api</code> object in your plug-in&#39;s entry point (as well as the tool view), and on the <a href="../api/notebook-sdk.app.iapplicationcontents.html"><code>applicationContents</code></a> object passed to command and mutation handlers.</p>
+<p>Here is an example that retrieves a specific entity type by its <code>analyzeId</code> and lists the available properties for records of that type:</p>
+<pre><code class="lang-typescript">// Look up a known entity type by its i2 Analyze identifier
+const personType = api.chart.schema.entityTypes.get(&#39;ET5&#39;);
+
+if (personType) {
+  // List the property types that a &quot;Person&quot; entity can have
+  for (const propertyType of personType.propertyTypes) {
+    console.log(`${propertyType.displayName} (${propertyType.logicalType})`);
+  }
+}
+</code></pre><h3 id="looking-up-types-and-properties">Looking up types and properties</h3>
+<p>When your plug-in needs to interact with specific data, you will often look up individual entity, link, and property types from the schema.</p>
+<p>The SDK collections (<a href="../api/notebook-sdk.schema.ichartschema.entitytypes.html"><code>schema.entityTypes</code></a>, <a href="../api/notebook-sdk.schema.ichartschema.linktypes.html"><code>schema.linkTypes</code></a>, <a href="../api/notebook-sdk.schema.ichartschema.itemtypes.html"><code>schema.itemTypes</code></a>, and an item type&#39;s <a href="../api/notebook-sdk.schema.ichartitemtypebase.propertytypes.html"><code>propertyTypes</code></a>) are <a href="../api/notebook-sdk.data.ikeyedreadonlycollection.html"><code>IKeyedReadOnlyCollection</code></a> objects. These collections allow you to look up a type using any of three distinct keys:</p>
+<ol>
+<li><code>analyzeId</code>: The unique identifier assigned by the i2 Analyze server (e.g., <code>&#39;ET1&#39;</code>). Use this when your plug-in relies on a known server data model.</li>
+<li><code>displayName</code>: The display name of the type (e.g., <code>&#39;Address&#39;</code>). Note that display names are not guaranteed to be unique: you can create custom types that share the same display name.</li>
+<li><code>id</code>: The internal, chart-specific integer identifier (e.g., <code>558</code>). You will usually encounter these when reading from existing records directly on the chart, or when reading payloads such as removed type identifiers in schema change events.</li>
+</ol>
+<p>Because the collection routes all three keys to the exact same value, here are three completely equivalent ways to retrieve the &quot;Address&quot; entity type from the schema:</p>
+<pre><code class="lang-typescript">const schema = api.chart.schema;
+const addressByAnalyzeId = schema.entityTypes.get(&#39;ET1&#39;);
+const addressByDisplayName = schema.entityTypes.get(&#39;Address&#39;);
+const addressByChartId = schema.entityTypes.get(558);
+</code></pre><p>The schema also provides direct helper methods. Methods like <a href="../api/notebook-sdk.schema.ichartschema.getitemtype.html"><code>getItemType()</code></a> and <a href="../api/notebook-sdk.schema.ichartitemtypebase.getpropertytype.html"><code>getPropertyType()</code></a> expect an <a href="../api/notebook-sdk.schema.analyzeitemtypeid.html"><code>AnalyzeItemTypeId</code></a> and make it clear that your plug-in expects a matching type to exist:</p>
+<pre><code class="lang-typescript">const addressType = schema.getItemType(&#39;ET1&#39;);
+const locationProperty = addressType.getPropertyType(&#39;PT1&#39;);
+</code></pre><h2 id="responding-to-schema-changes">Responding to schema changes</h2>
+<p>Listen for the <a href="../api/notebook-sdk.chart.charteventmap.chartschemachange.html"><code>chartschemachange</code></a> event when your plug-in needs to react to schema updates.</p>
+<p>This event fires whenever the schema definition changes. These changes might be triggered by your plug-in, by other plug-ins, or by the user modifying the schema.</p>
+<p>For example, a plug-in can trigger schema changes when it performs operations such as:</p>
+<ul>
+<li>Adding a custom entity type using <a href="../api/notebook-sdk.app.itrackedmutations.addentitytype.html"><code>mutations.addEntityType()</code></a>.</li>
+<li>Adding a custom link type using <a href="../api/notebook-sdk.app.itrackedmutations.addlinktype.html"><code>mutations.addLinkType()</code></a>.</li>
+<li>Modifying an item type or its property types using <a href="../api/notebook-sdk.app.itrackedmutations.edititemtype.html"><code>mutations.editItemType()</code></a>.</li>
+</ul>
+<p>Here is an example of an event handler that listens for schema changes and logs the added, changed, and removed types:</p>
+<pre><code class="lang-typescript">api.addEventListener(&#39;chartschemachange&#39;, (change, application) =&gt; {
+  const addedTypes = change.addedTypes.toArray();
+  const changedTypes = change.changedTypes.toArray();
+  const removedTypeIds = change.removedTypes.toArray();
+
+  console.log({ addedTypes, changedTypes, removedTypeIds });
+
+  // After the event, treat application.chart.schema as the source of truth.
+  const currentSchema = application.chart.schema;
+  console.log(currentSchema.itemTypes.size);
+});
+</code></pre><h2 id="other-parts-of-the-schema">Other parts of the schema</h2>
+<p>The schema also describes other chart features, not just entity and link types. You will use these parts of the schema when you need to validate or populate richer record data:</p>
+<ul>
+<li><strong>Source identifiers</strong> (<a href="../api/notebook-sdk.schema.isourceidentifiersschema.html"><code>schema.sourceIdentifiersSchema</code></a>): Defines the maximum number and length of source identifiers a record can have.</li>
+<li><strong>Notes</strong> (<a href="../api/notebook-sdk.schema.inotesschema.html"><code>schema.notesSchema</code></a>): Specifies the maximum length and number of notes allowed per record.</li>
+<li><strong>Security</strong> (<a href="../api/notebook-sdk.schema.isecurityschema.html"><code>schema.securitySchema</code></a>): Describes the security dimensions and default values applied to records. You can read this schema to ensure your plug-in assigns valid security values when creating new records or modifying the security configuration of existing records.</li>
+<li><strong>Source references</strong> (<a href="../api/notebook-sdk.schema.ichartschema.getsourcereferenceschema.html"><code>schema.getSourceReferenceSchema()</code></a>): Provides the <a href="../api/notebook-sdk.schema.isourcereferenceschema.html">source reference schema</a> for a specific item type.</li>
+</ul>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

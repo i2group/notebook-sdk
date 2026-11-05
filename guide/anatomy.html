@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Anatomy of an i2 Notebook plug-in </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Anatomy of an i2 Notebook plug-in ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="anatomy-of-an-i2-notebook-plug-in">Anatomy of an i2 Notebook plug-in</h1>
+
+<p>An i2 Notebook plug-in is deployed to the i2 Analyze server as a directory that contains:</p>
+<ul>
+<li>The <a href="manifest.html"><em>plug-in manifest</em></a>, which is a JSON file that contains configuration details</li>
+<li>The <a href="entrypoint.html"><em>plug-in entry point</em></a>, which is a JavaScript file that is loaded directly into i2 Notebook</li>
+<li>Optional <a href="toolview.html"><em>tool views</em></a>, which are HTML pages (and associated JavaScript/CSS/image files) that provide a user interface</li>
+</ul>
+<h2 id="operation">Operation</h2>
+<p>At startup, the Liberty server scans the plug-in directories and reads the plug-in manifest files. It then provides information about all the available plug-in entry points to i2 Notebook.</p>
+<p>After i2 Notebook loads its user interface, it goes on to load the entry point JavaScript file for each available plug-in. The <code>main()</code> method of each entry point performs some actions against i2 Notebook. For example:</p>
+<ul>
+<li>Register new commands for i2 Notebook users to run</li>
+<li>Modify the ribbon to show the new commands</li>
+<li>Register to receive events from open charts (to control the state of commands based on selection, for example)</li>
+<li>Register command handlers (to launch a separate application when a command is invoked, for example)</li>
+<li>Register HTML files for tools that i2 Notebook might display in frames or separate browser windows</li>
+</ul>
+<p>When the registration work is done, the entry point signals completion to i2 Notebook. After all plug-ins signal completion, i2 Notebook acts upon the registrations and updates its configuration accordingly.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+# i2 Notebook Web SDK
+
+> TypeScript SDK (`@i2analyze/notebook-sdk`) for building plug-ins for the i2 Analyst's Notebook web client. Plug-ins add commands, tool views, and read/change chart data.
+
+IMPORTANT: create new plug-ins with `npm create @i2analyze/notebook-plugin` (the create-notebook-plugin tool) — do not hand-roll a project or copy the basic-plugin sample as boilerplate. See the agent guide below.
+
+## Start here
+- [Agent guide (AGENTS.md)](https://i2group.github.io/notebook-sdk/AGENTS.md): rules, patterns, and footguns for writing plug-ins.
+- [Full docs bundle (llms-full.txt)](https://i2group.github.io/notebook-sdk/llms-full.txt): the entire guide + API rollup in one file.
+- [Create a plug-in (tutorial)](https://i2group.github.io/notebook-sdk/guide/tutorials/create-notebook-plugin.html): the recommended scaffold path.
+- [API reference](https://i2group.github.io/notebook-sdk/api/): full generated API docs.
+- [Plug-in manifest schema](https://i2group.github.io/notebook-sdk/schemas/plugin-manifest.json)
+
+## Guide
+- [Welcome](https://i2group.github.io/notebook-sdk/index.html)
+- [What's new in 1.10](https://i2group.github.io/notebook-sdk/guide/whats-new-1-10.html)
+- [What's new in 1.9](https://i2group.github.io/notebook-sdk/guide/whats-new-1-9.html)
+- [What's new in 1.8](https://i2group.github.io/notebook-sdk/guide/whats-new-1-8.html)
+- [What's new in 1.7](https://i2group.github.io/notebook-sdk/guide/whats-new-1-7.html)
+- [What's new in 1.6](https://i2group.github.io/notebook-sdk/guide/whats-new-1-6.html)
+- [What's new in 1.5](https://i2group.github.io/notebook-sdk/guide/whats-new-1-5.html)
+- [What's new in 1.4](https://i2group.github.io/notebook-sdk/guide/whats-new-1-4.html)
+- [What's new in 1.3](https://i2group.github.io/notebook-sdk/guide/whats-new-1-3.html)
+- [What's new in 1.2](https://i2group.github.io/notebook-sdk/guide/whats-new-1-2.html)
+- [What's new in 1.1](https://i2group.github.io/notebook-sdk/guide/whats-new-1-1.html)
+- [SDK and API versioning](https://i2group.github.io/notebook-sdk/guide/versioning.html)
+- [Capabilities of a plug-in](https://i2group.github.io/notebook-sdk/guide/capabilities-overview.html)
+- [Anatomy of a plug-in](https://i2group.github.io/notebook-sdk/guide/anatomy.html)
+- [The plug-in manifest](https://i2group.github.io/notebook-sdk/guide/manifest.html)
+- [The plug-in entry point](https://i2group.github.io/notebook-sdk/guide/entrypoint.html)
+- [Plug-in tool views](https://i2group.github.io/notebook-sdk/guide/toolview.html)
+- [The plug-in development proxy](https://i2group.github.io/notebook-sdk/guide/devproxy.html)
+- [Deploying to an i2 Analyze server](https://i2group.github.io/notebook-sdk/guide/deploying-the-plugin.html)
+- [Creating and surfacing commands](https://i2group.github.io/notebook-sdk/guide/commands.html)
+- [Adding custom tabs to the ribbon](https://i2group.github.io/notebook-sdk/guide/tabs.html)
+- [Accessing data from a plug-in](https://i2group.github.io/notebook-sdk/guide/data-access.html)
+- [Chart schema and identifiers](https://i2group.github.io/notebook-sdk/guide/chart-schema.html)
+- [Changing data from a plug-in](https://i2group.github.io/notebook-sdk/guide/mutations.html)
+- [Supported mutation operations](https://i2group.github.io/notebook-sdk/guide/mutation-commands.html)
+- [Untracked element style editing](https://i2group.github.io/notebook-sdk/guide/untracked-style-editing.html)
+- [Unfetched property values](https://i2group.github.io/notebook-sdk/guide/unfetched-data.html)
+- [The data formatter and bidirectional text](https://i2group.github.io/notebook-sdk/guide/formatter-bidirectional-text.html)
+- [Applying color highlights with brush sets](https://i2group.github.io/notebook-sdk/guide/brush-sets.html)
+- [Code samples](https://i2group.github.io/notebook-sdk/guide/samples.html)
+- [Tutorials](https://i2group.github.io/notebook-sdk/guide/tutorials/tutorials.html)
+- [Creating a basic plug-in for the i2 Web Client](https://i2group.github.io/notebook-sdk/guide/tutorials/basic-plugin.html)
+- [Creating a production-ready plug-in with the Create Notebook Plug-in tool](https://i2group.github.io/notebook-sdk/guide/tutorials/create-notebook-plugin.html)
+- [Creating an Angular plug-in for the i2 Web Client](https://i2group.github.io/notebook-sdk/guide/tutorials/angular-plugin.html)
+- [Creating a React plug-in for the i2 Web Client](https://i2group.github.io/notebook-sdk/guide/tutorials/react-plugin.html)
+- [Creating a Vue plug-in for the i2 Web Client](https://i2group.github.io/notebook-sdk/guide/tutorials/vue-plugin.html)
+- [Creating a plug-in that writes to a web chart](https://i2group.github.io/notebook-sdk/guide/tutorials/mutation-plugin.html)
+- [Creating a plug-in that changes the colors of nodes](https://i2group.github.io/notebook-sdk/guide/tutorials/color-plugin.html)
+- [Creating a plug-in that adds custom item types](https://i2group.github.io/notebook-sdk/guide/tutorials/item-type-plugin.html)

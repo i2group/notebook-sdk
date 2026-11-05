@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>commands.ICommandGroup interface </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="commands.ICommandGroup interface ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+
+<p><a href="index.html">Home</a> &gt; <a href="notebook-sdk.html">@i2analyze/notebook-sdk</a> &gt; <a href="notebook-sdk.commands.html">commands</a> &gt; <a href="notebook-sdk.commands.icommandgroup.html">ICommandGroup</a></p>
+<h2 id="commandsicommandgroup-interface">commands.ICommandGroup interface</h2>
+<p>A split-button group.</p>
+<p><strong>Signature:</strong></p>
+<pre><code class="lang-typescript">interface ICommandGroup&lt;TCommandType extends CommandType = &#39;unscoped&#39;&gt; extends IGroupConfigBase&lt;TCommandType&gt; 
+</code></pre><p><strong>Extends:</strong> <a href="notebook-sdk.commands.igroupconfigbase.html">IGroupConfigBase</a><!-- -->&lt;TCommandType&gt;</p>
+<p><b>Introduced:</b>
+version 1.10</p>
+<h2 id="type-parameters">Type Parameters</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCommandType</td>
+<td>extends <a href="notebook-sdk.commands.commandtype.html">CommandType</a>(default: &#39;unscoped&#39;)</td>
+<td>The type of the command-context for the group. Defaults to <code>&#39;unscoped&#39;</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="remarks">Remarks</h2>
+<p>Has a <a href="notebook-sdk.commands.icommandgroup.primarycommand.html">primary command</a> and a drop-down menu of related commands. In the ribbon this is displayed as a split button; in pop-up menus, as a menu entry that runs the primary command and has a submenu.</p>
+<h2 id="properties">Properties</h2>
+<table><thead><tr><th>
+
+Property
+
+
+</th><th>
+
+Modifiers
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+<a href="notebook-sdk.commands.igroupconfigbase.context.html">context?</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+TCommandType
+
+
+</td><td>
+
+<em>(Optional)</em> Gets the command-context type, which determines what event API is passed to <a href="notebook-sdk.commands.igroupconfigbase.onsurface.html">commands.IGroupConfigBase.onSurface()</a><!-- -->.
+
+(Inherited from <a href="notebook-sdk.commands.igroupconfigbase.html">IGroupConfigBase</a><!-- -->)
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.igroupconfigbase.icon.html">icon?</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+<a href="notebook-sdk.commands.iicon.html">IIcon</a>
+
+
+</td><td>
+
+<em>(Optional)</em> Gets the icon of the group, which is displayed if the group is collapsed.
+
+(Inherited from <a href="notebook-sdk.commands.igroupconfigbase.html">IGroupConfigBase</a><!-- -->)
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.igroupbase.id.html">id</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+<a href="notebook-sdk.commands.groupid.html">GroupId</a>
+
+
+</td><td>
+
+Gets the identifier of the group. This must be a non-empty string.
+
+(Inherited from <a href="notebook-sdk.commands.igroupbase.html">IGroupBase</a><!-- -->)
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.igroupbase.iscollapsed.html">isCollapsed?</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+boolean
+
+
+</td><td>
+
+<em>(Optional)</em> Indicates whether the group is initially expanded (<code>false</code><!-- -->) or collapsed (<code>true</code><!-- -->) in the user interface.
+
+(Inherited from <a href="notebook-sdk.commands.igroupbase.html">IGroupBase</a><!-- -->)
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.igroupconfigbase.label.html">label?</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+string
+
+
+</td><td>
+
+<em>(Optional)</em> Gets the label of the group.
+
+(Inherited from <a href="notebook-sdk.commands.igroupconfigbase.html">IGroupConfigBase</a><!-- -->)
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.igroupconfigbase.popoutstyle.html">popoutStyle?</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+&#39;ribbon&#39;
+
+
+</td><td>
+
+<em>(Optional)</em> Gets the popup style for the group&#39;s trigger button.
+
+(Inherited from <a href="notebook-sdk.commands.igroupconfigbase.html">IGroupConfigBase</a><!-- -->)
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.icommandgroup.primarycommand.html">primaryCommand?</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+<a href="notebook-sdk.commands.icommand.html">ICommand</a> | <a href="notebook-sdk.commands.commandid.html">CommandId</a>
+
+
+</td><td>
+
+<em>(Optional)</em> Gets the group&#39;s primary command, as a command or command identifier.
+
+
+</td></tr>
+<tr><td>
+
+<a href="notebook-sdk.commands.icommandgroup.type.html">type</a>
+
+
+</td><td>
+
+<code>readonly</code>
+
+
+</td><td>
+
+&#39;command&#39;
+
+
+</td><td>
+
+Gets the render type, always <code>&#39;command&#39;</code> for a split-button group.
+
+
+</td></tr>
+</tbody></table>
+
+<h2 id="methods">Methods</h2>
+<table><thead><tr><th>
+
+Method
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+<a href="notebook-sdk.commands.igroupconfigbase.onsurface.html">onSurface(groupAction, eventApi, signal)?</a>
+
+
+</td><td>
+
+<em>(Optional)</em> Runs when an action derived from the group is surfaced, enabling the group to configure the action in response to events.
+
+(Inherited from <a href="notebook-sdk.commands.igroupconfigbase.html">IGroupConfigBase</a><!-- -->)
+
+
+</td></tr>
+</tbody></table>
+
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>

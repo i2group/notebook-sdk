@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Adding item types </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Adding item types ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../../guide/favicon.png">
+    <link rel="stylesheet" href="../../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../../styles/docfx.css">
+    <link rel="stylesheet" href="../../styles/main.css">
+    <meta property="docfx:navrel" content="../../toc.html">
+    <meta property="docfx:tocrel" content="../toc.html">
+    
+    <meta property="docfx:rel" content="../../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="adding-item-types">Adding item types</h1>
+
+<p>When charting items from datasets, you may encounter situations where the item types available in the i2 Analyze server schema do not fully align with your data.
+The i2 Notebook SDK allows you to create custom item types and define properties tailored to your specific needs.</p>
+<p>This tutorial demonstrates how to add custom item types to the chart schema and listen for schema change events.
+It focuses on the core SDK APIs rather than UI implementation.
+The complete sample includes a simple interface (a textarea pre-populated with sample JSON data and a button) for demonstration purposes, but the tutorial concentrates on the key API usage.
+In practice, you would adapt these APIs to work with your own data sources and schema structures.</p>
+<p>You can find a full version of the source code for this tutorial in the <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/item-type-plugin"><code>samples/item-type-plugin</code></a> folder.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>This tutorial requires:</p>
+<ul>
+<li>A running instance of i2 Analyze version <strong>4.4.4.5</strong> or later</li>
+<li>i2 Notebook SDK version <strong>1.6</strong> or later</li>
+</ul>
+<p>These versions introduced the functionalities discussed in this tutorial.</p>
+<h2 id="create-a-plug-in">Create a plug-in</h2>
+<p>To get started, we&#39;ll use the <a href="https://github.com/i2group/notebookweb-sdk/blob/main/packages/create-notebook-plugin/README.md">@i2analyze/create-notebook-plugin</a> package to quickly scaffold the plug-in structure.
+For a detailed walkthrough on creating a plug-in, refer to the <a href="create-notebook-plugin.html">Creating a production-ready plug-in with the Create Notebook Plug-in tool</a> tutorial.</p>
+<p>Run the following command to create a plug-in with a tool view:</p>
+<pre><code class="lang-sh">npx @i2analyze/create-notebook-plugin --template=plugin-with-toolview
+</code></pre><p>This command initializes the plug-in and tool view, providing a foundation for development.<br>Follow the prompts to configure your plug-in.
+Once the setup is complete, you will have a basic structure ready for further customization.</p>
+<h2 id="set-up-the-sdk-version">Set up the SDK version</h2>
+<p>Ensure that your project has the correct version of the SDK installed. In <code>package.json</code>, verify or update the dependency:</p>
+<pre><code class="lang-json">{
+  &quot;dependencies&quot;: {
+    &quot;@i2analyze/notebook-sdk&quot;: &quot;^1.6.0&quot;
+  }
+}
+</code></pre><p>After updating your dependencies, modify the <code>entrypoint.ts</code> file to request the correct API version:</p>
+<pre><code class="lang-typescript">const api = await notebook.getEntryPointApi(&#39;ac7bcb47-f3d5-45c8-8d41-8ca30cf8ec06&#39;, &#39;1.6&#39;);
+</code></pre><p>Before proceeding, ensure that your plug-in is functioning correctly.</p>
+<h2 id="add-item-types">Add item types</h2>
+<p>To demonstrate how to add item types, we&#39;ll use example JSON data based on a wildlife crime seizure shipment scenario. This example shows the complete workflow:</p>
+<ol>
+<li>Define custom item types (entity and link types) with their properties</li>
+<li>Add these types to the chart schema</li>
+<li>Create records using the newly defined types</li>
+</ol>
+<p>The process requires two separate mutation operations: first adding the item types to the schema, then adding the actual records.</p>
+<h3 id="example-json-data">Example JSON data</h3>
+<pre><code class="lang-json">{
+  &quot;data&quot;: [
+    {
+      &quot;shipmentId&quot;: &quot;S1-DEP&quot;,
+      &quot;typeId&quot;: &quot;departure&quot;,
+      &quot;name&quot;: &quot;Departure&quot;,
+      &quot;icon&quot;: &quot;Cargo Plane (Rotary Wing)&quot;,
+      &quot;properties&quot;: [
+        {
+          &quot;type&quot;: &quot;date&quot;,
+          &quot;name&quot;: &quot;Departure Date&quot;,
+          &quot;value&quot;: &quot;2023-10-01&quot;
+        },
+        {
+          &quot;type&quot;: &quot;singleLineString&quot;,
+          &quot;name&quot;: &quot;Country&quot;,
+          &quot;value&quot;: &quot;Congo&quot;
+        }
+      ]
+    },
+    {
+      &quot;shipmentId&quot;: &quot;S1-DES&quot;,
+      &quot;typeId&quot;: &quot;destination&quot;,
+      &quot;name&quot;: &quot;Destination&quot;,
+      &quot;icon&quot;: &quot;Place&quot;,
+      &quot;properties&quot;: [
+        {
+          &quot;type&quot;: &quot;date&quot;,
+          &quot;name&quot;: &quot;Expected Arrival&quot;,
+          &quot;value&quot;: &quot;2023-10-04&quot;
+        },
+        {
+          &quot;type&quot;: &quot;singleLineString&quot;,
+          &quot;name&quot;: &quot;Country&quot;,
+          &quot;value&quot;: &quot;Vietnam&quot;
+        }
+      ]
+    },
+    {
+      &quot;typeId&quot;: &quot;seizure&quot;,
+      &quot;name&quot;: &quot;Seizure&quot;,
+      &quot;fromId&quot;: &quot;S1-DEP&quot;,
+      &quot;toId&quot;: &quot;S1-DES&quot;,
+      &quot;properties&quot;: [
+        {
+          &quot;type&quot;: &quot;date&quot;,
+          &quot;name&quot;: &quot;Seizure Date&quot;,
+          &quot;value&quot;: &quot;2023-10-03&quot;
+        },
+        {
+          &quot;type&quot;: &quot;singleLineString&quot;,
+          &quot;name&quot;: &quot;Seizure Country&quot;,
+          &quot;value&quot;: &quot;Singapore&quot;
+        }
+      ]
+    }
+  ]
+}
+</code></pre><p>To add item types, we&#39;ll create a function that iterates through each record and determines whether to add an entity or a link.
+A link type is identified by the presence of <code>fromId</code> and <code>toId</code> fields in the JSON data.</p>
+<p>The sample&#39;s <code>ToolView.tsx</code> contains an <code>addItemTypes</code> function that demonstrates this process, filtering out items whose types already exist in the schema to avoid duplicates:</p>
+<blockquote><p>The helper function isLinkData() checks for the presence of fromId and toId fields. See the complete implementation in the sample code.</p>
+</blockquote>
+<pre><code class="lang-typescript">const addItemTypes = (items: (IEntity | ILink)[]) =&gt; {
+  toolViewApi.runTrackedMutations((application, mutations) =&gt; {
+    // Filter items whose types are not already in the schema
+    const filteredItems = items.filter((item) =&gt; {
+      const foundItemType = application.chart.schema.itemTypes.find(
+        (itemType) =&gt; itemType.displayName === item.name
+      );
+      return !foundItemType;
+    });
+
+    if (filteredItems.length === 0) {
+      return { type: &#39;rollback&#39; };
+    }
+
+    for (const item of filteredItems) {
+      if (isLinkData(item)) {
+        mutations.addLinkType({
+          displayName: item.name,
+          propertyTypes: item.properties.map((property) =&gt; ({
+            displayName: property.name,
+            logicalType: property.type,
+            isLabelPart: true,
+          })),
+        });
+      } else {
+        mutations.addEntityType({
+          displayName: item.name,
+          icon: item.icon,
+          propertyTypes: item.properties.map((property) =&gt; ({
+            displayName: property.name,
+            logicalType: property.type,
+            isLabelPart: true,
+          })),
+        });
+      }
+    }
+
+    return {
+      type: &#39;commit&#39;,
+      actionDisplayName: &#39;Add item types&#39;,
+    };
+  });
+};
+</code></pre><p>For adding an entity type, we use <a href="../../api/notebook-sdk.app.itrackedmutations.addentitytype.html"><code>addEntityType()</code></a>, which requires a <code>displayName</code>, an <code>icon</code>, and optional <code>propertyTypes</code>.
+For a link type, we use <a href="../../api/notebook-sdk.app.itrackedmutations.addlinktype.html"><code>addLinkType()</code></a>, which requires a <code>displayName</code> and optional <code>propertyTypes</code>.</p>
+<p>Each property type includes:</p>
+<ul>
+<li><code>displayName</code>: The name shown in the UI</li>
+<li><code>logicalType</code>: The data type (e.g., <code>&#39;date&#39;</code>, <code>&#39;singleLineString&#39;</code>)</li>
+<li><code>isLabelPart</code>: Whether this property appears in the record&#39;s label (only applicable for string-based types), non-string properties will throw an error.</li>
+</ul>
+<p>After running this function, you now have two entity types (<strong>Departure</strong> and <strong>Destination</strong>) and one link type (<strong>Seizure</strong>) added to the chart schema.</p>
+<h3 id="add-records">Add records</h3>
+<p>Once the item types are added, you can create new records using these item types.
+The following simplified example demonstrates the key concepts for creating both entity and link records:</p>
+<pre><code class="lang-typescript">const addRecords = (items: (IEntity | ILink)[]) =&gt; {
+  toolViewApi.runTrackedMutations((application, mutations) =&gt; {
+    const pendingRecordMap = new Map&lt;string, sdk.app.IPendingRecord&gt;();
+
+    for (const item of items) {
+      // Find the item type from the schema
+      const itemType = application.chart.schema.itemTypes.find(
+        (type) =&gt; type.displayName === item.name
+      );
+
+      // Build properties array
+      const properties: [sdk.schema.PropertyTypeSpecifier, sdk.data.PropertyValue][] = [];
+      item.properties.forEach((property) =&gt; {
+        const propertyType = itemType.propertyTypes.find((pt) =&gt; pt.displayName === property.name);
+        if (propertyType) {
+          let value: sdk.data.PropertyValue = property.value;
+
+          // Convert date strings to LocalDate
+          if (propertyType.logicalType === &#39;date&#39;) {
+            const date = new Date(property.value);
+            value = mutations.valueFactory.createLocalDate(
+              date.getFullYear(),
+              date.getMonth() + 1,
+              date.getDate()
+            );
+          }
+
+          properties.push([propertyType, value]);
+        }
+      });
+
+      if (isLinkData(item)) {
+        // Create a link record
+        mutations.addLinkRecord({
+          itemType,
+          fromEnd: pendingRecordMap.get(item.fromId).recordId,
+          toEnd: pendingRecordMap.get(item.toId).recordId,
+          linkDirection: &#39;none&#39;,
+          properties,
+        });
+      } else {
+        // Create an entity record
+        const pendingRecord = mutations.addEntityRecord({
+          itemType,
+          properties,
+        });
+
+        // Store for link record creation
+        pendingRecordMap.set(item.shipmentId, pendingRecord);
+      }
+    }
+
+    return {
+      type: &#39;commit&#39;,
+      actionDisplayName: &#39;Add records&#39;,
+    };
+  });
+};
+</code></pre><p>This example focuses on the core SDK APIs: <a href="../../api/notebook-sdk.app.itrackedmutations.addentityrecord.html"><code>addEntityRecord()</code></a> for creating entities and <a href="../../api/notebook-sdk.app.itrackedmutations.addlinkrecord.html"><code>addLinkRecord()</code></a> for creating links between them.
+For a complete implementation with proper error handling and validation, refer to <a href="https://github.com/i2group/notebook-sdk/tree/main/samples/item-type-plugin/src/components/ToolView.tsx"><code>ToolView.tsx</code></a> in the sample code.</p>
+<p>Based on the example data, three records will be added to the chart: a <strong>Departure</strong> entity record, a <strong>Destination</strong> entity record, and a <strong>Seizure</strong> link record that connects them.</p>
+<p><strong>Note:</strong> In this example, the item type is looked up from the schema by its name.
+However, it&#39;s recommended to use the <code>typeId</code> for lookups, as item types may share the same name.
+The <code>typeId</code> is always unique.</p>
+<p>When you add an item type, the API returns a <a href="../../api/notebook-sdk.schema.ipendingitemtype.html"><code>schema.IPendingItemType</code></a> object, which provides access to the <code>typeId</code>.
+Using this unique identifier ensures reliable and consistent lookups, even if item names are duplicated.</p>
+<h2 id="listen-for-chart-schema-change-events">Listen for chart schema change events</h2>
+<p>When using <code>runTrackedMutations()</code>, if the mutation alters the schema, you can listen for chart schema changes in the mutation response handler.</p>
+<pre><code class="lang-typescript">toolViewApi.runTrackedMutations(
+  (application, mutations) =&gt; {
+    // Perform mutations here
+  },
+  (_, result) =&gt; {
+    if (result.chartSchemaChange) {
+      // Handle the chart schema change if needed
+    }
+  }
+);
+</code></pre><p>Alternatively, you can set up an event listener in <code>entrypoint.ts</code> or in any other tool views where you want to track chart schema changes.
+When you set up an event listener like this, schema changes can be triggered by any part of the application, not just your plug-in.
+The callback provides the source ID of the triggering plug-in, allowing you to check it against your plug-in ID to determine whether the event originated from your plug-in or another source.</p>
+<p>Here&#39;s an example of how to set up a callback to listen for <a href="../../api/notebook-sdk.chart.chartschemachangelistener.html"><code>chartschemachange</code></a> events:</p>
+<pre><code class="lang-typescript">api.addEventListener(&#39;chartschemachange&#39;, (chartSchemaChange) =&gt; {
+  if (chartSchemaChange.pluginId === myPluginId) {
+    // Handle changes caused by this plug-in
+  } else {
+    // Handle changes caused by other plug-ins
+  }
+});
+</code></pre><blockquote><p><code>myPluginId</code> is your plug-in&#39;s unique identifier from the manifest</p>
+</blockquote>
+<p>This callback allows you to differentiate between schema changes made by your plug-in and those made by other plug-ins, enabling appropriate handling of each scenario.</p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../../styles/docfx.js"></script>
+    <script type="text/javascript" src="../../styles/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>What's new in version 1.5 </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="What's new in version 1.5 ">
+    <meta name="generator" content="docfx 2.57.2.0">
+    
+    <link rel="shortcut icon" href="../guide/favicon.png">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                i2 <strong>Notebook SDK</strong>
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show/hide table of contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+          
+          <div class="subnav navbar navbar-default">
+            <div class="container hide-when-search" id="breadcrumb">
+              <ul class="breadcrumb">
+                <li></li>
+              </ul>
+            </div>
+          </div>
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="whats-new-in-version-15">What&#39;s new in version 1.5</h1>
+
+<p>Version 1.5 of the i2 Notebook API contains new functionality for modifying element labels and node images.
+The new version also extends the API for command surfacing to allow group nesting behavior to be controlled and commands to be hidden and their icon dynamically updated.
+Finally, chart schema updates events have been added, together with additional schema properties for schema origin information and link end type constraints.</p>
+<h2 id="app-namespace">app namespace</h2>
+<p><code>IElementEditorBase</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.ielementeditorbase.setlabel.html"><code>setLabel</code></a></li>
+</ul>
+<p><code>INodeEditor</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.app.inodeeditor.setimage.html"><code>setImage</code></a></li>
+</ul>
+<h2 id="chart-namespace">chart namespace</h2>
+<p><code>ChartEventMap</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.chart.charteventmap.chartschemachange.html"><code>chartschemachange</code></a></li>
+</ul>
+<h2 id="commands-namespace">commands namespace</h2>
+<p><code>IGroupBase</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.igroupbase.iscollapsed.html"><code>isCollapsed</code></a></li>
+</ul>
+<p><code>IAction</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.iaction.seticon.html"><code>setIcon</code></a></li>
+<li><a href="../api/notebook-sdk.commands.iaction.sethidden.html"><code>setHidden</code></a></li>
+</ul>
+<p><code>ISystemCommands</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.openimporter.html"><code>openImporter</code></a></li>
+<li><a href="../api/notebook-sdk.commands.isystemcommands.chartsettings.html"><code>chartSettings</code></a></li>
+</ul>
+<p><code>IChartItemPopupMenuSystemGroups</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.commands.ichartitempopupmenusystemgroups.linkdirection.html"><code>linkDirection</code></a></li>
+</ul>
+<h2 id="data-namespace">data namespace</h2>
+<p><a href="../api/notebook-sdk.data.ilabeldetailsbase.html"><code>ILabelDetailsBase</code></a></p>
+<h2 id="records-namespace">records namespace</h2>
+<p><a href="../api/notebook-sdk.records.irecordlabeldetails.html"><code>IRecordLabelDetails</code></a></p>
+<h2 id="schema-namespace">schema namespace</h2>
+<ul>
+<li><a href="../api/notebook-sdk.schema.ichartschemachange.html"><code>IChartSchemaChange</code></a></li>
+</ul>
+<p><code>IChartItemTypeBase</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.schema.ichartitemtypebase.origin.html"><code>origin</code></a></li>
+</ul>
+<p><code>IChartLinkType</code></p>
+<ul>
+<li><a href="../api/notebook-sdk.schema.ichartlinktype.fromentitytypes.html"><code>fromEntityTypes</code></a></li>
+<li><a href="../api/notebook-sdk.schema.ichartlinktype.toentitytypes.html"><code>toEntityTypes</code></a></li>
+</ul>
+<h2 id="visual-namespace">visual namespace</h2>
+<p><a href="../api/notebook-sdk.visual.ielementlabeldetails.html"><code>IElementLabelDetails</code></a></p>
+<p><a href="../api/notebook-sdk.visual.iimagesetting.html"><code>IImageSetting</code></a></p>
+<h1 id="deprecated-in-15">Deprecated in 1.5</h1>
+<p>The following elements in the API are deprecated in version 1.5, and might be removed in a future release.</p>
+<h2 id="app-namespace-1">app namespace</h2>
+<p><code>IMutationResult</code></p>
+<ul>
+<li><p><a href="../api/notebook-sdk.app.imutationresult.change.html"><code>change</code></a></p>
+<p>This property is replaced by the optional <a href="../api/notebook-sdk.app.imutationresult.chartchange.html"><code>commands.IMutationResult.chartChange</code></a></p>
+</li>
+</ul>
+<h2 id="commands-namespace-1">commands namespace</h2>
+<p><a href="../api/notebook-sdk.commands.imenugroup.html"><code>IMenuGroup</code></a></p>
+<p>This interface is replaced by <a href="../api/notebook-sdk.commands.igroup.html"><code>commands.IGroup</code></a></p>
+<h2 id="data-namespace-1">data namespace</h2>
+<p><a href="../api/notebook-sdk.data.ilabeldetails.html"><code>ILabelDetails</code></a></p>
+<p>This interface is replaced by <a href="../api/notebook-sdk.data.ilabeldetailsbase.html"><code>data.ILabelDetailsBase</code></a></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            &copy; N. Harris Computer Corporation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
