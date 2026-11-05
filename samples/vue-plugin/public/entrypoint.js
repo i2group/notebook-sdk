@@ -11,9 +11,7 @@ function findGeospatialValue(records) {
       if (propertyType.logicalType === "geospatial") {
         const property = record.getProperty(propertyType);
         if (property !== undefined && !record.isValueUnfetched(property)) {
-          return /** @type {import("@i2analyze/notebook-sdk").data.IGeoPoint} */ (
-            property
-          );
+          return /** @type {import("@i2analyze/notebook-sdk").data.IGeoPoint} */ (property);
         }
       }
     }
@@ -22,10 +20,7 @@ function findGeospatialValue(records) {
 }
 
 async function main() {
-  const api = await notebook.getEntryPointApi(
-    "94f22ca7-6a90-4463-844f-90534aed2a9c",
-    "1.4"
-  );
+  const api = await notebook.getEntryPointApi("94f22ca7-6a90-4463-844f-90534aed2a9c", "1.9");
   api.logger.info("plug-in running");
 
   const viewOnMap = api.commands.createCommand({
@@ -60,7 +55,7 @@ async function main() {
   });
 
   api.commands.applicationRibbon.homeTab
-    .after(api.commands.applicationRibbon.homeTab.systemGroups.searchInfoStore)
+    .after(api.commands.applicationRibbon.homeTab.systemGroups.chartManagement)
     .surfaceCommands(viewOnMap);
 
   api.commands.chartItemPopupMenu.surfaceCommands(viewOnMap);
@@ -82,9 +77,7 @@ async function main() {
     },
     toolView
   );
-  api.commands.applicationRibbon.homeTab
-    .after(viewOnMap.id)
-    .surfaceCommands(toggle);
+  api.commands.applicationRibbon.homeTab.after(viewOnMap.id).surfaceCommands(toggle);
 
   api.commands.removeCommand(api.commands.systemCommands.toggleRecordInspector);
 
